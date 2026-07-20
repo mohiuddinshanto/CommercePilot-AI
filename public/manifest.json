@@ -1,0 +1,16 @@
+{
+  "name": "CommercePilot AI",
+  "short_name": "CommercePilot",
+  "description": "Multi-Tenant AI Commerce SaaS Platform",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8C0B0E",
+  "icons": [
+    {
+      "src": "/file.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
