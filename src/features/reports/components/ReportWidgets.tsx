@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import type {
@@ -9,6 +9,7 @@ import type {
   DailySalesBreakdown,
 } from "@/types/report";
 import { AlertTriangle, Package, RotateCcw, CreditCard } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 export function LowStockWidget({ data }: { data: LowStockProduct[] }) {
   return (
@@ -198,45 +199,5 @@ export function PaymentMethodWidget({ data }: { data: SalesByPaymentMethod[] }) 
 }
 
 export function DailySalesChart({ data }: { data: DailySalesBreakdown[] }) {
-  if (data.length === 0) {
-    return (
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold text-gray-900">Daily Sales</h3>
-        <div className="mt-4 text-center text-sm text-gray-500">No data available.</div>
-      </div>
-    );
-  }
-
-  const maxRevenue = Math.max(...data.map((d) => d.revenue), 1);
-
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <div className="border-b border-gray-200 px-6 py-4">
-        <h3 className="text-lg font-semibold text-gray-900">Daily Sales</h3>
-      </div>
-      <div className="p-6">
-        <div className="flex items-end gap-1" style={{ height: "200px" }}>
-          {data.map((day, index) => (
-            <div key={index} className="flex flex-1 flex-col items-center gap-1">
-              <div
-                className="w-full rounded-t bg-blue-500"
-                style={{
-                  height: `${(day.revenue / maxRevenue) * 160}px`,
-                  minHeight: "2px",
-                }}
-                title={`${day.date}: ${formatCurrency(day.revenue)}`}
-              />
-              <span className="text-[10px] text-gray-500">
-                {day.date.substring(8, 10)}
-              </span>
-            </div>
-          ))}
-        </div>
-        <div className="mt-2 flex justify-between text-xs text-gray-400">
-          <span>{data[0]?.date}</span>
-          <span>{data[data.length - 1]?.date}</span>
-        </div>
-      </div>
-    </div>
-  );
+  return <div className="rounded-xl border border-gray-200 bg-white shadow-sm"><div className="border-b border-gray-200 px-6 py-4"><h3 className="text-lg font-semibold text-gray-900">Daily Sales</h3></div><div className="h-64 p-4">{data.length ? <ResponsiveContainer width="100%" height="100%"><AreaChart data={data}><defs><linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#2563eb" stopOpacity={0.35}/><stop offset="95%" stopColor="#2563eb" stopOpacity={0}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="date" tickFormatter={(value) => String(value).slice(8, 10)} fontSize={12} /><YAxis tickFormatter={(value) => formatCurrency(Number(value))} fontSize={12} width={70} /><Tooltip formatter={(value) => formatCurrency(Number(value))} labelFormatter={(label) => `Date: ${label}`} /><Area type="monotone" dataKey="revenue" stroke="#2563eb" fill="url(#salesGradient)" strokeWidth={2} /></AreaChart></ResponsiveContainer> : <div className="grid h-full place-items-center text-sm text-gray-500">No data available.</div>}</div></div>;
 }

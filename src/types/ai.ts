@@ -53,3 +53,18 @@ export const SUGGESTED_PROMPTS = [
   "Summarize my store's key metrics",
   "What are the busiest hours for my store?",
 ] as const;
+
+export interface GenerateContentRequest {
+  contentType: "product_description" | "social_post" | "blog_outline" | "email_newsletter";
+  titleOrKeywords: string;
+  keyFeatures?: string;
+  tone: "professional" | "friendly" | "casual" | "excited" | "persuasive";
+  length: "short" | "medium" | "long";
+}
+
+export interface GenerateContentResponse {
+  content: string;
+  tokensUsed: number;
+  model: string;
+}
+

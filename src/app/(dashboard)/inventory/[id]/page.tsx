@@ -328,7 +328,7 @@ export default function InventoryDetailPage({
           </div>
           <div>
             <dt className="text-gray-500">Cost Price</dt>
-            <dd className="mt-1 font-medium text-gray-900">${inventory.costPrice.toFixed(2)}</dd>
+            <dd className="mt-1 font-medium text-gray-900">${(inventory.costPrice ?? 0).toFixed(2)}</dd>
           </div>
           <div>
             <dt className="text-gray-500">Last Restocked</dt>

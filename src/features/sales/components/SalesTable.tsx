@@ -94,7 +94,7 @@ export function SalesTable({
                     <p className="text-xs text-gray-500">{item.customerPhone}</p>
                   )}
                 </td>
-                <td className="px-4 py-3 text-gray-600">{item.items.length}</td>
+                <td className="px-4 py-3 text-gray-600">{item.items?.length ?? 0}</td>
                 <td className="px-4 py-3 font-medium text-gray-900">
                   {formatCurrency(item.grandTotal)}
                 </td>

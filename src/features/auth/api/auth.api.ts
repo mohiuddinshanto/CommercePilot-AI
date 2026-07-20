@@ -1,7 +1,6 @@
 import { betterAuthClient, betterAuthGet } from "@/core/better-auth-client";
 import type { Session } from "@/types/user";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export interface SignUpParams {
@@ -16,26 +15,37 @@ export interface SignInParams {
 }
 
 export async function signUp(params: SignUpParams): Promise<Session> {
-  const result = await betterAuthClient<{ data?: Session }>(
+  const result = await betterAuthClient<Session>(
     "/api/auth/sign-up/email",
     params
   );
-  if (!result.data) throw new Error("Registration failed");
-  return result.data;
+  if (!result) throw new Error("Registration failed");
+  return result;
 }
 
 export async function signIn(params: SignInParams): Promise<Session> {
-  const result = await betterAuthClient<{ data?: Session }>(
+  const result = await betterAuthClient<Session>(
     "/api/auth/sign-in/email",
     params
   );
-  if (!result.data) throw new Error("Login failed");
-  return result.data;
+  if (!result) throw new Error("Login failed");
+  return result;
 }
 
-export function signInWithGoogle(): void {
+export async function signInWithGoogle(): Promise<void> {
   const callbackURL = `${APP_URL}/dashboard`;
-  window.location.href = `${BASE_URL}/api/auth/signin/social?provider=google&callbackURL=${encodeURIComponent(callbackURL)}`;
+  const result = await betterAuthClient<{ url: string }>(
+    "/api/auth/sign-in/social",
+    {
+      provider: "google",
+      callbackURL,
+    }
+  );
+  if (result?.url) {
+    window.location.href = result.url;
+  } else {
+    throw new Error("Failed to initiate Google sign-in");
+  }
 }
 
 export async function signOut(): Promise<void> {
@@ -44,10 +54,10 @@ export async function signOut(): Promise<void> {
 
 export async function getSession(): Promise<Session | null> {
   try {
-    const result = await betterAuthGet<{ data?: Session }>(
+    const result = await betterAuthGet<Session>(
       "/api/auth/get-session"
     );
-    return result.data ?? null;
+    return result ?? null;
   } catch {
     return null;
   }

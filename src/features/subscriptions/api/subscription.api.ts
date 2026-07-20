@@ -8,8 +8,8 @@ import type {
   BillingRecord,
 } from "../types/subscription";
 
-export async function getSubscription(): Promise<SubscriptionDocument> {
-  return get<SubscriptionDocument>(API_ENDPOINTS.V1.SUBSCRIPTIONS);
+export async function getSubscription(): Promise<SubscriptionDocument | null> {
+  return get<SubscriptionDocument | null>(API_ENDPOINTS.V1.SUBSCRIPTIONS);
 }
 
 export async function createSubscription(
@@ -48,8 +48,8 @@ export async function renewSubscription(): Promise<SubscriptionDocument> {
   );
 }
 
-export async function getUsage(): Promise<SubscriptionUsage> {
-  return get<SubscriptionUsage>(`${API_ENDPOINTS.V1.SUBSCRIPTIONS}/usage`);
+export async function getUsage(): Promise<SubscriptionUsage | null> {
+  return get<SubscriptionUsage | null>(`${API_ENDPOINTS.V1.SUBSCRIPTIONS}/usage`);
 }
 
 export async function getBillingHistory(): Promise<BillingRecord[]> {

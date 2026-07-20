@@ -14,6 +14,7 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
   const [name, setName] = useState(product?.name || "");
   const [sku, setSku] = useState(product?.sku || "");
   const [barcode, setBarcode] = useState(product?.barcode || "");
+  const [shortDescription, setShortDescription] = useState(product?.shortDescription || "");
   const [description, setDescription] = useState(product?.description || "");
   const [costPrice, setCostPrice] = useState(product?.costPrice?.toString() || "");
   const [sellingPrice, setSellingPrice] = useState(product?.sellingPrice?.toString() || "");
@@ -22,6 +23,9 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
   const [lowStockLimit, setLowStockLimit] = useState(product?.lowStockLimit?.toString() || "10");
   const [status, setStatus] = useState(product?.status || "active");
   const [tags, setTags] = useState(product?.tags?.join(", ") || "");
+  const [imageUrl, setImageUrl] = useState(product?.images?.[0] || "");
+  const [availableFrom, setAvailableFrom] = useState(product?.availableFrom?.slice(0, 10) || "");
+  const [priority, setPriority] = useState(product?.priority || "medium");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +34,7 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
       name,
       sku,
       barcode: barcode || undefined,
+      shortDescription: shortDescription || undefined,
       description: description || undefined,
       costPrice: Number(costPrice),
       sellingPrice: Number(sellingPrice),
@@ -38,6 +43,9 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
       lowStockLimit: Number(lowStockLimit),
       status,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+      images: imageUrl ? [imageUrl] : [],
+      availableFrom: availableFrom || undefined,
+      priority,
     };
 
     onSubmit(data);
@@ -100,13 +108,25 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Description</label>
+        <label className="block text-sm font-medium text-gray-700">Short Description</label>
+        <input
+          type="text"
+          value={shortDescription}
+          onChange={(e) => setShortDescription(e.target.value)}
+          className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="Brief summary for listings (max 250 characters)"
+          maxLength={250}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Full Description</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Optional product description..."
+          placeholder="Detailed description for product page"
         />
       </div>
 
@@ -196,6 +216,20 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         </div>
       </div>
 
+      <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 sm:grid-cols-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Image URL</label>
+          <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="https://example.com/product.jpg" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Available from</label>
+          <input type="date" value={availableFrom} onChange={(e) => setAvailableFrom(e.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Priority</label>
+          <select value={priority} onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+        </div>
+      </div>
       <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-4">
         <button
           type="button"
@@ -215,3 +249,4 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
     </form>
   );
 }
+

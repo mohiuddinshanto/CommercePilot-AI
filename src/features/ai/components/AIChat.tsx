@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useChat } from "../hooks/useAi";
+import { sendChatMessageStream } from "../api/ai.api";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { SuggestedPrompts } from "./SuggestedPrompts";
@@ -20,41 +20,21 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
   const [conversationId, setConversationId] = useState<string | undefined>(initialConvId);
   const [selectedModel, setSelectedModel] = useState(model || "llama-3.1-8b-instant");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const chatMutation = useChat();
+  const [isStreaming, setIsStreaming] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = (message: string) => {
-    const userMessage: AIMessage = { role: "user", content: message };
-    setMessages((prev) => [...prev, userMessage]);
-
-    chatMutation.mutate(
-      { message, conversationId, model: selectedModel },
-      {
-        onSuccess: (data) => {
-          const assistantMessage: AIMessage = { role: "assistant", content: data.assistantMessage.content };
-          setMessages((prev) => [...prev, assistantMessage]);
-
-          if (!conversationId) {
-            setConversationId(data.conversationId);
-            router.push(`/ai/${data.conversationId}`, { scroll: false });
-          }
-        },
-        onError: (error) => {
-          const errorMessage: AIMessage = {
-            role: "assistant",
-            content: `Error: ${error.message || "Failed to get AI response. Please try again."}`,
-          };
-          setMessages((prev) => [...prev, errorMessage]);
-        },
-      }
-    );
+  const handleSend = async (message: string) => {
+    setMessages((prev) => [...prev, { role: "user", content: message }, { role: "assistant", content: "" }]); setIsStreaming(true);
+    try { await sendChatMessageStream({ message, conversationId, model: selectedModel }, (token) => setMessages((prev) => prev.map((item, index) => index === prev.length - 1 ? { ...item, content: item.content + token } : item)), (nextId) => { if (!conversationId && nextId) { setConversationId(nextId); router.push(`/ai/${nextId}`, { scroll: false }); } }); }
+    catch (error) { setMessages((prev) => prev.map((item, index) => index === prev.length - 1 ? { ...item, content: `Error: ${error instanceof Error ? error.message : "Failed to get AI response."}` } : item)); }
+    finally { setIsStreaming(false); }
   };
 
-  const showWelcome = messages.length === 0 && !chatMutation.isPending;
+  const showWelcome = messages.length === 0 && !isStreaming;
 
   return (
     <div className="flex h-full flex-col">
@@ -90,7 +70,7 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
               .map((msg, idx) => (
                 <ChatMessage key={idx} message={msg} />
               ))}
-            {chatMutation.isPending && (
+            {isStreaming && (
               <div className="flex gap-3">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
@@ -105,7 +85,9 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
         )}
       </div>
 
-      <ChatInput onSend={handleSend} isLoading={chatMutation.isPending} />
+      <ChatInput onSend={handleSend} isLoading={isStreaming} />
     </div>
   );
 }
+
+

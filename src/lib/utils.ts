@@ -22,11 +22,11 @@ export function formatDateTime(dateString: string): string {
   });
 }
 
-export function formatCurrency(amount: number, currency = "USD"): string {
+export function formatCurrency(amount: number | undefined | null, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-  }).format(amount);
+  }).format(amount ?? 0);
 }
 
 export function formatNumber(num: number): string {

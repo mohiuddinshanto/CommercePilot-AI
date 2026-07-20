@@ -11,6 +11,7 @@ import {
   Sparkles,
   Settings,
   Shield,
+  PenTool,
 } from "lucide-react";
 import { ROLES, type Role } from "./roles";
 
@@ -93,6 +94,13 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [ROLES.OWNER, ROLES.STAFF],
   },
   {
+    label: "AI Generator",
+    href: "/ai/generator",
+    icon: PenTool,
+    permission: "ai",
+    roles: [ROLES.OWNER, ROLES.STAFF],
+  },
+  {
     label: "Settings",
     href: "/settings",
     icon: Settings,
@@ -106,3 +114,4 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [ROLES.SUPER_ADMIN],
   },
 ];
+

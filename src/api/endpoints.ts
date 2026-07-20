@@ -1,4 +1,4 @@
-export const API_ENDPOINTS = {
+﻿export const API_ENDPOINTS = {
   AUTH: {
     SIGN_IN: "/api/auth/sign-in/email",
     SIGN_UP: "/api/auth/sign-up/email",
@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
     DASHBOARD_SUMMARY: "/api/v1/dashboard/summary",
     DASHBOARD_ACTIVITIES: "/api/v1/dashboard/activities",
     PRODUCTS: "/api/v1/products",
+    PUBLIC_PRODUCTS: "/api/v1/public/products",
     CATEGORIES: "/api/v1/categories",
     INVENTORY: "/api/v1/inventory",
     BUNDLES: "/api/v1/bundles",
@@ -24,3 +25,4 @@ export const API_ENDPOINTS = {
     ADMIN: "/api/v1/admin",
   },
 } as const;
+

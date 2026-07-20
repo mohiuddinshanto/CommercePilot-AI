@@ -6,6 +6,7 @@ export interface Product {
   barcode?: string;
   name: string;
   slug: string;
+  shortDescription?: string;
   description?: string;
   images: string[];
   costPrice: number;
@@ -15,6 +16,8 @@ export interface Product {
   lowStockLimit: number;
   status: string;
   tags: string[];
+  availableFrom?: string;
+  priority?: "low" | "medium" | "high";
   createdBy?: string;
   updatedBy?: string;
   createdAt: string;
@@ -26,6 +29,7 @@ export interface CreateProductInput {
   sku: string;
   barcode?: string;
   name: string;
+  shortDescription?: string;
   description?: string;
   images?: string[];
   costPrice: number;
@@ -35,6 +39,8 @@ export interface CreateProductInput {
   lowStockLimit?: number;
   status?: string;
   tags?: string[];
+  availableFrom?: string;
+  priority?: "low" | "medium" | "high";
 }
 
 export interface UpdateProductInput {
@@ -42,6 +48,7 @@ export interface UpdateProductInput {
   sku?: string;
   barcode?: string;
   name?: string;
+  shortDescription?: string;
   description?: string;
   images?: string[];
   costPrice?: number;
@@ -51,6 +58,8 @@ export interface UpdateProductInput {
   lowStockLimit?: number;
   status?: string;
   tags?: string[];
+  availableFrom?: string;
+  priority?: "low" | "medium" | "high";
 }
 
 export interface ProductQueryParams {
@@ -61,4 +70,8 @@ export interface ProductQueryParams {
   categoryId?: string;
   sortBy?: string;
   order?: "asc" | "desc";
+  minPrice?: number;
+  maxPrice?: number;
 }
+
+

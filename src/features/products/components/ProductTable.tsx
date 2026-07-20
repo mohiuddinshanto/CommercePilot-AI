@@ -11,6 +11,7 @@ interface ProductTableProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  viewHref?: (id: string) => string;
 }
 
 function getStatusBadge(status: string) {
@@ -34,6 +35,7 @@ export function ProductTable({
   page,
   totalPages,
   onPageChange,
+  viewHref,
 }: ProductTableProps) {
   if (products.length === 0) {
     return (
@@ -104,7 +106,7 @@ export function ProductTable({
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-1">
                     <Link
-                      href={`/products/${product._id}`}
+                      href={viewHref ? viewHref(product._id) : `/products/${product._id}`}
                       className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-blue-600"
                       title="View"
                     >

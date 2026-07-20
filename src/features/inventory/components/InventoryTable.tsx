@@ -72,7 +72,7 @@ export function InventoryTable({
                   </td>
                   <td className="px-4 py-3 text-gray-600">{item.availableStock}</td>
                   <td className="px-4 py-3 text-gray-600">{item.lowStockLimit}</td>
-                  <td className="px-4 py-3 text-gray-600">${item.costPrice.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-gray-600">${(item.costPrice ?? 0).toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${stockStatus.className}`}
