@@ -1,10 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-interface BetterAuthResponse {
-  data?: unknown;
-  error?: { code: string; message: string; status: number; statusText: string };
-}
-
 export async function betterAuthClient<T>(
   endpoint: string,
   body?: unknown
@@ -16,13 +11,21 @@ export async function betterAuthClient<T>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  const data: BetterAuthResponse = await response.json();
-
-  if (data.error) {
-    throw new Error(data.error.message || "Auth request failed");
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(text || `Auth request failed (${response.status})`);
   }
 
-  return data as T;
+  const raw = await response.json();
+
+  if (raw && typeof raw === "object" && "data" in raw) {
+    if (raw.error) {
+      throw new Error(raw.error.message || "Auth request failed");
+    }
+    return raw.data as T;
+  }
+
+  return raw as T;
 }
 
 export async function betterAuthGet<T>(endpoint: string): Promise<T> {
@@ -30,11 +33,19 @@ export async function betterAuthGet<T>(endpoint: string): Promise<T> {
     credentials: "include",
   });
 
-  const data: BetterAuthResponse = await response.json();
-
-  if (data.error) {
-    throw new Error(data.error.message || "Auth request failed");
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(text || `Auth request failed (${response.status})`);
   }
 
-  return data as T;
+  const raw = await response.json();
+
+  if (raw && typeof raw === "object" && "data" in raw) {
+    if (raw.error) {
+      throw new Error(raw.error.message || "Auth request failed");
+    }
+    return raw.data as T;
+  }
+
+  return raw as T;
 }

@@ -34,18 +34,38 @@ export async function signIn(params: SignInParams): Promise<Session> {
 
 export async function signInWithGoogle(): Promise<void> {
   const callbackURL = `${APP_URL}/dashboard`;
-  const result = await betterAuthClient<{ url: string }>(
-    "/api/auth/sign-in/social",
-    {
-      provider: "google",
-      callbackURL,
+  const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+  const response = await fetch(`${BASE}/api/auth/sign-in/social`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ provider: "google", callbackURL }),
+    redirect: "manual",
+  });
+
+  if (response.type === "opaqueredirect" || (response.status >= 300 && response.status < 400)) {
+    const location = response.headers.get("Location");
+    if (location) {
+      window.location.href = location;
+      return;
     }
-  );
-  if (result?.url) {
-    window.location.href = result.url;
-  } else {
-    throw new Error("Failed to initiate Google sign-in");
   }
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(text || `Google sign-in failed (${response.status})`);
+  }
+
+  const data = await response.json().catch(() => null);
+  const url = data?.url || data?.data?.url;
+
+  if (url) {
+    window.location.href = url;
+    return;
+  }
+
+  throw new Error("Failed to initiate Google sign-in");
 }
 
 export async function signOut(): Promise<void> {

@@ -27,6 +27,13 @@ export async function apiClient<T>(
     credentials: "include",
   });
 
+  if (response.status === 401) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+    throw new Error("Session expired. Please log in again.");
+  }
+
   const data: ApiResponse<T> = await response.json();
 
   if (!data.success) {
