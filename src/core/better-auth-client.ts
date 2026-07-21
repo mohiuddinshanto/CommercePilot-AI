@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const BASE_URL = "";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
 function persistSessionCookie(setCookieHeader: string) {
@@ -24,7 +24,6 @@ export async function betterAuthClient<T>(
 ): Promise<T> {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     method: "POST",
-    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -59,9 +58,7 @@ export async function betterAuthClient<T>(
 }
 
 export async function betterAuthGet<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    credentials: "include",
-  });
+  const response = await fetch(`${BASE_URL}${endpoint}`);
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");

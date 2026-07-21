@@ -39,6 +39,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: new URL(backendUrl).hostname },
     ],
   },
+  async rewrites() {
+    return {
+      afterFiles: [
+        {
+          source: "/api/auth/:path*",
+          destination: `${backendUrl}/api/auth/:path*`,
+        },
+      ],
+    };
+  },
   async headers() {
     return [
       {

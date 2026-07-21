@@ -34,9 +34,8 @@ export async function signIn(params: SignInParams): Promise<Session> {
 
 export async function signInWithGoogle(): Promise<void> {
   const callbackURL = `${APP_URL}/dashboard`;
-  const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-  const response = await fetch(`${BASE}/api/auth/sign-in/social`, {
+  const response = await fetch("/api/auth/sign-in/social", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
