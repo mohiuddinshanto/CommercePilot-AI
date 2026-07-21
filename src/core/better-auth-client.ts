@@ -18,6 +18,41 @@ function persistSessionCookie(setCookieHeader: string) {
   document.cookie = `better-auth.session_token=${cookieToken}; path=/; max-age=${SESSION_MAX_AGE}; SameSite=Lax; Secure`;
 }
 
+function extractSessionCookie(headers: Headers): void {
+  try {
+    const getSetCookie = headers.getSetCookie;
+    if (typeof getSetCookie === "function") {
+      const setCookies = getSetCookie.call(headers);
+      const sessionCookie = setCookies.find(
+        (c: string) =>
+          c.startsWith("__Secure-better-auth.session_token=") ||
+          c.startsWith("better-auth.session_token=")
+      );
+      if (sessionCookie) {
+        persistSessionCookie(sessionCookie);
+        return;
+      }
+    }
+  } catch {
+    // getSetCookie not available
+  }
+
+  try {
+    const setCookie = (headers as unknown as { get: (k: string) => string | null }).get("set-cookie");
+    if (setCookie) {
+      const cookies = setCookie.split(",").map((c: string) => c.trim());
+      const sessionCookie = cookies.find(
+        (c: string) =>
+          c.startsWith("__Secure-better-auth.session_token=") ||
+          c.startsWith("better-auth.session_token=")
+      );
+      if (sessionCookie) persistSessionCookie(sessionCookie);
+    }
+  } catch {
+    // fallback not available either
+  }
+}
+
 export async function betterAuthClient<T>(
   endpoint: string,
   body?: unknown
@@ -33,17 +68,7 @@ export async function betterAuthClient<T>(
     throw new Error(text || `Auth request failed (${response.status})`);
   }
 
-  try {
-    const setCookies = response.headers.getSetCookie?.() ?? [];
-    const sessionCookie = setCookies.find(
-      (c) =>
-        c.startsWith("__Secure-better-auth.session_token=") ||
-        c.startsWith("better-auth.session_token=")
-    );
-    if (sessionCookie) persistSessionCookie(sessionCookie);
-  } catch {
-    // getSetCookie not available
-  }
+  extractSessionCookie(response.headers);
 
   const raw = await response.json();
 

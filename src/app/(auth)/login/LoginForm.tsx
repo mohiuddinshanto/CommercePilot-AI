@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Store } from "lucide-react";
 import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
+import { getSession } from "@/features/auth/api/auth.api";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -13,6 +16,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const { setSession } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -26,7 +30,16 @@ export default function LoginForm() {
 
     try {
       await signInAction(email, password);
-      window.location.href = "/dashboard";
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const session = await getSession();
+        if (session) {
+          flushSync(() => setSession(session));
+          router.push("/dashboard");
+          return;
+        }
+        await new Promise((r) => setTimeout(r, 150));
+      }
+      throw new Error("Session not available after login");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
