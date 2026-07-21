@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Store } from "lucide-react";
 import { signUpAction, signInWithGoogleAction } from "@/actions/auth.actions";
+import { getSession } from "@/features/auth/api/auth.api";
 import { useAuth } from "@/providers/auth-provider";
 
 export default function RegisterForm() {
@@ -15,7 +17,7 @@ export default function RegisterForm() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const { refresh } = useAuth();
+  const { setSession } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -29,7 +31,8 @@ export default function RegisterForm() {
 
     try {
       await signUpAction(name, email, password);
-      await refresh();
+      const session = await getSession();
+      flushSync(() => setSession(session));
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");

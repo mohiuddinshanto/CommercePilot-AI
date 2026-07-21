@@ -10,6 +10,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAuthenticated: boolean;
   refresh: () => Promise<void>;
+  setSession: (session: Session | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   isAuthenticated: false,
   refresh: async () => {},
+  setSession: () => {},
 });
 
 export function useAuth(): AuthContextType {
@@ -39,6 +41,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const setSession = useCallback((session: Session | null) => {
+    setSessionData(session);
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     getSessionAction()
@@ -54,7 +61,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     isAuthenticated: !!sessionData?.user,
     refresh,
-  }), [sessionData, isLoading, refresh]);
+    setSession,
+  }), [sessionData, isLoading, refresh, setSession]);
 
   return (
     <AuthContext.Provider value={value}>
