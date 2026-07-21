@@ -159,10 +159,10 @@ export default function SubscriptionPage() {
         </>
       )}
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <div className="mb-4 flex items-center justify-between">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-lg font-semibold text-gray-900">Available Plans</h3>
-          <div className="flex items-center gap-2 rounded-lg bg-gray-100 p-1">
+          <div className="flex items-center gap-2 self-start rounded-lg bg-gray-100 p-1">
             <button
               onClick={() => setBillingCycle("monthly")}
               className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${

@@ -34,8 +34,8 @@ export default function SettingsLayout({
         </p>
       </div>
 
-      <div className="flex gap-6">
-        <nav className="flex w-48 flex-shrink-0 flex-col gap-1">
+      <div className="flex flex-col gap-6 md:flex-row">
+        <nav className="flex gap-1 overflow-x-auto md:w-48 md:flex-shrink-0 md:flex-col">
           {SETTINGS_TABS.map((tab) => {
             const isActive = pathname.startsWith(tab.href);
             return (
@@ -43,7 +43,7 @@ export default function SettingsLayout({
                 key={tab.href}
                 href={tab.href}
                 className={cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
                     ? "bg-blue-50 text-blue-700"
                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"

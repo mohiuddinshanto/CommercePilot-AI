@@ -65,14 +65,14 @@ export function SubscriptionCard({ subscription, onUpgrade }: SubscriptionCardPr
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className={`rounded-lg border ${statusConfig.border} ${statusConfig.bg} p-6`}>
-      <div className="flex items-start justify-between">
+    <div className={`rounded-lg border ${statusConfig.border} ${statusConfig.bg} p-4 sm:p-6`}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <CreditCard className="h-5 w-5 text-gray-600" />
             <h3 className="text-lg font-semibold text-gray-900">Current Plan</h3>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-2xl font-bold text-gray-900">
               {PLAN_LABELS[subscription.plan]}
             </span>
@@ -87,14 +87,14 @@ export function SubscriptionCard({ subscription, onUpgrade }: SubscriptionCardPr
         {subscription.plan !== "business" && onUpgrade && (
           <button
             onClick={onUpgrade}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            className="self-start rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
           >
             Upgrade Plan
           </button>
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-4 text-sm">
         <div className="flex items-center gap-2 text-gray-600">
           <Calendar className="h-4 w-4" />
           <span>
