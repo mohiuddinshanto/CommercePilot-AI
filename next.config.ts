@@ -19,9 +19,9 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: blob: ${backendUrl} http://localhost:5000 http://127.0.0.1:5000 https://images.unsplash.com https://commerce-pilot-aibackend.vercel.app`,
+      `img-src 'self' data: blob: ${backendUrl} http://localhost:5000 http://127.0.0.1:5000 https://images.unsplash.com`,
       "font-src 'self' data:",
-      `connect-src 'self' ${backendUrl} ${wsUrl} http://localhost:5000 ws://localhost:5000 http://127.0.0.1:5000 https://images.unsplash.com https://commerce-pilot-aibackend.vercel.app`,
+      `connect-src 'self' ${backendUrl} ${wsUrl} http://localhost:5000 ws://localhost:5000 http://127.0.0.1:5000 https://images.unsplash.com`,
       "frame-ancestors 'none'",
     ].join("; ") + ";",
   },
@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
       { protocol: "http", hostname: "localhost" },
-      { protocol: "https", hostname: "commerce-pilot-aibackend.vercel.app" },
+      { protocol: "https", hostname: new URL(backendUrl).hostname },
     ],
   },
   async headers() {
