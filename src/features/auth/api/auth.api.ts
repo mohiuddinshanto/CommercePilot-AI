@@ -1,5 +1,5 @@
 import { betterAuthClient } from "@/core/better-auth-client";
-import type { Session } from "@/types/user";
+import type { Session, User } from "@/types/user";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -14,8 +14,14 @@ export interface SignInParams {
   password: string;
 }
 
-export async function signUp(params: SignUpParams): Promise<Session> {
-  const result = await betterAuthClient<Session>(
+export interface SignInResponse {
+  redirect: boolean;
+  token: string;
+  user: User;
+}
+
+export async function signUp(params: SignUpParams): Promise<SignInResponse> {
+  const result = await betterAuthClient<SignInResponse>(
     "/api/auth/sign-up/email",
     params
   );
@@ -23,8 +29,8 @@ export async function signUp(params: SignUpParams): Promise<Session> {
   return result;
 }
 
-export async function signIn(params: SignInParams): Promise<Session> {
-  const result = await betterAuthClient<Session>(
+export async function signIn(params: SignInParams): Promise<SignInResponse> {
+  const result = await betterAuthClient<SignInResponse>(
     "/api/auth/sign-in/email",
     params
   );

@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Store } from "lucide-react";
 import { signUpAction, signInWithGoogleAction } from "@/actions/auth.actions";
-import { getSession } from "@/features/auth/api/auth.api";
 import { useAuth } from "@/providers/auth-provider";
+import type { Session } from "@/types/user";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -30,17 +30,21 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
-      await signUpAction(name, email, password);
-      for (let attempt = 0; attempt < 10; attempt++) {
-        const session = await getSession();
-        if (session) {
-          flushSync(() => setSession(session));
-          router.push("/dashboard");
-          return;
-        }
-        await new Promise((r) => setTimeout(r, 150));
-      }
-      throw new Error("Session not available after registration");
+      const result = await signUpAction(name, email, password);
+      const session: Session = {
+        user: result.user,
+        session: {
+          id: result.user.id,
+          token: result.token,
+          userId: result.user.id,
+          expiresAt: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(),
+          createdAt: new Date().toISOString(),
+        },
+      };
+      flushSync(() => setSession(session));
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {
