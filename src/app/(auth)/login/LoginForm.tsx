@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Store } from "lucide-react";
 import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
+import { useAuth } from "@/providers/auth-provider";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const { refresh } = useAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -26,6 +28,7 @@ export default function LoginForm() {
 
     try {
       await signInAction(email, password);
+      await refresh();
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
