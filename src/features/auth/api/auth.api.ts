@@ -80,8 +80,29 @@ export async function signOut(): Promise<void> {
 }
 
 export async function getSession(): Promise<Session | null> {
+  const token = getStoredToken();
+
+  // Strategy 1: Call backend directly with Bearer token (bypasses Next.js route handler)
+  if (token) {
+    try {
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const response = await fetch(`${backendUrl}/api/auth/get-session`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const raw: unknown = await response.json();
+        const unwrapped = (raw as Record<string, unknown>)?.data ?? raw;
+        if (unwrapped && typeof unwrapped === "object" && "user" in (unwrapped as Record<string, unknown>)) {
+          return unwrapped as Session;
+        }
+      }
+    } catch {
+      // Fall through to strategy 2
+    }
+  }
+
+  // Strategy 2: Route handler (uses cookies + Authorization header)
   try {
-    const token = getStoredToken();
     const headers: Record<string, string> = {};
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
