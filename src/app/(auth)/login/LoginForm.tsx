@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Store } from "lucide-react";
 import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
@@ -16,7 +15,6 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const router = useRouter();
   const { setSession } = useAuth();
 
   useEffect(() => {
@@ -45,7 +43,7 @@ export default function LoginForm() {
       };
       flushSync(() => setSession(session));
       if (result.token) setStoredToken(result.token);
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
