@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Store } from "lucide-react";
 import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
 import { useAuth } from "@/providers/auth-provider";
 import type { Session } from "@/types/user";
 export default function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,7 +42,7 @@ export default function LoginForm() {
         },
       };
       flushSync(() => setSession(session));
-      window.location.href = "/dashboard";
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

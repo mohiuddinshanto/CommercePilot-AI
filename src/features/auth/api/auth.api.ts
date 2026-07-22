@@ -80,18 +80,24 @@ export async function signOut(): Promise<void> {
 }
 
 export async function getSession(): Promise<Session | null> {
-  try {
-    const token = getStoredToken();
-    const headers: Record<string, string> = {};
-    if (token) headers["X-Auth-Token"] = token;
-    const response = await fetch("/api/auth/session", { headers });
-    if (!response.ok) {
-      if (response.status === 401) clearStoredToken();
-      return null;
+  const token = getStoredToken();
+  const headers: Record<string, string> = {};
+  if (token) headers["X-Auth-Token"] = token;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await fetch("/api/auth/session", { headers });
+      if (!response.ok) {
+        if (response.status === 401) { clearStoredToken(); return null; }
+        return null;
+      }
+      const data = await response.json();
+      if (data) return data as Session;
+    } catch {
+      // retry
     }
-    const data = await response.json();
-    return data ?? null;
-  } catch {
-    return null;
+    if (attempt < 2) await new Promise((r) => setTimeout(r, 200));
   }
+
+  return null;
 }
