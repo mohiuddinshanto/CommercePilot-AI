@@ -1,3 +1,5 @@
+import { setStoredToken, clearStoredToken } from "@/lib/token";
+
 const BASE_URL = "";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
 
@@ -11,11 +13,11 @@ function persistSessionCookie(setCookieHeader: string) {
       : setCookieHeader.substring(eqIdx + 1);
 
   if (!cookieToken) {
-    document.cookie = `better-auth.session_token=; path=/; max-age=0; SameSite=Lax; Secure`;
+    clearStoredToken();
     return;
   }
 
-  document.cookie = `better-auth.session_token=${cookieToken}; path=/; max-age=${SESSION_MAX_AGE}; SameSite=Lax; Secure`;
+  setStoredToken(cookieToken);
 }
 
 function extractSessionCookie(headers: Headers): void {

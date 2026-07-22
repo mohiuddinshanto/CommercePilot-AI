@@ -1,4 +1,5 @@
 import type { ApiResponse } from "@/types/api";
+import { getStoredToken, clearStoredToken } from "@/lib/token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -17,8 +18,9 @@ export async function apiClient<T>(
     ...(options.headers as Record<string, string>),
   };
 
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
+  const authToken = token || getStoredToken();
+  if (authToken) {
+    headers["Authorization"] = `Bearer ${authToken}`;
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -28,6 +30,7 @@ export async function apiClient<T>(
   });
 
   if (response.status === 401) {
+    clearStoredToken();
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }

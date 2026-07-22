@@ -8,6 +8,7 @@ import type {
   GenerateContentRequest,
   GenerateContentResponse,
 } from "@/types/ai";
+import { getStoredToken } from "@/lib/token";
 
 export async function sendChatMessage(data: ChatRequest): Promise<ChatResponse> {
   return post<ChatResponse>(`${API_ENDPOINTS.V1.AI}/chat`, data);
@@ -36,7 +37,10 @@ export async function deleteConversation(id: string): Promise<void> {
 
 export async function sendChatMessageStream(data: ChatRequest, onToken: (token: string) => void, onDone: (conversationId: string) => void): Promise<void> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-  const response = await fetch(`${baseUrl}${API_ENDPOINTS.V1.AI}/chat/stream`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+  const token = getStoredToken();
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+  const response = await fetch(`${baseUrl}${API_ENDPOINTS.V1.AI}/chat/stream`, { method: "POST", credentials: "include", headers, body: JSON.stringify(data) });
   if (!response.ok || !response.body) throw new Error("Unable to start AI stream.");
   const reader = response.body.getReader(); const decoder = new TextDecoder(); let pending = "";
   while (true) { const { done, value } = await reader.read(); pending += decoder.decode(value || new Uint8Array(), { stream: !done }); const events = pending.split("\n\n"); pending = events.pop() || ""; for (const event of events) { const raw = event.split("\n").find((line) => line.startsWith("data: "))?.slice(6); if (!raw) continue; const payload = JSON.parse(raw) as { type: string; content?: string; conversationId?: string; message?: string }; if (payload.type === "token") onToken(payload.content || ""); if (payload.type === "done") onDone(payload.conversationId || ""); if (payload.type === "error") throw new Error(payload.message || "AI stream failed."); } if (done) break; }

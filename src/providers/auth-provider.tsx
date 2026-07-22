@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import type { User, Session } from "@/types/user";
 import { getSessionAction } from "@/actions/auth.actions";
+import { setStoredToken, clearStoredToken } from "@/lib/token";
 
 interface AuthContextType {
   user: User | null;
@@ -44,6 +45,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const setSession = useCallback((session: Session | null) => {
     setSessionData(session);
     setIsLoading(false);
+    if (session?.session?.token) {
+      setStoredToken(session.session.token);
+    } else if (session === null) {
+      clearStoredToken();
+    }
   }, []);
 
   useEffect(() => {

@@ -1,5 +1,6 @@
 import { betterAuthClient } from "@/core/better-auth-client";
 import type { Session, User } from "@/types/user";
+import { getStoredToken, clearStoredToken } from "@/lib/token";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
@@ -74,13 +75,22 @@ export async function signInWithGoogle(): Promise<void> {
 }
 
 export async function signOut(): Promise<void> {
+  clearStoredToken();
   await betterAuthClient("/api/auth/sign-out");
 }
 
 export async function getSession(): Promise<Session | null> {
   try {
-    const response = await fetch("/api/auth/session");
-    if (!response.ok) return null;
+    const token = getStoredToken();
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    const response = await fetch("/api/auth/session", { headers });
+    if (!response.ok) {
+      if (response.status === 401) clearStoredToken();
+      return null;
+    }
     const data = await response.json();
     return data ?? null;
   } catch {
