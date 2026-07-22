@@ -7,8 +7,6 @@ import { Store } from "lucide-react";
 import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
 import { useAuth } from "@/providers/auth-provider";
 import type { Session } from "@/types/user";
-import { setStoredToken } from "@/lib/token";
-
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,7 +40,6 @@ export default function LoginForm() {
         },
       };
       flushSync(() => setSession(session));
-      if (result.token) setStoredToken(result.token);
       window.location.href = "/dashboard";
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

@@ -3,11 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
   const sessionToken =
-    authHeader?.replace("Bearer ", "") ||
+    request.headers.get("x-auth-token") ||
     request.cookies.get("__Secure-better-auth.session_token")?.value ||
-    request.cookies.get("better-auth.session_token")?.value;
+    request.cookies.get("better-auth.session_token")?.value ||
+    request.headers.get("authorization")?.replace("Bearer ", "");
 
   if (!sessionToken) {
     return NextResponse.json(null);
