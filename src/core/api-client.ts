@@ -1,7 +1,7 @@
 import type { ApiResponse } from "@/types/api";
 import { getStoredToken, clearStoredToken } from "@/lib/token";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const BASE_URL = "";
 
 interface RequestOptions extends RequestInit {
   token?: string;

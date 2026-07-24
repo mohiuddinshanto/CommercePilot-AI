@@ -36,7 +36,7 @@ export async function deleteConversation(id: string): Promise<void> {
 }
 
 export async function sendChatMessageStream(data: ChatRequest, onToken: (token: string) => void, onDone: (conversationId: string) => void): Promise<void> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const baseUrl = "";
   const token = getStoredToken();
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
