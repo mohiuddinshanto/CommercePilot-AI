@@ -63,6 +63,7 @@ export async function betterAuthClient<T>(
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
+    credentials: "include",
   });
 
   if (!response.ok) {
@@ -85,7 +86,9 @@ export async function betterAuthClient<T>(
 }
 
 export async function betterAuthGet<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`${BASE_URL}${endpoint}`);
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
+    credentials: "include",
+  });
 
   if (!response.ok) {
     const text = await response.text().catch(() => "");
