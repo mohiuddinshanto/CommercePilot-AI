@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 import type { Product, CreateProductInput, UpdateProductInput } from "@/types/product";
 
 interface ProductFormProps {
@@ -10,10 +11,24 @@ interface ProductFormProps {
   isLoading?: boolean;
 }
 
+/** Generate a SKU from product name: "Premium Panjabi" → "PREMIUM-PANJABI-A3X" */
+function generateSku(name: string): string {
+  const base = name
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9\s]/g, "")
+    .split(/\s+/)
+    .slice(0, 3)
+    .join("-");
+  const suffix = Math.random().toString(36).substring(2, 5).toUpperCase();
+  return `${base}-${suffix}`;
+}
+
 export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductFormProps) {
   const [name, setName] = useState(product?.name || "");
   const [sku, setSku] = useState(product?.sku || "");
-  const [barcode, setBarcode] = useState(product?.barcode || "");
+  const [skuTouched, setSkuTouched] = useState(!!product?.sku);
+  const [categoryId, setCategoryId] = useState(product?.categoryId || "");
   const [shortDescription, setShortDescription] = useState(product?.shortDescription || "");
   const [description, setDescription] = useState(product?.description || "");
   const [costPrice, setCostPrice] = useState(product?.costPrice?.toString() || "");
@@ -27,13 +42,26 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
   const [availableFrom, setAvailableFrom] = useState(product?.availableFrom?.slice(0, 10) || "");
   const [priority, setPriority] = useState(product?.priority || "medium");
 
+  // Live SKU preview: auto-generate when name changes and user hasn't manually set SKU
+  useEffect(() => {
+    if (!skuTouched && name) {
+      setSku(generateSku(name));
+    }
+  }, [name, skuTouched]);
+
+  // Fetch all active categories for dropdown
+  const { data: categoriesData } = useCategories({ limit: 100, status: "active" });
+  const categories = categoriesData?.items || [];
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    const finalSku = sku || generateSku(name);
+
     const data: CreateProductInput | UpdateProductInput = {
       name,
-      sku,
-      barcode: barcode || undefined,
+      sku: finalSku,
+      categoryId: categoryId || undefined,
       shortDescription: shortDescription || undefined,
       description: description || undefined,
       costPrice: Number(costPrice),
@@ -53,6 +81,7 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Row 1: Name + Status */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -65,31 +94,6 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="Premium Panjabi"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            SKU <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={sku}
-            onChange={(e) => setSku(e.target.value)}
-            required
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="PANJABI-001"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Barcode</label>
-          <input
-            type="text"
-            value={barcode}
-            onChange={(e) => setBarcode(e.target.value)}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="123456789"
           />
         </div>
 
@@ -107,6 +111,61 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         </div>
       </div>
 
+      {/* Row 2: SKU (auto) + Category */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            SKU{" "}
+            {!skuTouched && name && (
+              <span className="ml-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-normal text-green-700">
+                Auto-generated
+              </span>
+            )}
+          </label>
+          <input
+            type="text"
+            value={sku}
+            onChange={(e) => {
+              setSku(e.target.value);
+              setSkuTouched(true);
+            }}
+            onBlur={() => {
+              if (!sku && name) {
+                setSku(generateSku(name));
+                setSkuTouched(false);
+              }
+            }}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="নিজে না দিলে নামের সাথে মিলিয়ে auto হবে"
+          />
+          <p className="mt-1 text-xs text-gray-400">
+            ফাঁকা রাখলে পণ্যের নাম থেকে SKU তৈরি হবে
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Category</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="">— Select Category —</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+          {categories.length === 0 && (
+            <p className="mt-1 text-xs text-amber-600">
+              কোনো category নেই — আগে Categories-এ যোগ করুন
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Descriptions */}
       <div>
         <label className="block text-sm font-medium text-gray-700">Short Description</label>
         <input
@@ -130,50 +189,60 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         />
       </div>
 
+      {/* Prices + Stock */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Cost Price <span className="text-red-500">*</span>
           </label>
-          <input
-            type="number"
-            value={costPrice}
-            onChange={(e) => setCostPrice(e.target.value)}
-            required
-            min="0"
-            step="0.01"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="1500"
-          />
+          <div className="relative mt-1">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">৳</span>
+            <input
+              type="number"
+              value={costPrice}
+              onChange={(e) => setCostPrice(e.target.value)}
+              required
+              min="0"
+              step="0.01"
+              className="block w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="1500"
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Selling Price <span className="text-red-500">*</span>
           </label>
-          <input
-            type="number"
-            value={sellingPrice}
-            onChange={(e) => setSellingPrice(e.target.value)}
-            required
-            min="0"
-            step="0.01"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="2200"
-          />
+          <div className="relative mt-1">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">৳</span>
+            <input
+              type="number"
+              value={sellingPrice}
+              onChange={(e) => setSellingPrice(e.target.value)}
+              required
+              min="0"
+              step="0.01"
+              className="block w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="2200"
+            />
+          </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">Discount Price</label>
-          <input
-            type="number"
-            value={discountPrice}
-            onChange={(e) => setDiscountPrice(e.target.value)}
-            min="0"
-            step="0.01"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="1999"
-          />
+          <div className="relative mt-1">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">৳</span>
+            <input
+              type="number"
+              value={discountPrice}
+              onChange={(e) => setDiscountPrice(e.target.value)}
+              min="0"
+              step="0.01"
+              className="block w-full rounded-lg border border-gray-300 pl-7 pr-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              placeholder="1999"
+            />
+          </div>
         </div>
 
         <div>
@@ -192,7 +261,7 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Low Stock Limit</label>
+          <label className="block text-sm font-medium text-gray-700">Low Stock Alert</label>
           <input
             type="number"
             value={lowStockLimit}
@@ -216,20 +285,41 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         </div>
       </div>
 
+      {/* Image + Date + Priority */}
       <div className="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 sm:grid-cols-3">
         <div>
           <label className="block text-sm font-medium text-gray-700">Image URL</label>
-          <input type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="https://example.com/product.jpg" />
+          <input
+            type="url"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="https://example.com/product.jpg"
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Available from</label>
-          <input type="date" value={availableFrom} onChange={(e) => setAvailableFrom(e.target.value)} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+          <input
+            type="date"
+            value={availableFrom}
+            onChange={(e) => setAvailableFrom(e.target.value)}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Priority</label>
-          <select value={priority} onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")} className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select>
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}
+            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
         </div>
       </div>
+
       <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-4">
         <button
           type="button"
@@ -249,4 +339,3 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
     </form>
   );
 }
-
