@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useReturnList, useCreateReturn, useDeleteReturn, useReturnsSummary } from "@/features/returns/hooks/useReturns";
 import { ReturnTable, ReturnTableSkeleton } from "@/features/returns/components/ReturnTable";
 import { ReturnSummaryCard } from "@/features/returns/components/ReturnSummary";
@@ -15,25 +15,28 @@ import toast from "react-hot-toast";
 export default function ReturnsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [invoiceSearch, setInvoiceSearch] = useState("");
-  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  useEffect(() => {
-    clearTimeout(searchTimer.current);
-    searchTimer.current = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1);
-    }, 400);
-    return () => clearTimeout(searchTimer.current);
-  }, [search]);
-
-  const { data, isLoading, error } = useReturnList({ page, limit: 10, search: debouncedSearch || undefined });
+  const { data, isLoading, error } = useReturnList({ page, limit: 10 });
   const { data: summary } = useReturnsSummary();
   const createReturn = useCreateReturn();
   const deleteReturn = useDeleteReturn();
   const { data: saleData, isLoading: isSearching } = useSaleByInvoice(invoiceSearch);
+
+  const filteredItems = useMemo(() => {
+    if (!data?.items) return [];
+    if (!search.trim()) return data.items;
+    const q = search.toLowerCase();
+    return data.items.filter(
+      (r) =>
+        r.invoiceNumber.toLowerCase().includes(q) ||
+        r.customerName.toLowerCase().includes(q) ||
+        (r.customerPhone && r.customerPhone.includes(q))
+    );
+  }, [data?.items, search]);
+
+  const totalPages = data?.totalPages || 1;
 
   const handleCreate = async (input: CreateReturnInput) => {
     try {
@@ -63,9 +66,6 @@ export default function ReturnsPage() {
   if (error) {
     return <ErrorPage title="Failed to load returns" message="Could not fetch returns." />;
   }
-
-  const items = data?.items || [];
-  const totalPages = data?.totalPages || 1;
 
   return (
     <div className="space-y-6">
@@ -107,7 +107,7 @@ export default function ReturnsPage() {
         <ReturnTableSkeleton />
       ) : (
         <ReturnTable
-          items={items}
+          items={filteredItems}
           onDelete={handleDelete}
           page={page}
           totalPages={totalPages}
