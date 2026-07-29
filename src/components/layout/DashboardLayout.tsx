@@ -23,7 +23,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       !isLoading &&
       isAuthenticated &&
       user &&
-      user.role !== "super_admin" &&
+      user.role === "owner" &&
       !user.storeId &&
       !redirectedRef.current
     ) {

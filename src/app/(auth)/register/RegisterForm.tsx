@@ -45,7 +45,17 @@ export default function RegisterForm() {
         },
       };
       flushSync(() => setSession(session));
-      router.push("/onboarding");
+
+      // If there's a pending staff invitation, redirect to accept it instead of onboarding
+      const pendingToken = typeof window !== "undefined"
+        ? sessionStorage.getItem("pendingInviteToken")
+        : null;
+      if (pendingToken) {
+        sessionStorage.removeItem("pendingInviteToken");
+        router.push(`/accept-invite?token=${encodeURIComponent(pendingToken)}`);
+      } else {
+        router.push("/onboarding");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {

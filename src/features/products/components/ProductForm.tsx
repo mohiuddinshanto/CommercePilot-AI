@@ -189,7 +189,7 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
         />
       </div>
 
-      {/* Prices + Stock */}
+      {/* Prices */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -244,45 +244,19 @@ export function ProductForm({ product, onSubmit, onCancel, isLoading }: ProductF
             />
           </div>
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Stock <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            required
-            min="0"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="120"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Low Stock Alert</label>
-          <input
-            type="number"
-            value={lowStockLimit}
-            onChange={(e) => setLowStockLimit(e.target.value)}
-            min="0"
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="10"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Tags</label>
-          <input
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="panjabi, premium, cotton"
-          />
-          <p className="mt-1 text-xs text-gray-400">Comma separated</p>
-        </div>
+      {/* Tags */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700">Tags</label>
+        <input
+          type="text"
+          value={tags}
+          onChange={(e) => setTags(e.target.value)}
+          className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="panjabi, premium, cotton"
+        />
+        <p className="mt-1 text-xs text-gray-400">Comma separated</p>
       </div>
 
       {/* Image + Date + Priority */}
