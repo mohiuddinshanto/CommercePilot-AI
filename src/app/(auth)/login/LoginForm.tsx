@@ -42,7 +42,15 @@ export default function LoginForm() {
         },
       };
       flushSync(() => setSession(session));
-      router.push("/dashboard");
+
+      // Check if there's a pending staff invite to accept
+      const pendingToken = sessionStorage.getItem("pendingInviteToken");
+      if (pendingToken) {
+        sessionStorage.removeItem("pendingInviteToken");
+        router.push(`/accept-invite?token=${encodeURIComponent(pendingToken)}`);
+      } else {
+        router.push("/dashboard");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

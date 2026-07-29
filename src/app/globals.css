@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 :root {
   --background: #ffffff;
@@ -26,4 +26,10 @@ body {
 }
 
 html, body { overflow-x: hidden; }
+
+@keyframes progress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
 
