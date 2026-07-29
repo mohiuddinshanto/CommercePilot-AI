@@ -40,7 +40,8 @@ export async function signIn(params: SignInParams): Promise<SignInResponse> {
 }
 
 export async function signInWithGoogle(): Promise<void> {
-  const callbackURL = `${APP_URL}/dashboard`;
+  const origin = typeof window !== "undefined" ? window.location.origin : APP_URL;
+  const callbackURL = `${origin}/dashboard`;
 
   const response = await fetch("/api/auth/sign-in/social", {
     method: "POST",
