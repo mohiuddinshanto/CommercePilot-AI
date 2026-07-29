@@ -12,7 +12,7 @@ export default function AcceptInviteClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token") ?? "";
-  const { session } = useAuth();
+  const { session, refresh } = useAuth();
   const acceptInvitation = useAcceptInvitation();
 
   const [state, setState] = useState<PageState>("checking");
@@ -39,12 +39,13 @@ export default function AcceptInviteClient() {
     // User is logged in — accept automatically
     setState("accepting");
     acceptInvitation.mutate(token, {
-      onSuccess: (staff) => {
+      onSuccess: async (staff) => {
         setStaffRole(
           (staff.role ?? "staff").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
         );
         setStoreName("your store");
         setState("success");
+        await refresh();
         // Redirect to dashboard after short delay
         setTimeout(() => router.push("/dashboard"), 2800);
       },
