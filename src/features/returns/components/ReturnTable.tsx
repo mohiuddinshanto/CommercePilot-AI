@@ -73,6 +73,9 @@ export function ReturnTable({
                 </td>
                 <td className="px-4 py-3">
                   <p className="text-gray-900">{item.customerName}</p>
+                  {item.customerPhone && (
+                    <p className="text-xs text-gray-400">{item.customerPhone}</p>
+                  )}
                 </td>
                 <td className="px-4 py-3 text-gray-600">{item.items.length}</td>
                 <td className="px-4 py-3 font-medium text-red-600">

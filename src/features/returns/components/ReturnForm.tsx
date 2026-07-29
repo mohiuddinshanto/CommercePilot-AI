@@ -130,7 +130,7 @@ export function ReturnForm({
       {sale && (
         <div className="rounded-lg border border-green-200 bg-green-50 p-3">
           <p className="text-sm font-medium text-green-800">
-            Sale found: {sale.invoiceNumber} - {sale.customerName} ({sale.items.length} items, Total: {formatCurrency(sale.grandTotal)})
+            Sale found: {sale.invoiceNumber} - {sale.customerName}{sale.customerPhone ? ` (${sale.customerPhone})` : ""} ({sale.items.length} items, Total: {formatCurrency(sale.grandTotal)})
           </p>
           <div className="mt-2 space-y-1">
             {sale.items.map((item, index) => (

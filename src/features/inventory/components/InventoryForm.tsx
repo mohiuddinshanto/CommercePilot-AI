@@ -104,7 +104,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                   if (!e.target.value) handleClearProduct();
                 }}
                 onFocus={() => setIsDropdownOpen(true)}
-                placeholder="পণ্যের নাম দিয়ে সার্চ করুন..."
+                placeholder="Search product by name..."
                 className="flex-1 bg-transparent outline-none placeholder-gray-400"
               />
               {selectedProduct ? (
@@ -126,8 +126,8 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                 {products.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-sm text-gray-400">
                     <Package className="h-8 w-8 mb-2 text-gray-300" />
-                    <p>কোনো পণ্য পাওয়া যায়নি</p>
-                    <p className="text-xs mt-1">অন্য নামে সার্চ করুন</p>
+                    <p>No products found</p>
+                    <p className="text-xs mt-1">Try a different search term</p>
                   </div>
                 ) : (
                   products.map((product) => (
@@ -240,7 +240,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
         </div>
         {selectedProduct && (
           <p className="mt-1 text-xs text-gray-400">
-            পণ্যের ক্রয়মূল্য: ৳{selectedProduct.costPrice?.toLocaleString()} (পরিবর্তন করতে পারবেন)
+            Product cost price: ৳{selectedProduct.costPrice?.toLocaleString()} (you can change it)
           </p>
         )}
       </div>

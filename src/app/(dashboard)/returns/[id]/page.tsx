@@ -142,7 +142,7 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-500">Customer</dt>
-                <dd className="text-sm text-gray-900">{returnDoc.customerName}</dd>
+                <dd className="text-sm text-gray-900 text-right">{returnDoc.customerName}{returnDoc.customerPhone ? <span className="block text-xs text-gray-400">{returnDoc.customerPhone}</span> : null}</dd>
               </div>
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-500">Invoice #</dt>

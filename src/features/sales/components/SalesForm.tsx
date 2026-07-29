@@ -49,7 +49,8 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
     status: "active",
   });
 
-  const products = productsData?.items || [];
+  const cartedIds = new Set(items.map((i) => i.productId));
+  const products = (productsData?.items || []).filter((p) => !cartedIds.has(p._id));
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -173,7 +174,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-3" ref={dropdownRef}>
         <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-blue-700">
           <Package className="h-4 w-4" />
-          পণ্য খুঁজুন ও যোগ করুন
+          Search & Add Products
         </p>
 
         {/* Search + Price Filter Row */}
@@ -189,7 +190,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                 setIsDropdownOpen(true);
               }}
               onFocus={() => setIsDropdownOpen(true)}
-              placeholder="পণ্যের নাম লিখুন..."
+              placeholder="Search product by name..."
               className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {searchQuery && (
@@ -235,16 +236,15 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             {isSearching ? (
               <div className="flex items-center justify-center py-6 text-sm text-gray-400">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mr-2" />
-                খুঁজছে...
+                Searching...
               </div>
             ) : products.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-center text-sm text-gray-400">
                 <Package className="h-7 w-7 mb-1 text-gray-300" />
-                পণ্য পাওয়া যায়নি
+                No products found
               </div>
             ) : (
               products.map((product) => {
-                const inCart = items.find((i) => i.productId === product._id);
                 const price = product.discountPrice || product.sellingPrice;
                 return (
                   <button
@@ -280,15 +280,9 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                       <span className="text-sm font-bold text-blue-700">
                         ৳{price?.toLocaleString()}
                       </span>
-                      {inCart ? (
-                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                          Cart-এ আছে ({inCart.quantity})
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 flex items-center gap-0.5">
-                          <Plus className="h-3 w-3" /> যোগ করুন
-                        </span>
-                      )}
+                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 flex items-center gap-0.5">
+                        <Plus className="h-3 w-3" /> Add
+                      </span>
                     </div>
                   </button>
                 );
@@ -299,8 +293,8 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
 
         <p className="mt-1.5 text-xs text-blue-600/70">
           {items.length > 0
-            ? `${items.length}টি পণ্য যোগ হয়েছে cart-এ`
-            : "পণ্য সিলেক্ট করলে নিচে cart-এ যোগ হবে"}
+            ? `${items.length} product(s) in cart`
+            : "Select products to add to cart"}
         </p>
       </div>
 

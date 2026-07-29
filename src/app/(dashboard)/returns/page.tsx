@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useReturnList, useCreateReturn, useDeleteReturn, useReturnsSummary } from "@/features/returns/hooks/useReturns";
 import { ReturnTable, ReturnTableSkeleton } from "@/features/returns/components/ReturnTable";
 import { ReturnSummaryCard } from "@/features/returns/components/ReturnSummary";
@@ -8,16 +8,28 @@ import { ReturnForm } from "@/features/returns/components/ReturnForm";
 import { ReturnModal } from "@/features/returns/components/ReturnModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { useSaleByInvoice } from "@/features/sales/hooks/useSales";
-import { Plus, RotateCcw } from "lucide-react";
+import { Plus, RotateCcw, Search } from "lucide-react";
 import type { CreateReturnInput } from "@/types/return";
 import toast from "react-hot-toast";
 
 export default function ReturnsPage() {
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [invoiceSearch, setInvoiceSearch] = useState("");
+  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  const { data, isLoading, error } = useReturnList({ page, limit: 10 });
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    searchTimer.current = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 400);
+    return () => clearTimeout(searchTimer.current);
+  }, [search]);
+
+  const { data, isLoading, error } = useReturnList({ page, limit: 10, search: debouncedSearch || undefined });
   const { data: summary } = useReturnsSummary();
   const createReturn = useCreateReturn();
   const deleteReturn = useDeleteReturn();
@@ -77,6 +89,19 @@ export default function ReturnsPage() {
       </div>
 
       {summary && <ReturnSummaryCard summary={summary} />}
+
+      <div className="flex items-center gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by invoice, customer name, or phone..."
+            className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+      </div>
 
       {isLoading ? (
         <ReturnTableSkeleton />

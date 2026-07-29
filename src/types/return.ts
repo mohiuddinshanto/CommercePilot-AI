@@ -13,6 +13,7 @@ export interface Return {
   invoiceNumber: string;
   customerId: string | null;
   customerName: string;
+  customerPhone?: string | null;
   items: ReturnItem[];
   subtotal: number;
   refundAmount: number;
