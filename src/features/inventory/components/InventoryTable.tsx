@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { formatDateTime } from "@/lib/utils";
 import { Package, Eye, Pencil, Trash2, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Inventory } from "@/types/inventory";
@@ -41,7 +42,7 @@ export function InventoryTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Product ID</th>
+              <th className="px-4 py-3 font-medium text-gray-600">Product</th>
               <th className="px-4 py-3 font-medium text-gray-600">Current Stock</th>
               <th className="px-4 py-3 font-medium text-gray-600">Available</th>
               <th className="px-4 py-3 font-medium text-gray-600">Low Stock Limit</th>
@@ -60,9 +61,32 @@ export function InventoryTable({
                   className="border-b border-gray-100 hover:bg-gray-50"
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-900 font-mono text-xs">
-                      {item.productId.slice(0, 8)}...
-                    </p>
+                    <div className="flex items-center gap-3">
+                      {item.productImage ? (
+                        <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+                          <Image
+                            src={item.productImage}
+                            alt={item.productName ?? "Product"}
+                            fill
+                            className="object-cover"
+                            sizes="40px"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-gray-100">
+                          <Package className="h-5 w-5 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="min-w-0">
+                        <p className="truncate font-medium text-gray-900 max-w-[160px]">
+                          {item.productName ?? (
+                            <span className="font-mono text-xs text-gray-400">
+                              {item.productId.slice(0, 8)}…
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
@@ -149,7 +173,7 @@ export function InventoryTableSkeleton() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Product ID</th>
+              <th className="px-4 py-3 font-medium text-gray-600">Product</th>
               <th className="px-4 py-3 font-medium text-gray-600">Current Stock</th>
               <th className="px-4 py-3 font-medium text-gray-600">Available</th>
               <th className="px-4 py-3 font-medium text-gray-600">Low Stock Limit</th>
@@ -163,7 +187,10 @@ export function InventoryTableSkeleton() {
             {Array.from({ length: 5 }).map((_, i) => (
               <tr key={i} className="border-b border-gray-100">
                 <td className="px-4 py-3">
-                  <div className="h-4 w-16 animate-pulse rounded bg-gray-200" />
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 animate-pulse rounded-lg bg-gray-200 flex-shrink-0" />
+                    <div className="h-4 w-32 animate-pulse rounded bg-gray-200" />
+                  </div>
                 </td>
                 <td className="px-4 py-3">
                   <div className="h-4 w-10 animate-pulse rounded bg-gray-200" />

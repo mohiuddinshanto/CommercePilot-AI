@@ -2,6 +2,8 @@ export interface Inventory {
   _id: string;
   storeId: string;
   productId: string;
+  productName?: string | null;
+  productImage?: string | null;
   currentStock: number;
   lowStockLimit: number;
   reservedStock: number;
