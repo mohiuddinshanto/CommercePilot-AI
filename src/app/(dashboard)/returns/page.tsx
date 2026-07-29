@@ -18,7 +18,7 @@ export default function ReturnsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [invoiceSearch, setInvoiceSearch] = useState("");
-  const searchTimer = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     clearTimeout(searchTimer.current);
