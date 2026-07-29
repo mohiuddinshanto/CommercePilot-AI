@@ -45,7 +45,7 @@ export default function RegisterForm() {
         },
       };
       flushSync(() => setSession(session));
-      router.push("/dashboard");
+      router.push("/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally {

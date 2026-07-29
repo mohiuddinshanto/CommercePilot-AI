@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { FullPageLoader } from "@/components/common/Loader";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const redirectedRef = useRef(false);
 
@@ -18,7 +18,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       const timer = setTimeout(() => router.push("/login"));
       return () => clearTimeout(timer);
     }
-  }, [isLoading, isAuthenticated, router]);
+
+    if (
+      !isLoading &&
+      isAuthenticated &&
+      user &&
+      user.role !== "super_admin" &&
+      !user.storeId &&
+      !redirectedRef.current
+    ) {
+      redirectedRef.current = true;
+      const timer = setTimeout(() => router.push("/onboarding"));
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading, isAuthenticated, user, router]);
 
   if (isLoading) {
     return <FullPageLoader />;
