@@ -38,8 +38,8 @@ export function ReturnTable({
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
-        <RotateCcw className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No returns found</p>
+        <RotateCcw className="h-12 w-12 text-gray-400" />
+        <p className="text-sm text-gray-600">No returns found</p>
       </div>
     );
   }
@@ -74,14 +74,14 @@ export function ReturnTable({
                 <td className="px-4 py-3">
                   <p className="text-gray-900">{item.customerName}</p>
                   {item.customerPhone && (
-                    <p className="text-xs text-gray-400">{item.customerPhone}</p>
+                    <p className="text-xs text-gray-500">{item.customerPhone}</p>
                   )}
                 </td>
-                <td className="px-4 py-3 text-gray-600">{item.items.length}</td>
+                <td className="px-4 py-3 text-gray-700">{item.items.length}</td>
                 <td className="px-4 py-3 font-medium text-red-600">
                   {formatCurrency(item.refundAmount)}
                 </td>
-                <td className="px-4 py-3 text-gray-600 max-w-[150px] truncate">
+                <td className="px-4 py-3 text-gray-700 max-w-[150px] truncate">
                   {item.reason || "-"}
                 </td>
                 <td className="px-4 py-3">
@@ -91,7 +91,7 @@ export function ReturnTable({
                     {item.status}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-gray-600">
+                <td className="px-4 py-3 text-gray-700">
                   {formatDateTime(item.createdAt)}
                 </td>
                 <td className="px-4 py-3">
