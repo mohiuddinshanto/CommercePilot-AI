@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Minus, Trash2, Search } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Plus, Minus, Trash2, Search, X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { CreateReturnInput } from "@/types/return";
 import type { Sale } from "@/types/sale";
@@ -38,13 +38,19 @@ export function ReturnForm({
   const [items, setItems] = useState<ReturnItemData[]>([]);
   const [reason, setReason] = useState("");
   const [notes, setNotes] = useState("");
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (invoiceNumber.trim()) {
-      onSearchInvoice(invoiceNumber.trim());
+  useEffect(() => {
+    clearTimeout(searchTimer.current);
+    if (!invoiceNumber.trim()) {
+      onSearchInvoice("");
+      return;
     }
-  };
+    searchTimer.current = setTimeout(() => {
+      onSearchInvoice(invoiceNumber.trim());
+    }, 500);
+    return () => clearTimeout(searchTimer.current);
+  }, [invoiceNumber, onSearchInvoice]);
 
   const addItem = (item: ReturnItemData) => {
     const existing = items.find(
@@ -108,23 +114,28 @@ export function ReturnForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-gray-700">Invoice Number *</label>
-        <form onSubmit={handleSearch} className="mt-1 flex gap-2">
+        <div className="relative mt-1">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={invoiceNumber}
             onChange={(e) => setInvoiceNumber(e.target.value)}
-            className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Enter invoice number (e.g., INV-20260719-0001)"
+            className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            placeholder="Type invoice number to search..."
           />
-          <button
-            type="submit"
-            disabled={isSearching || !invoiceNumber.trim()}
-            className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            <Search className="h-4 w-4" />
-            {isSearching ? "Searching..." : "Search"}
-          </button>
-        </form>
+          {invoiceNumber && (
+            <button
+              type="button"
+              onClick={() => { setInvoiceNumber(""); setItems([]); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+        {isSearching && (
+          <p className="mt-1 text-xs text-blue-600">Searching invoice...</p>
+        )}
       </div>
 
       {sale && (
