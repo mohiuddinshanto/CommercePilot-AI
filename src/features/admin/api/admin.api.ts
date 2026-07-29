@@ -83,3 +83,18 @@ export async function getAdminActivityLogs(
     `${API_ENDPOINTS.V1.ADMIN}/activity${query}`
   );
 }
+
+export async function getAdminPlanRequests(
+  params: AdminQueryParams = {}
+): Promise<AdminPaginatedResult<any>> {
+  const query = buildQueryString(params);
+  return get<AdminPaginatedResult<any>>(`${API_ENDPOINTS.V1.ADMIN}/plan-requests${query}`);
+}
+
+export async function approveAdminPlanRequest(id: string): Promise<void> {
+  return patch<void>(`${API_ENDPOINTS.V1.ADMIN}/plan-requests/${id}/approve`, {});
+}
+
+export async function rejectAdminPlanRequest(id: string): Promise<void> {
+  return patch<void>(`${API_ENDPOINTS.V1.ADMIN}/plan-requests/${id}/reject`, {});
+}

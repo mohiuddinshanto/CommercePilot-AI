@@ -57,3 +57,11 @@ export async function getBillingHistory(): Promise<BillingRecord[]> {
     `${API_ENDPOINTS.V1.SUBSCRIPTIONS}/billing`
   );
 }
+
+export async function requestPlanChange(plan: string): Promise<unknown> {
+  return post<unknown>(`${API_ENDPOINTS.V1.SUBSCRIPTIONS}/request-change`, { plan });
+}
+
+export async function getMyPlanRequest(): Promise<unknown> {
+  return get<unknown>(`${API_ENDPOINTS.V1.SUBSCRIPTIONS}/my-request`);
+}

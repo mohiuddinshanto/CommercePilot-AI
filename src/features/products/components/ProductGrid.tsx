@@ -20,7 +20,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
           <div className="flex items-start justify-between gap-3"><div><h2 className="line-clamp-1 font-semibold text-gray-900">{product.name}</h2><p className="mt-1 text-xs text-gray-500">{product.sku}</p></div><span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">{product.status}</span></div>
           <p className="mt-3 line-clamp-2 min-h-10 text-sm text-gray-600">{product.shortDescription || "Product information and availability managed in CommercePilot."}</p>
           <div className="mt-4 space-y-2 text-xs text-gray-500"><div className="flex items-center gap-2"><Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400"/>4.8 customer rating</div><div className="flex items-center gap-2"><Calendar className="h-3.5 w-3.5"/>{formatDate(product.availableFrom || product.createdAt)}</div><div className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5"/>Available from your store</div></div>
-          <div className="mt-auto flex items-center justify-between pt-4"><span className="font-bold text-gray-900">{formatCurrency(product.discountPrice || product.sellingPrice)}</span><Link href={`/items/${product._id}`} className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">View Details</Link></div>
+          <div className="mt-auto flex items-center justify-between pt-4"><span className="font-bold text-gray-900">{formatCurrency(product.discountPrice || product.sellingPrice)}</span><Link href={`/products/${product._id}`} className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">View Details</Link></div>
         </div>
       </article>;
     })}

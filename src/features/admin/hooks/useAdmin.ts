@@ -12,6 +12,9 @@ import {
   updateAdminSubscription,
   getSystemStats,
   getAdminActivityLogs,
+  getAdminPlanRequests,
+  approveAdminPlanRequest,
+  rejectAdminPlanRequest,
 } from "../api/admin.api";
 import type {
   AdminQueryParams,
@@ -26,11 +29,43 @@ const ADMIN_USERS_KEY = ["admin", "users"];
 const ADMIN_SUBSCRIPTIONS_KEY = ["admin", "subscriptions"];
 const ADMIN_SYSTEM_KEY = ["admin", "system"];
 const ADMIN_ACTIVITY_KEY = ["admin", "activity"];
+const ADMIN_PLAN_REQUESTS_KEY = ["admin", "plan-requests"];
 
 export function useAdminDashboard() {
   return useQuery({
     queryKey: ADMIN_DASHBOARD_KEY,
     queryFn: getAdminDashboard,
+  });
+}
+
+export function useAdminPlanRequests(params: AdminQueryParams = {}) {
+  return useQuery({
+    queryKey: [...ADMIN_PLAN_REQUESTS_KEY, params],
+    queryFn: () => getAdminPlanRequests(params),
+  });
+}
+
+export function useApprovePlanRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => approveAdminPlanRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_PLAN_REQUESTS_KEY });
+      queryClient.invalidateQueries({ queryKey: ADMIN_SUBSCRIPTIONS_KEY });
+      queryClient.invalidateQueries({ queryKey: ADMIN_DASHBOARD_KEY });
+    },
+  });
+}
+
+export function useRejectPlanRequest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => rejectAdminPlanRequest(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ADMIN_PLAN_REQUESTS_KEY });
+    },
   });
 }
 

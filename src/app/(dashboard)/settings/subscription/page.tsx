@@ -5,9 +5,9 @@ import {
   useSubscription,
   useSubscriptionUsage,
   useCreateSubscription,
-  useUpgradePlan,
-  useDowngradePlan,
   useCancelSubscription,
+  useMyPlanRequest,
+  useRequestPlanChange,
 } from "@/features/subscriptions/hooks/useSubscription";
 import { SubscriptionCard } from "@/features/subscriptions/components/SubscriptionCard";
 import { UsageCard } from "@/features/subscriptions/components/UsageCard";
@@ -17,7 +17,7 @@ import { DowngradeModal } from "@/features/subscriptions/components/DowngradeMod
 import { CancelSubscriptionModal } from "@/features/subscriptions/components/CancelSubscriptionModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { Loader } from "@/components/common/Loader";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Clock, AlertCircle } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import type { SubscriptionPlan, BillingCycle } from "@/features/subscriptions/types/subscription";
 import toast from "react-hot-toast";
@@ -31,10 +31,10 @@ export default function SubscriptionPage() {
 
   const { data: subscription, isLoading, error } = useSubscription();
   const { data: usage } = useSubscriptionUsage();
+  const { data: pendingRequest } = useMyPlanRequest() as { data: any };
 
   const createSubscription = useCreateSubscription();
-  const upgradePlan = useUpgradePlan();
-  const downgradePlan = useDowngradePlan();
+  const requestPlanChange = useRequestPlanChange();
   const cancelSubscription = useCancelSubscription();
 
   const handlePlanSelect = (plan: SubscriptionPlan) => {
@@ -66,34 +66,17 @@ export default function SubscriptionPage() {
     }
   };
 
-  const handleConfirmUpgrade = () => {
-    upgradePlan.mutate(
-      { plan: targetPlan, billingCycle },
-      {
-        onSuccess: () => {
-          toast.success("Plan upgraded successfully.");
-          setShowUpgradeModal(false);
-        },
-        onError: (err) => {
-          toast.error(err instanceof Error ? err.message : "Failed to upgrade plan.");
-        },
-      }
-    );
-  };
-
-  const handleConfirmDowngrade = () => {
-    downgradePlan.mutate(
-      { plan: targetPlan, billingCycle },
-      {
-        onSuccess: () => {
-          toast.success("Plan downgraded successfully.");
-          setShowDowngradeModal(false);
-        },
-        onError: (err) => {
-          toast.error(err instanceof Error ? err.message : "Failed to downgrade plan.");
-        },
-      }
-    );
+  const handleConfirmRequest = () => {
+    requestPlanChange.mutate(targetPlan, {
+      onSuccess: () => {
+        toast.success(`Plan change request for ${targetPlan.toUpperCase()} submitted for Admin approval.`);
+        setShowUpgradeModal(false);
+        setShowDowngradeModal(false);
+      },
+      onError: (err) => {
+        toast.error(err instanceof Error ? err.message : "Failed to submit plan change request.");
+      },
+    });
   };
 
   const handleConfirmCancel = () => {
@@ -129,6 +112,20 @@ export default function SubscriptionPage() {
           </p>
         </div>
       </div>
+
+      {pendingRequest && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-4 text-amber-900 shadow-sm">
+          <Clock className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
+          <div className="flex-1 text-sm">
+            <h4 className="font-semibold text-amber-900">Plan Change Request Pending Approval</h4>
+            <p className="mt-1 text-amber-800">
+              You have requested to change your plan to{" "}
+              <span className="font-bold uppercase text-amber-950">{pendingRequest.requestedPlan}</span>.
+              Super Admin is currently reviewing your request.
+            </p>
+          </div>
+        </div>
+      )}
 
       {hasNoSubscription ? (
         <EmptyState
@@ -213,19 +210,19 @@ export default function SubscriptionPage() {
       <UpgradeModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
-        onConfirm={handleConfirmUpgrade}
+        onConfirm={handleConfirmRequest}
         targetPlan={targetPlan}
         billingCycle={billingCycle}
-        isLoading={upgradePlan.isPending}
+        isLoading={requestPlanChange.isPending}
       />
 
       <DowngradeModal
         isOpen={showDowngradeModal}
         onClose={() => setShowDowngradeModal(false)}
-        onConfirm={handleConfirmDowngrade}
+        onConfirm={handleConfirmRequest}
         targetPlan={targetPlan}
         billingCycle={billingCycle}
-        isLoading={downgradePlan.isPending}
+        isLoading={requestPlanChange.isPending}
       />
 
       <CancelSubscriptionModal

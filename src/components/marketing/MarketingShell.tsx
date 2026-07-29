@@ -25,14 +25,12 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
   const links = isAuthenticated
     ? [
         { href: "/dashboard", label: "Dashboard" },
+        { href: "/products", label: "Products" },
         { href: "/ai", label: "AI Copilot" },
         { href: "/ai/generator", label: "AI Generator" },
-        { href: "/items", label: "Explore" },
-        { href: "/items/manage", label: "Manage Items" },
       ]
     : [
         { href: "/", label: "Home" },
-        { href: "/items", label: "Explore" },
         { href: "/about", label: "About" },
         { href: "/blog", label: "Insights" },
         { href: "/help", label: "Help" },
@@ -117,7 +115,6 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
           <div>
             <p className="font-semibold text-white">Explore</p>
             <div className="mt-3 grid gap-2 text-sm">
-              <Link href="/items">Product catalog</Link>
               <Link href="/about">About us</Link>
               <Link href="/blog">Commerce insights</Link>
             </div>

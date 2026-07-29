@@ -3,9 +3,10 @@ import * as authApi from "@/features/auth/api/auth.api";
 export async function signUpAction(
   name: string,
   email: string,
-  password: string
+  password: string,
+  plan: string = "starter"
 ) {
-  return authApi.signUp({ name, email, password });
+  return authApi.signUp({ name, email, password, plan });
 }
 
 export async function signInAction(email: string, password: string) {

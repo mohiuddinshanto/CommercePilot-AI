@@ -1,217 +1,155 @@
 # CommercePilot AI — Frontend
 
-Next.js 16 (App Router) + React 19 SPA with TanStack Query, Tailwind CSS v4, and AI-powered dashboard.
+Modern, high-performance Next.js 16 (App Router) frontend for CommercePilot AI, featuring React 19, Tailwind CSS v4, TanStack Query, Recharts, and dynamic AI-powered commerce management interfaces.
 
-**Live Site:** https://commerce-pilot-ai-delta.vercel.app
+**Live Application:** `https://commerce-pilot-ai-delta.vercel.app`
 
 ## Tech Stack
 
-- Next.js 16 (App Router with `proxy.ts` route protection)
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- TanStack Query (server state management)
-- Recharts (charts)
-- Framer Motion (animations)
-- React Hot Toast (notifications)
-- Lucide React (icons)
+| Layer | Technology |
+|---|---|
+| Core Framework | Next.js 16 (App Router with `proxy.ts` security proxy) |
+| UI Library | React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4, Vanilla CSS Design System |
+| Data Fetching & Cache | TanStack React Query (v5) |
+| Data Visualizations | Recharts |
+| Motion & Micro-interactions | Framer Motion |
+| Notifications | React Hot Toast |
+| Icons | Lucide React |
 
 ## Quick Start
 
 ```bash
+cd frontend
 npm install
+
+# Setup environment variables
 cp .env.example .env.local
-# Edit .env.local (see Environment Variables below)
-npm run dev    # http://localhost:3000
+# Edit .env.local with NEXT_PUBLIC_API_URL, etc.
+
+# Run development server
+npm run dev     # http://localhost:3000
+```
+
+## Scripts
+
+| Script | Command | Description |
+|---|---|---|
+| `npm run dev` | `next dev` | Start Next.js development server with hot module replacement |
+| `npm run build` | `next build` | Build optimized production bundle with static & dynamic page generation |
+| `npm start` | `next start` | Launch Next.js production server |
+| `npm run lint` | `eslint` | Run ESLint static code analysis |
+
+### Type Checking
+
+To verify TypeScript code correctness without building:
+
+```bash
+npx tsc --noEmit
 ```
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | Yes | Backend API URL |
-| `NEXT_PUBLIC_APP_URL` | No | Frontend URL (default: `http://localhost:3000`) |
-| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | No | Google OAuth client ID (for sign-in button) |
+Create `.env.local` inside `frontend/`:
 
-## Scripts
-
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start dev server |
-| `npm run build` | Production build |
-| `npm start` | Start production server |
-| `npm run lint` | Run ESLint |
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `NEXT_PUBLIC_API_URL` | Yes | - | Backend Express API base URL (e.g. `https://commerce-pilot-aibackend-b63jib4i6.vercel.app`) |
+| `NEXT_PUBLIC_APP_URL` | No | `http://localhost:3000` | Frontend application URL |
+| `NEXT_PUBLIC_GOOGLE_CLIENT_ID` | No | - | Google OAuth Client ID for social login button |
 
 ## Project Structure
 
 ```
 frontend/
 ├── src/
-│   ├── app/
-│   │   ├── (auth)/           # Login, Register, Forgot Password pages
-│   │   ├── (dashboard)/      # Protected dashboard layout + all pages
-│   │   ├── (public)/         # Public pages (landing, /items, /items/[id])
-│   │   ├── layout.tsx        # Root layout
-│   │   └── not-found.tsx
-│   ├── core/
-│   │   ├── api-client.ts     # Centralized fetch wrapper with auth + 401 redirect
-│   │   └── better-auth-client.ts  # Better Auth client + data extraction (data.data)
-│   ├── features/
-│   │   ├── auth/             # Login, Register, Forgot Password forms + API
-│   │   ├── dashboard/        # Dashboard page + summary hooks
-│   │   ├── products/         # Products table, form, detail page, hooks
-│   │   ├── categories/       # Categories table, form, hooks
-│   │   ├── inventory/        # Inventory table, adjustments, alerts
-│   │   ├── sales/            # Sales table, form, detail page
-│   │   ├── returns/          # Returns table, form
-│   │   ├── customers/        # Customers table, form, detail page
-│   │   ├── bundles/          # Bundles table, form
-│   │   ├── reports/          # Report pages (sales, inventory, profit, etc.)
-│   │   ├── analytics/        # Analytics dashboard with charts
-│   │   ├── ai/               # AI chat interface, conversation history
-│   │   ├── settings/         # Store settings, profile, staff management
-│   │   ├── admin/            # Super admin dashboard, user/store management
-│   │   ├── subscriptions/    # Subscription plans, pricing cards
-│   │   └── public-products/  # Public storefront (server-side data fetching)
-│   ├── components/
-│   │   ├── layout/           # Sidebar, header, footer
-│   │   └── ui/               # Reusable UI components (button, card, dialog, etc.)
-│   ├── providers/
-│   │   ├── auth-provider.tsx  # Auth context + session management
-│   │   └── query-provider.tsx # TanStack Query provider
 │   ├── actions/
-│   │   └── auth.ts           # Server actions (getSession)
-│   ├── lib/
-│   │   └── query-client.ts   # TanStack Query client
-│   ├── types/
-│   │   └── user.ts           # User, Session types
-│   └── proxy.ts              # Route protection (Next.js 16 convention)
-├── public/                    # Static assets (images, icons)
-├── next.config.ts            # CSP headers, transpile packages
-├── middleware.ts              # Empty (deprecated — use proxy.ts)
+│   │   └── auth.ts              # Server Actions for authentication session
+│   ├── api/                     # Next.js API handler bridges
+│   ├── app/                     # App Router pages and layouts
+│   │   ├── (auth)/              # Authentication routes (login, register)
+│   │   ├── (dashboard)/         # Protected tenant dashboard routes
+│   │   ├── about/               # About page
+│   │   ├── admin/               # Super Admin portal routes
+│   │   ├── ai/                  # AI Copilot chat routes
+│   │   ├── analytics/           # Business intelligence & charts
+│   │   ├── blog/                # Blog pages
+│   │   ├── bundles/             # Product bundle management
+│   │   ├── categories/          # Product categories CRUD
+│   │   ├── contact/             # Contact page
+│   │   ├── dashboard/           # Main store dashboard overview
+│   │   ├── help/                # Help & support center
+│   │   ├── inventory/           # Stock tracking, adjustments & alerts
+│   │   ├── privacy/             # Privacy policy
+│   │   ├── products/            # Product catalog & CRUD
+│   │   ├── reports/             # Analytics & financial reports
+│   │   ├── returns/             # Order returns & refund management
+│   │   ├── sales/               # POS sales & invoice views
+│   │   ├── settings/            # Store settings & subscription billing
+│   │   ├── staff/               # Staff permission & user management
+│   │   ├── error.tsx            # Global Error Boundary component
+│   │   ├── loading.tsx          # Global loading skeleton loader
+│   │   ├── not-found.tsx        # Custom 404 page
+│   │   ├── page.tsx             # Public landing page
+│   │   └── layout.tsx           # Root layout & providers wrapper
+│   ├── components/              # Reusable UI components
+│   │   ├── ui/                  # Buttons, Modals, Cards, Badges, Inputs
+│   │   ├── layout/              # Sidebar, Header, Navigation, Footer
+│   │   └── charts/              # Recharts wrappers
+│   ├── core/
+│   │   ├── api-client.ts        # Central fetch client with automatic headers & 401 handling
+│   │   └── better-auth-client.ts# Auth client integration
+│   ├── features/                # Domain-driven feature modules
+│   ├── hooks/                   # Custom React hooks
+│   ├── lib/                     # Utilities & TanStack Query client setup
+│   ├── providers/               # Context providers (AuthProvider, QueryProvider)
+│   ├── proxy.ts                 # Next.js 16 route security proxy
+│   └── types/                   # TypeScript interfaces & types
+├── public/                      # Static assets & public images
+├── next.config.ts               # Next.js build config & CSP security headers
 └── package.json
 ```
 
-## Pages
+## Key Application Routes
 
-### Public
+### Public Routes
+* `/` — Modern landing page with interactive feature showcases
+* `/login` — Email/Password & Google OAuth authentication
+* `/register` — Merchant onboarding registration
+* `/about`, `/contact`, `/privacy`, `/help`, `/blog` — Public information pages
 
-| Route | Description |
-|-------|-------------|
-| `/` | Landing page |
-| `/login` | Email/Google login with demo button |
-| `/register` | Email registration |
-| `/forgot-password` | Password reset |
-| `/items` | Public product catalog with search/filter |
-| `/items/[id]` | Public product detail page |
+### Merchant Dashboard Routes (Protected)
+* `/dashboard` — Store overview, KPI cards, low stock alerts & AI summaries
+* `/products` — Product management, image uploads & SKU search
+* `/categories` — Category creation and product hierarchy
+* `/inventory` — Stock levels, movement logs & dead stock alerts
+* `/sales` — Point-of-Sale (POS) cashier interface & sales history
+* `/returns` — Processing customer returns & restock tracking
+* `/bundles` — Product bundle packages & promotional pricing
+* `/reports` — Financial reports (sales, profit, daily/monthly summaries)
+* `/analytics` — Revenue trends, sales channels & growth charts
+* `/ai` — Interactive AI Commerce Copilot assistant with history
+* `/staff` — Team members & granular permission access controls
+* `/settings` — Store details, currency, timezone & subscription management
 
-### Dashboard (Protected)
+### Super Admin Portal (Platform Operations)
+* `/admin` — System metrics, total stores, server health & activity logs
+* `/admin/stores` — Merchant store approval, suspension & detail inspect
+* `/admin/users` — Merchant user status & account management
+* `/admin/subscriptions` — SaaS plan subscriptions & billing management
+* `/admin/activity` — Platform-wide action audit trail logs
 
-| Route | Description |
-|-------|-------------|
-| `/dashboard` | Sales overview, KPIs, charts, AI insights |
-| `/dashboard/products` | Products list + CRUD |
-| `/dashboard/products/new` | Create product |
-| `/dashboard/products/[id]` | Product detail |
-| `/dashboard/categories` | Categories list + CRUD |
-| `/dashboard/inventory` | Inventory stock tracking |
-| `/dashboard/inventory/adjustments` | Stock adjustments history |
-| `/dashboard/inventory/alerts` | Low stock + dead stock alerts |
-| `/dashboard/inventory/dead-stock` | Dead stock detection |
-| `/dashboard/sales` | Sales list + create |
-| `/dashboard/sales/[id]` | Sale detail / invoice |
-| `/dashboard/returns` | Returns list + process |
-| `/dashboard/customers` | Customers list + CRUD |
-| `/dashboard/customers/[id]` | Customer detail |
-| `/dashboard/bundles` | Product bundles list + CRUD |
-| `/dashboard/bundles/[id]` | Bundle detail |
-| `/dashboard/reports/sales` | Sales report |
-| `/dashboard/reports/inventory` | Inventory report |
-| `/dashboard/reports/profit` | Profit report |
-| `/dashboard/reports/top-products` | Top products report |
-| `/dashboard/reports/daily` | Daily report |
-| `/dashboard/reports/weekly` | Weekly report |
-| `/dashboard/reports/monthly` | Monthly report |
-| `/dashboard/analytics` | Revenue, profit, growth charts |
-| `/dashboard/ai` | AI Commerce Copilot chat |
-| `/dashboard/ai/history` | Conversation history |
-| `/dashboard/ai/history/[id]` | Past conversation |
-| `/dashboard/settings` | Store settings |
-| `/dashboard/profile` | User profile |
-| `/dashboard/staff` | Staff management (owner only) |
-| `/dashboard/activity` | Activity logs (owner only) |
-| `/dashboard/subscriptions` | Subscription plans |
+## Security & Architecture
 
-### Super Admin (Protected)
+* **Route Guard (`proxy.ts`):** Enforces authentication checks using Next.js 16 conventions, seamlessly shielding protected dashboard paths from unauthorized visitors.
+* **Unified API Client:** All requests are piped through `api-client.ts` with cross-origin credentials and standard response normalization.
+* **Content Security Policy (CSP):** `next.config.ts` dynamically configures secure headers preventing XSS and injection vulnerabilities.
 
-| Route | Description |
-|-------|-------------|
-| `/super-admin` | Admin dashboard |
-| `/super-admin/users` | User management |
-| `/super-admin/stores` | Store management |
-| `/super-admin/analytics` | Platform analytics |
-| `/super-admin/activity` | All activity logs |
-| `/super-admin/ai-usage` | AI usage stats |
-| `/super-admin/subscription-plans` | Subscription plan management |
-| `/super-admin/reports` | Platform reports |
+## Styling & Aesthetic Guidelines
 
-## Authentication
+* Built with a custom design system adhering to modern glassmorphism, dynamic animations, curated dark/light palettes, and Inter/Outfit Google typography.
 
-Uses Better Auth with two providers:
-- Email/Password
-- Google OAuth (optional)
+## License
 
-Session is managed via `AuthProvider` which reads cookies server-side and exposes session via React context.
-
-Route protection is handled in `proxy.ts` (Next.js 16 convention — replaces deprecated `middleware.ts`).
-
-## API Communication
-
-All API calls go through `api-client.ts`:
-
-```typescript
-// Automatic auth headers + 401 redirect
-import { apiClient } from '@/core/api-client';
-const data = await apiClient<Product[]>('/products');
-```
-
-Better Auth endpoints use `better-auth-client.ts` which extracts `data.data` from responses.
-
-## Deployment
-
-### Vercel
-
-Deployed automatically on push to `main`.
-
-Environment variables to set in Vercel dashboard:
-- `NEXT_PUBLIC_API_URL` — your backend API URL
-- `NEXT_PUBLIC_APP_URL` — your frontend URL
-- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` — (optional) Google OAuth client ID
-
-### CSP Headers
-
-Content Security Policy is configured in `next.config.ts` and dynamically reads `NEXT_PUBLIC_API_URL` for `connect-src` and `img-src` directives. Supports comma-separated `CLIENT_URL` values for multiple origins.
-
-## Data Fetching
-
-Uses TanStack Query with hooks:
-
-```typescript
-// Example hook pattern
-export const useProducts = (params: ProductFilters) => {
-  return useQuery({
-    queryKey: ['products', params],
-    queryFn: () => apiClient<PaginatedResponse<Product>>('/products', { params }),
-  });
-};
-```
-
-Mutations use `useMutation` with automatic cache invalidation on success.
-
-## Styling
-
-- Tailwind CSS v4 (utility-first)
-- Custom theme tokens for colors, spacing, typography
-- Responsive design — mobile, tablet, desktop
-- Skeleton loaders for loading states
-- Framer Motion for page transitions and animations
+Private — CommercePilot AI Platform.

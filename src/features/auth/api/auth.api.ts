@@ -8,6 +8,7 @@ export interface SignUpParams {
   name: string;
   email: string;
   password: string;
+  plan?: string;
 }
 
 export interface SignInParams {

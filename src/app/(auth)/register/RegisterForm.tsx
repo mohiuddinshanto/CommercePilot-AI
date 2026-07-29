@@ -13,6 +13,7 @@ export default function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedPlan, setSelectedPlan] = useState("starter");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -30,7 +31,7 @@ export default function RegisterForm() {
     setLoading(true);
 
     try {
-      const result = await signUpAction(name, email, password);
+      const result = await signUpAction(name, email, password, selectedPlan);
       const session: Session = {
         user: result.user,
         session: {
@@ -121,6 +122,52 @@ export default function RegisterForm() {
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             placeholder="••••••••"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Subscription Plan
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedPlan("starter")}
+              className={`rounded-xl border p-3 text-left transition ${
+                selectedPlan === "starter"
+                  ? "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+                  : "border-gray-200 bg-white hover:border-gray-300"
+              }`}
+            >
+              <div className="text-xs font-semibold text-gray-900">Starter</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳0<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedPlan("pro")}
+              className={`rounded-xl border p-3 text-left transition ${
+                selectedPlan === "pro"
+                  ? "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+                  : "border-gray-200 bg-white hover:border-gray-300"
+              }`}
+            >
+              <div className="text-xs font-semibold text-gray-900">Professional</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳800<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedPlan("business")}
+              className={`rounded-xl border p-3 text-left transition ${
+                selectedPlan === "business"
+                  ? "border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20"
+                  : "border-gray-200 bg-white hover:border-gray-300"
+              }`}
+            >
+              <div className="text-xs font-semibold text-gray-900">Business</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳1500<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+            </button>
+          </div>
         </div>
 
         <button

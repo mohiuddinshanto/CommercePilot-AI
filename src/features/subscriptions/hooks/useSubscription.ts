@@ -10,6 +10,8 @@ import {
   renewSubscription,
   getUsage,
   getBillingHistory,
+  requestPlanChange,
+  getMyPlanRequest,
 } from "../api/subscription.api";
 import type {
   CreateSubscriptionInput,
@@ -19,11 +21,30 @@ import type {
 const SUBSCRIPTION_KEY = ["subscription"];
 const USAGE_KEY = ["subscription", "usage"];
 const BILLING_KEY = ["subscription", "billing"];
+const PLAN_REQUEST_KEY = ["subscription", "my-request"];
 
 export function useSubscription() {
   return useQuery({
     queryKey: SUBSCRIPTION_KEY,
     queryFn: getSubscription,
+  });
+}
+
+export function useMyPlanRequest() {
+  return useQuery({
+    queryKey: PLAN_REQUEST_KEY,
+    queryFn: getMyPlanRequest,
+  });
+}
+
+export function useRequestPlanChange() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (plan: string) => requestPlanChange(plan),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: PLAN_REQUEST_KEY });
+    },
   });
 }
 
