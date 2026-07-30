@@ -288,6 +288,9 @@ export function ReturnForm({
       )}
 
       <ReturnReasonSelector value={reason} onChange={setReason} />
+      {!reason && items.length > 0 && (
+        <p className="text-xs text-red-500">Please select a return reason</p>
+      )}
 
       <div>
         <label className="block text-sm font-medium text-gray-700">Notes</label>
@@ -314,6 +317,17 @@ export function ReturnForm({
       )}
 
       <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-4">
+        <div className="flex-1">
+          {!selectedSale && items.length > 0 && (
+            <p className="text-xs text-amber-600">Select a sale first</p>
+          )}
+          {selectedSale && items.length === 0 && (
+            <p className="text-xs text-amber-600">Click on items above to add to return</p>
+          )}
+          {selectedSale && items.length > 0 && !reason && (
+            <p className="text-xs text-amber-600">Select a return reason</p>
+          )}
+        </div>
         <button
           type="button"
           onClick={onCancel}
@@ -323,7 +337,7 @@ export function ReturnForm({
         </button>
         <button
           type="submit"
-          disabled={isLoading || items.length === 0 || !reason}
+          disabled={!selectedSale || items.length === 0 || !reason || isLoading}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {isLoading ? "Processing..." : "Create Return"}
