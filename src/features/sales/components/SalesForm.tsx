@@ -31,6 +31,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
   const [shipping, setShipping] = useState("0");
   const [paidAmount, setPaidAmount] = useState("0");
   const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentNote, setPaymentNote] = useState("");
   const [notes, setNotes] = useState("");
 
   // Product search state
@@ -140,6 +141,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       shipping: shippingNum,
       paidAmount: paidNum,
       paymentMethod,
+      paymentNote: ["bkash", "nagad", "rocket"].includes(paymentMethod) ? (paymentNote || undefined) : undefined,
       notes: notes || undefined,
     });
   };
@@ -417,14 +419,25 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             <label className="block text-sm font-medium text-gray-700">Payment Method *</label>
             <select
               value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
+              onChange={(e) => { setPaymentMethod(e.target.value); setPaymentNote(""); }}
               className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
               <option value="cash">Cash</option>
+              <option value="bkash">bKash</option>
+              <option value="nagad">Nagad</option>
+              <option value="rocket">Rocket</option>
               <option value="card">Card</option>
-              <option value="mobile_banking">Mobile Banking</option>
               <option value="bank_transfer">Bank Transfer</option>
             </select>
+            {["bkash", "nagad", "rocket"].includes(paymentMethod) && (
+              <input
+                type="text"
+                value={paymentNote}
+                onChange={(e) => setPaymentNote(e.target.value)}
+                placeholder="Note (optional) — e.g. sender number last 4 digits"
+                className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Paid Amount *</label>

@@ -134,6 +134,12 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
                   {sale.paymentMethod.replace("_", " ")}
                 </dd>
               </div>
+              {sale.paymentNote && (
+                <div className="flex items-center justify-between">
+                  <dt className="text-sm text-gray-500">Payment Note</dt>
+                  <dd className="text-sm text-gray-900 text-right max-w-[180px] truncate">{sale.paymentNote}</dd>
+                </div>
+              )}
             </dl>
           </div>
 

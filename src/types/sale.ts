@@ -24,6 +24,7 @@ export interface Sale {
   paidAmount: number;
   dueAmount: number;
   paymentMethod: string;
+  paymentNote: string;
   paymentStatus: string;
   status: string;
   notes: string;
@@ -53,6 +54,7 @@ export interface CreateSaleInput {
   shipping?: number;
   paidAmount: number;
   paymentMethod: string;
+  paymentNote?: string;
   notes?: string;
 }
 
@@ -62,6 +64,7 @@ export interface UpdateSaleInput {
   customerPhone?: string;
   paidAmount?: number;
   paymentMethod?: string;
+  paymentNote?: string;
   paymentStatus?: string;
   status?: string;
   notes?: string;

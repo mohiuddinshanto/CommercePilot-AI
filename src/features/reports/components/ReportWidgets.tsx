@@ -160,8 +160,10 @@ export function MostReturnedWidget({ data }: { data: MostReturnedProduct[] }) {
 export function PaymentMethodWidget({ data }: { data: SalesByPaymentMethod[] }) {
   const methodLabels: Record<string, string> = {
     cash: "Cash",
+    bkash: "bKash",
+    nagad: "Nagad",
+    rocket: "Rocket",
     card: "Card",
-    mobile_banking: "Mobile Banking",
     bank_transfer: "Bank Transfer",
   };
 
