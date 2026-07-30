@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description: "Multi-Tenant AI Commerce SaaS Platform for WooCommerce, Facebook Page sellers, and SMBs.",
   keywords: ["commerce", "inventory", "sales", "POS", "e-commerce", "SaaS", "AI"],
   authors: [{ name: "CommercePilot AI" }],
+  icons: {
+    icon: "/Images/CommercePilot.png",
+    shortcut: "/Images/CommercePilot.png",
+    apple: "/Images/CommercePilot.png",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
