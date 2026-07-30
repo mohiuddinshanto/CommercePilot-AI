@@ -61,6 +61,7 @@ export interface TopCustomer {
 
 export interface BestCashier {
   createdBy: string;
+  cashierName: string;
   totalSales: number;
   totalRevenue: number;
   avgSaleValue: number;

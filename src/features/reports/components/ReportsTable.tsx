@@ -146,7 +146,7 @@ export function BestCashiersTable({ data }: { data: BestCashier[] }) {
     <DataTable
       title="Best Cashiers"
       columns={[
-        { key: "createdBy", label: "Cashier" },
+        { key: "cashierName", label: "Cashier" },
         { key: "totalSales", label: "Sales", align: "right" },
         { key: "totalRevenue", label: "Revenue", align: "right" },
         { key: "avgSaleValue", label: "Avg Sale", align: "right" },
