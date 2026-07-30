@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { CreditCard, Receipt } from "lucide-react";
+import { CreditCard, Receipt, BookOpen } from "lucide-react";
 
 const SETTINGS_TABS = [
   {
@@ -15,6 +15,11 @@ const SETTINGS_TABS = [
     label: "Billing",
     href: "/settings/billing",
     icon: Receipt,
+  },
+  {
+    label: "Guide",
+    href: "/settings/guide",
+    icon: BookOpen,
   },
 ];
 
