@@ -230,8 +230,8 @@ export default function GuidePage() {
           </h3>
           <p className="mt-1 text-sm text-blue-600">
             {isBn
-              ? "ইমেইল: support@commercepilot.ai | ফোন: +880 1322 901105"
-              : "Email: support@commercepilot.ai | Phone: +880 1322 901105"}
+              ? "ইমেইল: epicoptimize@gmail.com | ফোন: 8801987363537"
+              : "Email: epicoptimize@gmail.com | Phone: 8801987363537"}
           </p>
         </div>
       </div>
