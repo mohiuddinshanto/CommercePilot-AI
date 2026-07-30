@@ -17,12 +17,14 @@ import { DowngradeModal } from "@/features/subscriptions/components/DowngradeMod
 import { CancelSubscriptionModal } from "@/features/subscriptions/components/CancelSubscriptionModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { Loader } from "@/components/common/Loader";
+import { useT } from "@/lib/i18n/use-t";
 import { CreditCard, Clock, AlertCircle } from "lucide-react";
 import { EmptyState } from "@/components/common/EmptyState";
 import type { SubscriptionPlan, BillingCycle } from "@/features/subscriptions/types/subscription";
 import toast from "react-hot-toast";
 
 export default function SubscriptionPage() {
+  const T = useT();
   const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showDowngradeModal, setShowDowngradeModal] = useState(false);
@@ -96,7 +98,7 @@ export default function SubscriptionPage() {
   }
 
   if (error) {
-    return <ErrorPage title="Failed to load subscription" message="Could not fetch subscription data." />;
+    return <ErrorPage title={T("subscription.errorTitle", "Failed to load subscription")} message={T("subscription.errorMessage", "Could not fetch subscription data.")} />;
   }
 
   const hasNoSubscription = !subscription;
@@ -106,9 +108,9 @@ export default function SubscriptionPage() {
       <div className="flex items-center gap-3">
         <CreditCard className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subscription & Billing</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{T("subscription.title", "Subscription & Billing")}</h1>
           <p className="text-sm text-gray-500">
-            Manage your subscription plan and billing settings.
+            {T("subscription.subtitle", "Manage your subscription plan and billing settings.")}
           </p>
         </div>
       </div>
@@ -117,7 +119,7 @@ export default function SubscriptionPage() {
         <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-4 text-amber-900 shadow-sm">
           <Clock className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
           <div className="flex-1 text-sm">
-            <h4 className="font-semibold text-amber-900">Plan Change Request Pending Approval</h4>
+              <h4 className="font-semibold text-amber-900">{T("subscription.pendingApproval", "Plan Change Request Pending Approval")}</h4>
             <p className="mt-1 text-amber-800">
               You have requested to change your plan to{" "}
               <span className="font-bold uppercase text-amber-950">{pendingRequest.requestedPlan}</span>.
@@ -129,8 +131,8 @@ export default function SubscriptionPage() {
 
       {hasNoSubscription ? (
         <EmptyState
-          title="No active subscription"
-          message="Choose a plan below to get started."
+          title={T("subscription.noActive", "No active subscription")}
+          message={T("subscription.choosePlan", "Choose a plan below to get started.")}
           icon={CreditCard}
         />
       ) : (
@@ -147,7 +149,7 @@ export default function SubscriptionPage() {
             onClick={() => setShowCancelModal(true)}
             className="text-sm text-red-600 hover:text-red-800"
           >
-            Cancel subscription
+            {T("subscription.cancel", "Cancel subscription")}
           </button>
 
           {usage && subscription && (
@@ -158,7 +160,7 @@ export default function SubscriptionPage() {
 
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-6">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">Available Plans</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{T("subscription.availablePlans", "Available Plans")}</h3>
           <div className="flex items-center gap-2 self-start rounded-lg bg-gray-100 p-1">
             <button
               onClick={() => setBillingCycle("monthly")}
@@ -168,7 +170,7 @@ export default function SubscriptionPage() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Monthly
+              {T("subscription.monthly", "Monthly")}
             </button>
             <button
               onClick={() => setBillingCycle("yearly")}
@@ -178,7 +180,7 @@ export default function SubscriptionPage() {
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
-              Yearly <span className="text-xs text-green-600">Save 17%</span>
+              {T("subscription.yearly", "Yearly")} <span className="text-xs text-green-600">{T("subscription.savePercent", "Save 17%")}</span>
             </button>
           </div>
         </div>

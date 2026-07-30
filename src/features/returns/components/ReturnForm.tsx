@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { Plus, Minus, Trash2, Search, X, Package, RefreshCw, ArrowLeftRight } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { CreateReturnInput, ExchangeItem } from "@/types/return";
@@ -9,10 +10,10 @@ import type { Product } from "@/types/product";
 import { useProducts } from "@/features/products/hooks/useProducts";
 import { ReturnReasonSelector } from "./ReturnReasonSelector";
 
-const RETURN_TYPES = [
-  { value: "refund", label: "Refund Only", desc: "Customer returns product, gets money back" },
-  { value: "same_exchange", label: "Same Product Exchange", desc: "Replace with the same product" },
-  { value: "different_exchange", label: "Different Product Exchange", desc: "Customer takes a different product, adjust price difference" },
+const getReturnTypes = (T: (key: string, fallback?: string) => string) => [
+  { value: "refund", label: T("returns.refund"), desc: T("returns.refundDesc", "Customer returns product, gets money back") },
+  { value: "same_exchange", label: T("returns.sameExchange"), desc: T("returns.sameExchangeDesc", "Replace with the same product") },
+  { value: "different_exchange", label: T("returns.differentExchange"), desc: T("returns.differentExchangeDesc", "Customer takes a different product, adjust price difference") },
 ] as const;
 
 interface ReturnItemData {
@@ -54,6 +55,8 @@ export function ReturnForm({
   onSelectSale,
   isSearching,
 }: ReturnFormProps) {
+  const T = useT();
+  const RETURN_TYPES = getReturnTypes(T);
   const [searchQuery, setSearchQuery] = useState("");
   const [returnType, setReturnType] = useState<string>("refund");
   const [items, setItems] = useState<ReturnItemData[]>([]);
@@ -202,7 +205,7 @@ export function ReturnForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Return Type Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Return Type *</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">{T("returns.type")} *</label>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
           {RETURN_TYPES.map((type) => (
             <button
@@ -226,7 +229,7 @@ export function ReturnForm({
 
       {/* Sale Search */}
       <div ref={dropdownRef}>
-        <label className="block text-sm font-medium text-gray-700">Search Sale *</label>
+        <label className="block text-sm font-medium text-gray-700">{T("returns.searchSale", "Search Sale")} *</label>
         <div className="relative mt-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
@@ -237,7 +240,7 @@ export function ReturnForm({
               if (selectedSale) onSelectSale(null);
             }}
             className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Search by invoice, customer name, or phone..."
+            placeholder={T("returns.searchPlaceholder")}
           />
           {searchQuery && (
             <button
@@ -256,12 +259,12 @@ export function ReturnForm({
             {isSearching ? (
               <div className="flex items-center justify-center py-6 text-sm text-gray-500">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mr-2" />
-                Searching...
+                {T("common.searching", "Searching...")}
               </div>
             ) : sales.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-center text-sm text-gray-500">
                 <Package className="h-7 w-7 mb-1 text-gray-400" />
-                No sales found
+                {T("sales.noSales", "No sales found")}
               </div>
             ) : (
               sales.map((s) => (
@@ -302,7 +305,7 @@ export function ReturnForm({
               onClick={() => { setSearchQuery(""); setItems([]); setExchangeItems([]); onSelectSale(null); }}
               className="text-xs text-blue-600 hover:underline"
             >
-              Change
+               {T("common.change", "Change")}
             </button>
           </div>
           <div className="mt-1 space-y-1">
@@ -326,7 +329,7 @@ export function ReturnForm({
                 <div>
                   <span className="font-medium">{item.name}</span>
                   <span className="ml-2 text-gray-500">({item.sku})</span>
-                  <span className="ml-2 text-gray-500">Sold: {item.quantity}</span>
+                  <span className="ml-2 text-gray-500">{T("returns.sold", "Sold")}: {item.quantity}</span>
                 </div>
                 <span className="text-gray-600">{formatCurrency(item.unitPrice)} each</span>
               </button>
@@ -340,7 +343,7 @@ export function ReturnForm({
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
             <Trash2 className="h-4 w-4" />
-            Return Items ({items.length})
+            {T("returns.returnItems", "Return Items")} ({items.length})
           </div>
           {items.map((item, index) => (
             <div
@@ -349,7 +352,7 @@ export function ReturnForm({
             >
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-gray-900">{item.name}</span>
-                <span className="text-xs text-gray-500">/ {item.soldQuantity} sold</span>
+                <span className="text-xs text-gray-500">/ {item.soldQuantity} {T("returns.sold", "sold")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -390,7 +393,7 @@ export function ReturnForm({
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
             <RefreshCw className="h-4 w-4" />
-            Exchange With ({exchangeItems.length})
+            {T("returns.exchangeWith", "Exchange With")} ({exchangeItems.length})
           </div>
           <div ref={productDropdownRef} className="relative">
             <div className="relative">
@@ -400,13 +403,13 @@ export function ReturnForm({
                 value={productSearch}
                 onChange={(e) => setProductSearch(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                placeholder="Search products to exchange..."
+                placeholder={T("returns.searchExchange", "Search products to exchange...")}
               />
             </div>
             {productSearch && (
               <div className="mt-2 max-h-48 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-md">
                 {products.length === 0 ? (
-                  <div className="py-4 text-center text-sm text-gray-500">No products found</div>
+                  <div className="py-4 text-center text-sm text-gray-500">{T("products.noProducts")}</div>
                 ) : (
                   products.map((p) => (
                     <button
@@ -471,17 +474,17 @@ export function ReturnForm({
 
       <ReturnReasonSelector value={reason} onChange={setReason} />
       {!reason && items.length > 0 && (
-        <p className="text-xs text-red-500">Please select a return reason</p>
+        <p className="text-xs text-red-500">{T("returns.selectReasonRequired", "Please select a return reason")}</p>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Notes</label>
+        <label className="block text-sm font-medium text-gray-700">{T("common.notes")}</label>
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={2}
           className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Optional notes about this return"
+          placeholder={T("returns.notesPlaceholder", "Optional notes about this return")}
         />
       </div>
 
@@ -489,21 +492,21 @@ export function ReturnForm({
       {items.length > 0 && (
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-1">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Return Items</span>
+            <span className="text-gray-600">{T("returns.returnItems", "Return Items")}</span>
             <span>{items.length}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Refund Amount</span>
+            <span className="text-gray-600">{T("returns.refundAmount")}</span>
             <span className="text-red-600 font-medium">{formatCurrency(subtotal)}</span>
           </div>
           {returnType === "different_exchange" && exchangeItems.length > 0 && (
             <>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Exchange Total</span>
+                <span className="text-gray-600">{T("returns.exchangeTotal", "Exchange Total")}</span>
                 <span className="text-blue-600 font-medium">{formatCurrency(exchangeTotal)}</span>
               </div>
               <div className="flex justify-between text-sm font-semibold border-t border-gray-200 pt-1">
-                <span className="text-gray-800">Adjustment</span>
+                <span className="text-gray-800">{T("returns.adjustment", "Adjustment")}</span>
                 <span className={adjustmentAmount >= 0 ? "text-blue-600" : "text-red-600"}>
                   {adjustmentAmount >= 0
                     ? `Customer pays ${formatCurrency(adjustmentAmount)}`
@@ -518,16 +521,16 @@ export function ReturnForm({
       <div className="flex items-center justify-end gap-3 border-t border-gray-200 pt-4">
         <div className="flex-1">
           {!selectedSale && items.length > 0 && (
-            <p className="text-xs text-amber-600">Select a sale first</p>
+            <p className="text-xs text-amber-600">{T("returns.selectSaleFirst", "Select a sale first")}</p>
           )}
           {selectedSale && items.length === 0 && (
-            <p className="text-xs text-amber-600">Click on items above to add to return</p>
+            <p className="text-xs text-amber-600">{T("returns.clickItemsToAdd", "Click on items above to add to return")}</p>
           )}
           {selectedSale && items.length > 0 && !reason && (
-            <p className="text-xs text-amber-600">Select a return reason</p>
+            <p className="text-xs text-amber-600">{T("returns.selectReason", "Select a return reason")}</p>
           )}
           {returnType === "different_exchange" && selectedSale && items.length > 0 && exchangeItems.length === 0 && (
-            <p className="text-xs text-amber-600">Add at least one exchange product</p>
+            <p className="text-xs text-amber-600">{T("returns.addExchangeProduct", "Add at least one exchange product")}</p>
           )}
         </div>
         <button
@@ -535,14 +538,14 @@ export function ReturnForm({
           onClick={onCancel}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          {T("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={!selectedSale || items.length === 0 || !reason || (returnType === "different_exchange" && exchangeItems.length === 0) || isLoading}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {isLoading ? "Processing..." : "Create Return"}
+          {isLoading ? T("common.processing", "Processing...") : T("returns.createReturn", "Create Return")}
         </button>
       </div>
     </form>

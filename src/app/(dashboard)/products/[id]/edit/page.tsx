@@ -6,6 +6,7 @@ import { useProduct, useUpdateProduct } from "@/features/products/hooks/useProdu
 import { ProductForm } from "@/features/products/components/ProductForm";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { FullPageLoader } from "@/components/common/Loader";
+import { useT } from "@/lib/i18n/use-t";
 import { ArrowLeft, Package } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ export default function EditProductPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: product, isLoading, error } = useProduct(id);
@@ -39,7 +41,7 @@ export default function EditProductPage({
   }
 
   if (error || !product) {
-    return <ErrorPage title="Product not found" message="Could not load product details for editing." />;
+    return <ErrorPage title={T("products.notFound")} message={T("products.editNotFoundMessage", "Could not load product details for editing.")} />;
   }
 
   return (
@@ -54,8 +56,8 @@ export default function EditProductPage({
         <div className="flex items-center gap-3">
           <Package className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
-            <p className="text-sm text-gray-500">Update product details and pricing.</p>
+            <h1 className="text-2xl font-bold text-gray-900">{T("products.edit")}</h1>
+            <p className="text-sm text-gray-500">{T("products.editSubtitle", "Update product details and pricing.")}</p>
           </div>
         </div>
       </div>

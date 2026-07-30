@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { BarChart3 } from "lucide-react";
+import { useT } from "@/lib/i18n/use-t";
 import {
   useSalesReport,
   useTopProducts,
@@ -37,6 +38,7 @@ import type { ReportQueryParams } from "@/types/report";
 type ReportTab = "sales" | "inventory" | "profit" | "ranking";
 
 export default function ReportsPageContent() {
+  const T = useT();
   const [params, setParams] = useState<ReportQueryParams>({
     period: "thisMonth",
   });
@@ -56,14 +58,14 @@ export default function ReportsPageContent() {
   const { data: profitReport, isLoading: profitLoading } = useProfitReport(params);
 
   if (salesError) {
-    return <ErrorPage title="Failed to load reports" message="Could not fetch report data." />;
+    return <ErrorPage title={T("reports.errorTitle", "Failed to load reports")} message={T("reports.errorMessage", "Could not fetch report data.")} />;
   }
 
   const tabs: { value: ReportTab; label: string }[] = [
-    { value: "sales", label: "Sales" },
-    { value: "inventory", label: "Inventory" },
-    { value: "profit", label: "Profit" },
-    { value: "ranking", label: "Rankings" },
+    { value: "sales", label: T("reports.tabSales", "Sales") },
+    { value: "inventory", label: T("reports.tabInventory", "Inventory") },
+    { value: "profit", label: T("reports.tabProfit", "Profit") },
+    { value: "ranking", label: T("reports.tabRankings", "Rankings") },
   ];
 
   return (
@@ -71,9 +73,9 @@ export default function ReportsPageContent() {
       <div className="flex items-center gap-3">
         <BarChart3 className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{T("reports.title", "Reports")}</h1>
           <p className="text-sm text-gray-500">
-            View detailed reports and insights for your store.
+            {T("reports.description", "View detailed reports and insights for your store.")}
           </p>
         </div>
       </div>

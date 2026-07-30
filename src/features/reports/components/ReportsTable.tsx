@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import type { TopProduct, TopCategory, TopCustomer, BestCashier } from "@/types/report";
 
@@ -11,13 +12,14 @@ interface DataTableProps<T> {
 }
 
 function DataTable<T>({ title, columns, data, renderCell }: DataTableProps<T>) {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
       <div className="border-b border-gray-200 px-6 py-4">
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       </div>
       {data.length === 0 ? (
-        <div className="px-6 py-8 text-center text-sm text-gray-500">No data available.</div>
+        <div className="px-6 py-8 text-center text-sm text-gray-500">{T("common.noData", "No data available.")}</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -59,15 +61,16 @@ function DataTable<T>({ title, columns, data, renderCell }: DataTableProps<T>) {
 }
 
 export function TopProductsTable({ data }: { data: TopProduct[] }) {
+  const T = useT();
   return (
     <DataTable
-      title="Top Products"
+      title={T("reports.topProducts", "Top Products")}
       columns={[
-        { key: "name", label: "Product" },
+        { key: "name", label: T("products.product") },
         { key: "sku", label: "SKU" },
-        { key: "totalQuantitySold", label: "Qty Sold", align: "right" },
-        { key: "totalRevenue", label: "Revenue", align: "right" },
-        { key: "avgUnitPrice", label: "Avg Price", align: "right" },
+        { key: "totalQuantitySold", label: T("reports.qtySold", "Qty Sold"), align: "right" },
+        { key: "totalRevenue", label: T("common.revenue"), align: "right" },
+        { key: "avgUnitPrice", label: T("reports.avgPrice", "Avg Price"), align: "right" },
       ]}
       data={data}
       renderCell={(item, key) => {
@@ -87,14 +90,15 @@ export function TopProductsTable({ data }: { data: TopProduct[] }) {
 }
 
 export function TopCategoriesTable({ data }: { data: TopCategory[] }) {
+  const T = useT();
   return (
     <DataTable
-      title="Top Categories"
+      title={T("reports.topCategories", "Top Categories")}
       columns={[
-        { key: "categoryName", label: "Category" },
-        { key: "productCount", label: "Products", align: "right" },
-        { key: "totalQuantitySold", label: "Qty Sold", align: "right" },
-        { key: "totalRevenue", label: "Revenue", align: "right" },
+        { key: "categoryName", label: T("categories.category") },
+        { key: "productCount", label: T("categories.products"), align: "right" },
+        { key: "totalQuantitySold", label: T("reports.qtySold", "Qty Sold"), align: "right" },
+        { key: "totalRevenue", label: T("common.revenue"), align: "right" },
       ]}
       data={data}
       renderCell={(item, key) => {
@@ -114,15 +118,16 @@ export function TopCategoriesTable({ data }: { data: TopCategory[] }) {
 }
 
 export function TopCustomersTable({ data }: { data: TopCustomer[] }) {
+  const T = useT();
   return (
     <DataTable
-      title="Top Customers"
+      title={T("reports.topCustomers", "Top Customers")}
       columns={[
-        { key: "customerName", label: "Customer" },
-        { key: "customerPhone", label: "Phone" },
-        { key: "totalOrders", label: "Orders", align: "right" },
-        { key: "totalSpent", label: "Total Spent", align: "right" },
-        { key: "avgOrderValue", label: "Avg Order", align: "right" },
+        { key: "customerName", label: T("sales.customer") },
+        { key: "customerPhone", label: T("common.phone") },
+        { key: "totalOrders", label: T("reports.orders", "Orders"), align: "right" },
+        { key: "totalSpent", label: T("reports.totalSpent", "Total Spent"), align: "right" },
+        { key: "avgOrderValue", label: T("reports.avgOrder", "Avg Order"), align: "right" },
       ]}
       data={data}
       renderCell={(item, key) => {
@@ -142,14 +147,15 @@ export function TopCustomersTable({ data }: { data: TopCustomer[] }) {
 }
 
 export function BestCashiersTable({ data }: { data: BestCashier[] }) {
+  const T = useT();
   return (
     <DataTable
-      title="Best Cashiers"
+      title={T("reports.bestCashiers", "Best Cashiers")}
       columns={[
-        { key: "cashierName", label: "Cashier" },
-        { key: "totalSales", label: "Sales", align: "right" },
-        { key: "totalRevenue", label: "Revenue", align: "right" },
-        { key: "avgSaleValue", label: "Avg Sale", align: "right" },
+        { key: "cashierName", label: T("staff.cashier") },
+        { key: "totalSales", label: T("common.sales"), align: "right" },
+        { key: "totalRevenue", label: T("common.revenue"), align: "right" },
+        { key: "avgSaleValue", label: T("reports.avgSale", "Avg Sale"), align: "right" },
       ]}
       data={data}
       renderCell={(item, key) => {

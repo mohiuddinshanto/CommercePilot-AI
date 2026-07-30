@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { useBundle, useDeleteBundle, useBundleStock } from "@/features/bundles/hooks/useBundles";
 import { BundlePriceSummary } from "@/features/bundles/components/BundlePriceSummary";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { Package, ArrowLeft, Trash2, Edit, ShoppingCart, Tag, Box } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function BundleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: bundle, isLoading, error } = useBundle(id);
@@ -29,7 +31,7 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
   }, [deleteBundle, id, router]);
 
   if (error) {
-    return <ErrorPage title="Failed to load bundle" message="Could not fetch bundle details." />;
+    return <ErrorPage title={T("bundles.errorTitle", "Failed to load bundle")} message={T("bundles.errorDetailMessage", "Could not fetch bundle details.")} />;
   }
 
   if (isLoading || !bundle) {
@@ -55,7 +57,7 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{bundle.name}</h1>
             <p className="text-sm text-gray-500">
-              Created {formatDateTime(bundle.createdAt)}
+              {T("bundles.created", "Created")} {formatDateTime(bundle.createdAt)}
             </p>
           </div>
         </div>
@@ -65,14 +67,14 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
             className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <Edit className="h-4 w-4" />
-            Edit
+            {T("common.edit")}
           </Link>
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {T("common.delete")}
           </button>
         </div>
       </div>
@@ -80,10 +82,10 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Details</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.details", "Details")}</h2>
             <dl className="grid grid-cols-2 gap-4">
               <div>
-                <dt className="text-sm text-gray-500">Status</dt>
+                <dt className="text-sm text-gray-500">{T("common.status")}</dt>
                 <dd className="mt-1">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -99,12 +101,12 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-gray-500">Slug</dt>
+                <dt className="text-sm text-gray-500">{T("bundles.slug", "Slug")}</dt>
                 <dd className="mt-1 text-sm text-gray-900">{bundle.slug}</dd>
               </div>
               {bundle.description && (
                 <div className="col-span-2">
-                  <dt className="text-sm text-gray-500">Description</dt>
+                  <dt className="text-sm text-gray-500">{T("common.description")}</dt>
                   <dd className="mt-1 text-sm text-gray-900">{bundle.description}</dd>
                 </div>
               )}
@@ -132,7 +134,7 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
                       {item.productId.slice(0, 12)}...
                     </span>
                   </div>
-                  <span className="text-sm text-gray-600">Qty: {item.quantity}</span>
+                  <span className="text-sm text-gray-600">{T("common.quantity")}: {item.quantity}</span>
                 </div>
               ))}
             </div>
@@ -144,8 +146,8 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               <div className="flex items-center gap-2">
                 <Tag className="h-5 w-5" />
-                Pricing
-              </div>
+                  {T("bundles.pricing", "Pricing")}
+                </div>
             </h2>
             <BundlePriceSummary
               originalPrice={bundle.originalPrice}
@@ -159,12 +161,12 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               <div className="flex items-center gap-2">
                 <Box className="h-5 w-5" />
-                Stock
+                {T("inventory.title")}
               </div>
             </h2>
             {stock && (
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Available Bundle Stock</span>
+                <span className="text-sm text-gray-600">{T("bundles.availableStock", "Available Bundle Stock")}</span>
                 <span
                   className={`text-lg font-semibold ${
                     stock.availableStock === 0
@@ -181,14 +183,14 @@ export default function BundleDetailPage({ params }: { params: Promise<{ id: str
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.metadata", "Metadata")}</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Created</dt>
+                <dt className="text-sm text-gray-500">{T("common.created", "Created")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(bundle.createdAt)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Updated</dt>
+                <dt className="text-sm text-gray-500">{T("common.updated", "Updated")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(bundle.updatedAt)}</dd>
               </div>
             </dl>

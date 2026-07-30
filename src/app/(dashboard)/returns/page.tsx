@@ -8,12 +8,14 @@ import { ReturnForm } from "@/features/returns/components/ReturnForm";
 import { ReturnModal } from "@/features/returns/components/ReturnModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { useSaleList } from "@/features/sales/hooks/useSales";
+import { useT } from "@/lib/i18n/use-t";
 import { Plus, RotateCcw, Search } from "lucide-react";
 import type { CreateReturnInput } from "@/types/return";
 import type { Sale } from "@/types/sale";
 import toast from "react-hot-toast";
 
 export default function ReturnsPage() {
+  const T = useT();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -76,7 +78,7 @@ export default function ReturnsPage() {
   };
 
   if (error) {
-    return <ErrorPage title="Failed to load returns" message="Could not fetch returns." />;
+    return <ErrorPage title={T("returns.errorTitle", "Failed to load returns")} message={T("returns.errorMessage", "Could not fetch returns.")} />;
   }
 
   return (
@@ -85,9 +87,9 @@ export default function ReturnsPage() {
         <div className="flex items-center gap-3">
           <RotateCcw className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Returns</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("returns.title")}</h1>
             <p className="text-sm text-gray-600">
-              Manage product returns and refunds.
+              {T("returns.subtitle")}
             </p>
           </div>
         </div>
@@ -96,7 +98,7 @@ export default function ReturnsPage() {
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
-          New Return
+          {T("returns.new")}
         </button>
       </div>
 
@@ -109,7 +111,7 @@ export default function ReturnsPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by invoice, customer name, or phone..."
+            placeholder={T("returns.searchPlaceholder")}
             className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -128,7 +130,7 @@ export default function ReturnsPage() {
       )}
 
       <ReturnModal
-        title="New Return"
+        title={T("returns.new")}
         isOpen={showCreateModal}
         onClose={() => {
           setShowCreateModal(false);

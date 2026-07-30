@@ -1,6 +1,7 @@
 "use client";
 
 import { formatDateTime } from "@/lib/utils";
+import { useT } from "@/lib/i18n/use-t";
 import type { ActivityLog } from "@/types/dashboard";
 import { Activity } from "lucide-react";
 
@@ -28,15 +29,16 @@ function getActionColor(action: string): string {
 }
 
 export function RecentActivities({ activities }: { activities: ActivityLog[] }) {
+  const T = useT();
   if (activities.length === 0) {
     return (
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <h3 className="text-lg font-semibold text-gray-900">
-          Recent Activities
+          {T("dashboard.recentActivity")}
         </h3>
         <div className="mt-8 flex flex-col items-center gap-2 text-gray-400">
           <Activity className="h-10 w-10" />
-          <p className="text-sm">No recent activities</p>
+          <p className="text-sm">{T("dashboard.noActivity")}</p>
         </div>
       </div>
     );
@@ -45,7 +47,7 @@ export function RecentActivities({ activities }: { activities: ActivityLog[] }) 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
       <h3 className="text-lg font-semibold text-gray-900">
-        Recent Activities
+        {T("dashboard.recentActivity")}
       </h3>
       <div className="mt-4 space-y-3">
         {activities.map((log) => (

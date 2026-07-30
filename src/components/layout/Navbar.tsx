@@ -1,12 +1,14 @@
 "use client";
 
 import { useAuth } from "@/providers/auth-provider";
-import { LogOut, Bell } from "lucide-react";
+import { useLanguage } from "@/providers/language-provider";
+import { LogOut, Bell, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signOutAction } from "@/actions/auth.actions";
 
 export function Navbar() {
   const { user } = useAuth();
+  const { lang, toggleLang } = useLanguage();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -22,6 +24,14 @@ export function Navbar() {
     <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
       <div />
       <div className="flex items-center gap-4">
+        <button
+          onClick={toggleLang}
+          className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+          title={lang === "en" ? "বাংলা" : "English"}
+        >
+          <Globe className="h-4 w-4" />
+          <span>{lang === "en" ? "EN" : "বাংলা"}</span>
+        </button>
         <button className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-100">
           <Bell className="h-5 w-5" />
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-red-500" />

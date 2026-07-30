@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { ShoppingCart, Plus, Minus, Trash2, Search, Package, X } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import { useProducts } from "@/features/products/hooks/useProducts";
@@ -23,6 +24,7 @@ interface SalesFormProps {
 }
 
 export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
+  const T = useT();
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [items, setItems] = useState<CartItemData[]>([]);
@@ -151,23 +153,23 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       {/* Customer Info */}
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Customer Name</label>
+          <label className="block text-sm font-medium text-gray-700">{T("sales.customer")}</label>
           <input
             type="text"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Walk-in Customer"
+            placeholder={T("sales.walkInCustomer", "Walk-in Customer")}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">Phone</label>
+          <label className="block text-sm font-medium text-gray-700">{T("common.phone")}</label>
           <input
             type="text"
             value={customerPhone}
             onChange={(e) => setCustomerPhone(e.target.value)}
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Optional"
+            placeholder={T("common.optional", "Optional")}
           />
         </div>
       </div>
@@ -176,7 +178,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       <div className="rounded-xl border border-blue-100 bg-blue-50/40 p-3" ref={dropdownRef}>
         <p className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-blue-700">
           <Package className="h-4 w-4" />
-          Search & Add Products
+          {T("sales.searchAddProducts", "Search & Add Products")}
         </p>
 
         {/* Search + Price Filter Row */}
@@ -201,7 +203,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                   }
                 }
               }}
-              placeholder="Search product by name or SKU (live)..."
+              placeholder={T("sales.searchProductPlaceholder", "Search product by name or SKU (live)...")}
               className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {searchQuery && (
@@ -249,12 +251,12 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             {isSearching ? (
               <div className="flex items-center justify-center py-6 text-sm text-gray-400">
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mr-2" />
-                Searching...
+                {T("common.searching", "Searching...")}
               </div>
             ) : products.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-center text-sm text-gray-400">
                 <Package className="h-7 w-7 mb-1 text-gray-300" />
-                No products found
+                {T("products.noProducts")}
               </div>
             ) : (
               products.map((product) => {
@@ -305,9 +307,9 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
         )}
 
         <p className="mt-1.5 text-xs text-blue-600/70">
-          {items.length > 0
-            ? `${items.length} product(s) in cart`
-            : "Select products to add to cart"}
+            {items.length > 0
+            ? T("sales.productsInCart", "{count} product(s) in cart").replace("{count}", String(items.length))
+            : T("sales.selectProducts", "Select products to add to cart")}
         </p>
       </div>
 
@@ -316,7 +318,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
             <ShoppingCart className="h-4 w-4" />
-            Cart ({items.length} items)
+            {T("sales.cart", "Cart")} ({items.length} {T("sales.items")})
           </div>
           {items.map((item, index) => (
             <div
@@ -380,7 +382,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Discount (৳)</label>
+            <label className="block text-sm font-medium text-gray-700">{T("common.discount")} (৳)</label>
             <input
               type="number"
               value={discount}
@@ -391,7 +393,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tax (৳)</label>
+            <label className="block text-sm font-medium text-gray-700">{T("common.tax", "Tax")} (৳)</label>
             <input
               type="number"
               value={tax}
@@ -402,7 +404,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Shipping (৳)</label>
+            <label className="block text-sm font-medium text-gray-700">{T("common.shipping", "Shipping")} (৳)</label>
             <input
               type="number"
               value={shipping}
@@ -416,7 +418,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
 
         <div className="space-y-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Payment Method *</label>
+            <label className="block text-sm font-medium text-gray-700">{T("sales.paymentMethod")} *</label>
             <select
               value={paymentMethod}
               onChange={(e) => { setPaymentMethod(e.target.value); setPaymentNote(""); }}
@@ -434,13 +436,13 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                 type="text"
                 value={paymentNote}
                 onChange={(e) => setPaymentNote(e.target.value)}
-                placeholder="Note (optional) — e.g. sender number last 4 digits"
+                placeholder={T("sales.paymentNotePlaceholder", "Note (optional) — e.g. sender number last 4 digits")}
                 className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             )}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Paid Amount *</label>
+            <label className="block text-sm font-medium text-gray-700">{T("sales.paidAmount")} *</label>
             <div className="relative mt-1">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">৳</span>
               <input
@@ -455,7 +457,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Notes</label>
+            <label className="block text-sm font-medium text-gray-700">{T("common.notes")}</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -469,44 +471,44 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
       {/* Order Summary */}
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-1.5">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Subtotal</span>
+          <span className="text-gray-500">{T("common.subtotal")}</span>
           <span className="font-medium">{formatCurrency(subtotal)}</span>
         </div>
         {discountNum > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Discount</span>
+            <span className="text-gray-500">{T("common.discount")}</span>
             <span className="text-red-600 font-medium">−{formatCurrency(discountNum)}</span>
           </div>
         )}
         {taxNum > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Tax</span>
+            <span className="text-gray-500">{T("common.tax", "Tax")}</span>
             <span>+{formatCurrency(taxNum)}</span>
           </div>
         )}
         {shippingNum > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Shipping</span>
+            <span className="text-gray-500">{T("common.shipping", "Shipping")}</span>
             <span>+{formatCurrency(shippingNum)}</span>
           </div>
         )}
         <div className="flex justify-between border-t border-gray-200 pt-1.5 text-base font-bold">
-          <span>Grand Total</span>
+          <span>{T("sales.grandTotal")}</span>
           <span className="text-blue-700">{formatCurrency(grandTotal)}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-gray-500">Paid</span>
+          <span className="text-gray-500">{T("common.paid")}</span>
           <span className="text-green-600 font-medium">{formatCurrency(paidNum)}</span>
         </div>
         {grandTotal - paidNum > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Due</span>
+            <span className="text-gray-500">{T("common.due")}</span>
             <span className="text-red-600 font-bold">{formatCurrency(grandTotal - paidNum)}</span>
           </div>
         )}
         {paidNum > grandTotal && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-500">Change</span>
+            <span className="text-gray-500">{T("common.change", "Change")}</span>
             <span className="text-emerald-600 font-bold">{formatCurrency(paidNum - grandTotal)}</span>
           </div>
         )}
@@ -518,14 +520,14 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
           onClick={onCancel}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          {T("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={isLoading || items.length === 0}
           className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {isLoading ? "Processing..." : `Complete Sale — ${formatCurrency(grandTotal)}`}
+          {isLoading ? T("common.processing", "Processing...") : `${T("sales.completeSale", "Complete Sale")} — ${formatCurrency(grandTotal)}`}
         </button>
       </div>
     </form>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCategory, useDeleteCategory } from "@/features/categories/hooks/useCategories";
 import { formatDateTime } from "@/lib/utils";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { ArrowLeft, FolderTree, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -27,6 +28,7 @@ export default function CategoryDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: category, isLoading, error } = useCategory(id);
@@ -53,7 +55,7 @@ export default function CategoryDetailPage({
   }
 
   if (error || !category) {
-    return <ErrorPage title="Category not found" message="Could not load category details." />;
+    return <ErrorPage title={T("categories.notFound", "Category not found")} message={T("categories.notFoundMessage", "Could not load category details.")} />;
   }
 
   return (
@@ -70,7 +72,7 @@ export default function CategoryDetailPage({
             <FolderTree className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{category.name}</h1>
-              <p className="text-sm text-gray-500">Slug: {category.slug}</p>
+              <p className="text-sm text-gray-500">{T("categories.slug", "Slug")}: {category.slug}</p>
             </div>
           </div>
         </div>
@@ -80,23 +82,23 @@ export default function CategoryDetailPage({
             className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <Pencil className="h-4 w-4" />
-            Edit
+            {T("common.edit")}
           </Link>
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {T("common.delete")}
           </button>
         </div>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white p-6">
-        <h3 className="text-lg font-semibold text-gray-900">Details</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{T("common.details", "Details")}</h3>
         <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
           <div>
-            <dt className="text-gray-500">Status</dt>
+            <dt className="text-gray-500">{T("common.status")}</dt>
             <dd className="mt-1">
               <span
                 className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getStatusBadge(category.status)}`}
@@ -106,21 +108,21 @@ export default function CategoryDetailPage({
             </dd>
           </div>
           <div>
-            <dt className="text-gray-500">Sort Order</dt>
+            <dt className="text-gray-500">{T("categories.sortOrder", "Sort Order")}</dt>
             <dd className="mt-1 font-medium text-gray-900">{category.sortOrder}</dd>
           </div>
           <div>
-            <dt className="text-gray-500">Created</dt>
+            <dt className="text-gray-500">{T("common.created", "Created")}</dt>
             <dd className="mt-1 text-gray-900">{formatDateTime(category.createdAt)}</dd>
           </div>
           <div>
-            <dt className="text-gray-500">Updated</dt>
+            <dt className="text-gray-500">{T("common.updated", "Updated")}</dt>
             <dd className="mt-1 text-gray-900">{formatDateTime(category.updatedAt)}</dd>
           </div>
         </dl>
         {category.description && (
           <div className="mt-4">
-            <dt className="text-sm text-gray-500">Description</dt>
+            <dt className="text-sm text-gray-500">{T("common.description")}</dt>
             <dd className="mt-1 text-sm text-gray-900">{category.description}</dd>
           </div>
         )}

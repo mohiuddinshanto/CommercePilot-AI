@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useProduct, useDeleteProduct } from "@/features/products/hooks/useProducts";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { ArrowLeft, Package, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -29,6 +30,7 @@ export default function ProductDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: product, isLoading, error } = useProduct(id);
@@ -55,7 +57,7 @@ export default function ProductDetailPage({
   }
 
   if (error || !product) {
-    return <ErrorPage title="Product not found" message="Could not load product details." />;
+    return <ErrorPage title={T("products.notFound", "Product not found")} message={T("products.notFoundMessage", "Could not load product details.")} />;
   }
 
   return (
@@ -72,7 +74,7 @@ export default function ProductDetailPage({
             <Package className="h-8 w-8 text-blue-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
-              <p className="text-sm text-gray-500">SKU: {product.sku}</p>
+              <p className="text-sm text-gray-500">{T("products.sku")}: {product.sku}</p>
             </div>
           </div>
         </div>
@@ -82,14 +84,14 @@ export default function ProductDetailPage({
             className="flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
             <Pencil className="h-4 w-4" />
-            Edit
+            {T("common.edit")}
           </Link>
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg border border-red-300 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {T("common.delete")}
           </button>
         </div>
       </div>
@@ -97,10 +99,10 @@ export default function ProductDetailPage({
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h3 className="text-lg font-semibold text-gray-900">Details</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{T("common.details", "Details")}</h3>
             <dl className="mt-4 grid grid-cols-2 gap-4 text-sm">
               <div>
-                <dt className="text-gray-500">Status</dt>
+                <dt className="text-gray-500">{T("common.status")}</dt>
                 <dd className="mt-1">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getStatusBadge(product.status)}`}
@@ -110,27 +112,27 @@ export default function ProductDetailPage({
                 </dd>
               </div>
               <div>
-                <dt className="text-gray-500">Barcode</dt>
+                <dt className="text-gray-500">{T("products.barcode", "Barcode")}</dt>
                 <dd className="mt-1 font-medium text-gray-900">{product.barcode || "—"}</dd>
               </div>
               <div>
-                <dt className="text-gray-500">Created</dt>
+                <dt className="text-gray-500">{T("common.created", "Created")}</dt>
                 <dd className="mt-1 text-gray-900">{formatDate(product.createdAt)}</dd>
               </div>
               <div>
-                <dt className="text-gray-500">Updated</dt>
+                <dt className="text-gray-500">{T("common.updated", "Updated")}</dt>
                 <dd className="mt-1 text-gray-900">{formatDate(product.updatedAt)}</dd>
               </div>
             </dl>
             {product.description && (
               <div className="mt-4">
-                <dt className="text-sm text-gray-500">Description</dt>
+                <dt className="text-sm text-gray-500">{T("common.description")}</dt>
                 <dd className="mt-1 text-sm text-gray-900">{product.description}</dd>
               </div>
             )}
             {product.tags.length > 0 && (
               <div className="mt-4">
-                <dt className="text-sm text-gray-500">Tags</dt>
+                <dt className="text-sm text-gray-500">{T("products.tags", "Tags")}</dt>
                 <dd className="mt-1 flex flex-wrap gap-1">
                   {product.tags.map((tag) => (
                     <span
@@ -148,25 +150,25 @@ export default function ProductDetailPage({
 
         <div className="space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h3 className="text-lg font-semibold text-gray-900">Pricing & Stock</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{T("products.pricingStock", "Pricing & Stock")}</h3>
             <dl className="mt-4 space-y-3 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-gray-500">Cost Price</dt>
+                <dt className="text-gray-500">{T("inventory.costPrice")}</dt>
                 <dd className="font-medium text-gray-900">{formatCurrency(product.costPrice)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-gray-500">Selling Price</dt>
+                <dt className="text-gray-500">{T("products.sellingPrice", "Selling Price")}</dt>
                 <dd className="font-medium text-gray-900">{formatCurrency(product.sellingPrice)}</dd>
               </div>
               {product.discountPrice != null && product.discountPrice > 0 && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-gray-500">Discount Price</dt>
+                  <dt className="text-gray-500">{T("products.discountPrice", "Discount Price")}</dt>
                   <dd className="font-medium text-green-600">{formatCurrency(product.discountPrice)}</dd>
                 </div>
               )}
               <div className="border-t border-gray-200 pt-3" />
               <div className="flex items-center justify-between">
-                <dt className="text-gray-500">Stock</dt>
+                <dt className="text-gray-500">{T("products.stock")}</dt>
                 <dd
                   className={`font-medium ${
                     product.stock <= product.lowStockLimit ? "text-red-600" : "text-gray-900"
@@ -176,12 +178,12 @@ export default function ProductDetailPage({
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-gray-500">Low Stock Limit</dt>
+                <dt className="text-gray-500">{T("products.lowStockLimit", "Low Stock Limit")}</dt>
                 <dd className="font-medium text-gray-900">{product.lowStockLimit}</dd>
               </div>
               {product.stock <= product.lowStockLimit && (
                 <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-                  Stock is at or below the low stock limit.
+                  {T("products.lowStockWarning", "Stock is at or below the low stock limit.")}
                 </div>
               )}
             </dl>

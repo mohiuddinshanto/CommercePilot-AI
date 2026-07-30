@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/providers/query-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { ToastProvider } from "@/providers/toast-provider";
+import { LanguageProvider } from "@/providers/language-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -49,10 +50,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <AuthProvider>
-            {children}
-            <ToastProvider />
-          </AuthProvider>
+          <LanguageProvider>
+            <AuthProvider>
+              {children}
+              <ToastProvider />
+            </AuthProvider>
+          </LanguageProvider>
         </Providers>
       </body>
     </html>

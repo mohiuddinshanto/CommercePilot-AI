@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { ShipmentBadge } from "./ShipmentBadge";
 import { getCourierLabel } from "./ShipmentBadge";
 import { formatDateTime } from "@/lib/utils";
@@ -20,11 +21,12 @@ interface ShipmentSectionProps {
 }
 
 export function ShipmentSection({ shipments }: ShipmentSectionProps) {
+  const T = useT();
   if (!shipments.length) return null;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipments</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("shipments.title", "Shipments")}</h2>
       <div className="space-y-4">
         {shipments.map((shipment) => (
           <div key={shipment._id} className="rounded-lg border border-gray-100 bg-gray-50 p-4">
@@ -37,7 +39,7 @@ export function ShipmentSection({ shipments }: ShipmentSectionProps) {
               </div>
               {shipment.consignmentId && (
                 <span className="text-xs text-gray-500 font-mono">
-                  ID: {shipment.consignmentId}
+                  {T("common.id")}: {shipment.consignmentId}
                 </span>
               )}
             </div>
@@ -55,9 +57,9 @@ export function ShipmentSection({ shipments }: ShipmentSectionProps) {
             )}
 
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className="text-gray-500">COD: {shipment.codAmount} BDT</span>
+              <span className="text-gray-500">{T("shipments.cod", "COD")}: {shipment.codAmount} BDT</span>
               <span className="text-gray-500">
-                Phone: {shipment.deliveryPhone}
+                {T("common.phone")}: {shipment.deliveryPhone}
               </span>
             </div>
           </div>

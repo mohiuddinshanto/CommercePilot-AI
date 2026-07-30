@@ -8,6 +8,7 @@ import { StaffModal } from "@/features/staff/components/StaffModal";
 import { StaffForm } from "@/features/staff/components/StaffForm";
 import { RoleBadge } from "@/features/staff/components/RoleBadge";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { Users, ArrowLeft, Trash2, ShieldOff, Shield } from "lucide-react";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import toast from "react-hot-toast";
 import type { UpdateStaffInput } from "@/types/staff";
 
 export default function StaffDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: staff, isLoading, error } = useStaff(id);
@@ -65,7 +67,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
   }, [updateStaff, id]);
 
   if (error) {
-    return <ErrorPage title="Failed to load staff" message="Could not fetch staff member details." />;
+    return <ErrorPage title={T("staff.errorTitle", "Failed to load staff")} message={T("staff.errorDetailMessage", "Could not fetch staff member details.")} />;
   }
 
   if (isLoading || !staff) {
@@ -102,14 +104,14 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
                 onClick={() => setShowEditModal(true)}
                 className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                Edit
+                {T("common.edit")}
               </button>
               <button
                 onClick={handleSuspend}
                 className="flex items-center gap-2 rounded-lg border border-yellow-300 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-50"
               >
                 <ShieldOff className="h-4 w-4" />
-                Suspend
+                {T("staff.suspend", "Suspend")}
               </button>
             </>
           )}
@@ -119,7 +121,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
               className="flex items-center gap-2 rounded-lg border border-green-300 px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-50"
             >
               <Shield className="h-4 w-4" />
-              Activate
+              {T("staff.activate", "Activate")}
             </button>
           )}
           <button
@@ -127,7 +129,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
             className="flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
-            Remove
+            {T("common.delete")}
           </button>
         </div>
       </div>
@@ -137,7 +139,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
           <StaffProfileCard staff={staff} />
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Permissions</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("staff.permissions")}</h2>
             <div className="flex flex-wrap gap-2">
               {staff.permissions.map((perm) => (
                 <span
@@ -148,7 +150,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
                 </span>
               ))}
               {staff.permissions.length === 0 && (
-                <p className="text-sm text-gray-500">No permissions assigned.</p>
+                <p className="text-sm text-gray-500">{T("staff.noPermissions", "No permissions assigned.")}</p>
               )}
             </div>
           </div>
@@ -156,10 +158,10 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
 
         <div className="space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Status</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.status")}</h2>
             <dl className="space-y-3">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Status</dt>
+                <dt className="text-sm text-gray-500">{T("common.status")}</dt>
                 <dd>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -175,14 +177,14 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Role</dt>
+                <dt className="text-sm text-gray-500">{T("staff.role")}</dt>
                 <dd>
                   <RoleBadge role={staff.role} />
                 </dd>
               </div>
               {staff.suspendedAt && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-500">Suspended At</dt>
+                  <dt className="text-sm text-gray-500">{T("staff.suspendedAt", "Suspended At")}</dt>
                   <dd className="text-sm text-gray-900">{formatDateTime(staff.suspendedAt)}</dd>
                 </div>
               )}
@@ -190,14 +192,14 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.metadata", "Metadata")}</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Created</dt>
+                <dt className="text-sm text-gray-500">{T("common.created", "Created")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(staff.createdAt)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Updated</dt>
+                <dt className="text-sm text-gray-500">{T("common.updated", "Updated")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(staff.updatedAt)}</dd>
               </div>
             </dl>
@@ -206,7 +208,7 @@ export default function StaffDetailPage({ params }: { params: Promise<{ id: stri
       </div>
 
       <StaffModal
-        title="Edit Staff Member"
+        title={T("staff.editMember", "Edit Staff Member")}
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
       >

@@ -6,6 +6,7 @@ import { useCategory, useUpdateCategory } from "@/features/categories/hooks/useC
 import { CategoryForm } from "@/features/categories/components/CategoryForm";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { FullPageLoader } from "@/components/common/Loader";
+import { useT } from "@/lib/i18n/use-t";
 import { ArrowLeft, FolderTree } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ export default function EditCategoryPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: category, isLoading, error } = useCategory(id);
@@ -39,7 +41,7 @@ export default function EditCategoryPage({
   }
 
   if (error || !category) {
-    return <ErrorPage title="Category not found" message="Could not load category details for editing." />;
+    return <ErrorPage title={T("categories.notFound", "Category not found")} message={T("categories.editNotFoundMessage", "Could not load category details for editing.")} />;
   }
 
   return (
@@ -54,8 +56,8 @@ export default function EditCategoryPage({
         <div className="flex items-center gap-3">
           <FolderTree className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Edit Category</h1>
-            <p className="text-sm text-gray-500">Update category details and settings.</p>
+            <h1 className="text-2xl font-bold text-gray-900">{T("categories.edit")}</h1>
+            <p className="text-sm text-gray-500">{T("categories.editSubtitle", "Update category details and settings.")}</p>
           </div>
         </div>
       </div>

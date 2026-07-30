@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { generateContent } from "@/features/ai/api/ai.api";
+import { useT } from "@/lib/i18n/use-t";
 import { Sparkles, Copy, Check, RotateCcw, PenTool, Layout, FileText, Share2, Mail } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -10,6 +11,7 @@ type ToneType = "professional" | "friendly" | "casual" | "excited" | "persuasive
 type LengthType = "short" | "medium" | "long";
 
 export default function AIContentGeneratorPage() {
+  const T = useT();
   const [contentType, setContentType] = useState<ContentType>("product_description");
   const [titleOrKeywords, setTitleOrKeywords] = useState("");
   const [keyFeatures, setKeyFeatures] = useState("");
@@ -78,9 +80,9 @@ export default function AIContentGeneratorPage() {
           <PenTool className="h-6 w-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">AI Copywriter & Content Generator</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{T("aiGenerator.title")}</h1>
           <p className="text-sm text-gray-500">
-            Generate high-converting product copies, social media captions, SEO articles, and newsletter drafts in seconds.
+            {T("aiGenerator.subtitle")}
           </p>
         </div>
       </div>
@@ -90,15 +92,15 @@ export default function AIContentGeneratorPage() {
         <form onSubmit={handleGenerate} className="lg:col-span-5 bg-white rounded-xl border border-gray-200 p-6 shadow-sm space-y-5">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-              Content Template <span className="text-red-500">*</span>
+              {T("aiGenerator.contentTemplate", "Content Template")} <span className="text-red-500">*</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
               {(
                 [
-                  { id: "product_description", label: "Product Info", icon: "product_description" },
-                  { id: "social_post", label: "Social Caption", icon: "social_post" },
-                  { id: "blog_outline", label: "SEO Outline", icon: "blog_outline" },
-                  { id: "email_newsletter", label: "Newsletter", icon: "email_newsletter" },
+                  { id: "product_description", label: T("aiGenerator.productInfo", "Product Info"), icon: "product_description" },
+                  { id: "social_post", label: T("aiGenerator.socialCaption", "Social Caption"), icon: "social_post" },
+                  { id: "blog_outline", label: T("aiGenerator.seoOutline", "SEO Outline"), icon: "blog_outline" },
+                  { id: "email_newsletter", label: T("aiGenerator.newsletter", "Newsletter"), icon: "email_newsletter" },
                 ] as const
               ).map((tpl) => (
                 <button
@@ -120,7 +122,7 @@ export default function AIContentGeneratorPage() {
 
           <div>
             <label htmlFor="titleOrKeywords" className="block text-sm font-semibold text-gray-700 mb-1">
-              Title or Primary Keywords <span className="text-red-500">*</span>
+              {T("aiGenerator.titleOrKeywords", "Title or Primary Keywords")} <span className="text-red-500">*</span>
             </label>
             <input
               id="titleOrKeywords"
@@ -143,7 +145,7 @@ export default function AIContentGeneratorPage() {
 
           <div>
             <label htmlFor="keyFeatures" className="block text-sm font-semibold text-gray-700 mb-1">
-              Key Features or Highlights (Optional)
+              {T("aiGenerator.keyFeatures", "Key Features or Highlights (Optional)")}
             </label>
             <textarea
               id="keyFeatures"
@@ -158,7 +160,7 @@ export default function AIContentGeneratorPage() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="tone" className="block text-sm font-semibold text-gray-700 mb-1">
-                Tone of Voice
+                {T("aiGenerator.toneOfVoice", "Tone of Voice")}
               </label>
               <select
                 id="tone"
@@ -176,7 +178,7 @@ export default function AIContentGeneratorPage() {
 
             <div>
               <label htmlFor="length" className="block text-sm font-semibold text-gray-700 mb-1">
-                Content Length
+                {T("aiGenerator.contentLength", "Content Length")}
               </label>
               <select
                 id="length"
@@ -197,14 +199,14 @@ export default function AIContentGeneratorPage() {
             className="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-sm"
           >
             <Sparkles className="h-4 w-4" />
-            {isLoading ? "Generating Draft..." : "Generate Content"}
+            {isLoading ? T("aiGenerator.generating", "Generating Draft...") : T("aiGenerator.generateContent", "Generate Content")}
           </button>
         </form>
 
         {/* Right Output Panel */}
         <div className="lg:col-span-7 bg-white rounded-xl border border-gray-200 p-6 shadow-sm flex flex-col min-h-[460px]">
           <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">Draft Output</span>
+            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{T("aiGenerator.draftOutput", "Draft Output")}</span>
             {result && (
               <div className="flex items-center gap-2">
                 <button
@@ -213,7 +215,7 @@ export default function AIContentGeneratorPage() {
                   title="Copy to clipboard"
                 >
                   {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? T("common.copied", "Copied") : T("common.copy", "Copy")}
                 </button>
                 <button
                   onClick={() => handleGenerate()}
@@ -222,7 +224,7 @@ export default function AIContentGeneratorPage() {
                   title="Regenerate with same settings"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
-                  Regenerate
+                  {T("aiGenerator.regenerate", "Regenerate")}
                 </button>
               </div>
             )}
@@ -232,7 +234,7 @@ export default function AIContentGeneratorPage() {
             {isLoading ? (
               <div className="flex flex-col items-center justify-center h-full py-16 space-y-3">
                 <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
-                <p className="text-sm text-gray-500 font-medium">Crafting your content using AI...</p>
+                <p className="text-sm text-gray-500 font-medium">{T("aiGenerator.crafting", "Crafting your content using AI...")}</p>
               </div>
             ) : result ? (
               <div className="prose prose-sm text-gray-800 max-w-none space-y-4 whitespace-pre-wrap font-sans leading-relaxed">
@@ -241,9 +243,9 @@ export default function AIContentGeneratorPage() {
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center py-20 text-gray-400">
                 <Sparkles className="h-10 w-10 text-gray-300 mb-3" />
-                <p className="text-sm font-medium">No content generated yet.</p>
+                <p className="text-sm font-medium">{T("aiGenerator.noContent", "No content generated yet.")}</p>
                 <p className="text-xs text-gray-400 mt-1 max-w-xs">
-                  Fill in the options on the left and click &ldquo;Generate Content&rdquo; to draft your copywriting.
+                  {T("aiGenerator.noContentHint", "Fill in the options on the left and click \"Generate Content\" to draft your copywriting.")}
                 </p>
               </div>
             )}

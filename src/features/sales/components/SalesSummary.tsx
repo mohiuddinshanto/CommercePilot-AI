@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { DollarSign, TrendingUp, Receipt, AlertCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { SalesSummary } from "@/types/sale";
@@ -9,30 +10,31 @@ interface SalesSummaryProps {
 }
 
 export function SalesSummaryCard({ summary }: SalesSummaryProps) {
+  const T = useT();
   const cards = [
     {
-      label: "Total Sales",
+      label: T("sales.summaryTotalSales", "Total Sales"),
       value: summary.totalSales,
       icon: Receipt,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
-      label: "Total Revenue",
+      label: T("sales.summaryTotalRevenue", "Total Revenue"),
       value: formatCurrency(summary.totalRevenue),
       icon: DollarSign,
       color: "text-green-600",
       bg: "bg-green-50",
     },
     {
-      label: "Total Paid",
+      label: T("sales.summaryTotalPaid", "Total Paid"),
       value: formatCurrency(summary.totalPaid),
       icon: TrendingUp,
       color: "text-emerald-600",
       bg: "bg-emerald-50",
     },
     {
-      label: "Total Due",
+      label: T("sales.summaryTotalDue", "Total Due"),
       value: formatCurrency(summary.totalDue),
       icon: AlertCircle,
       color: "text-red-600",

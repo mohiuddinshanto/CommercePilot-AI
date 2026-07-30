@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { LineChart } from "lucide-react";
+import { useT } from "@/lib/i18n/use-t";
 import {
   useSalesReport,
   useProfitReport,
@@ -22,6 +23,7 @@ import { ErrorPage } from "@/components/common/ErrorPage";
 import type { ReportQueryParams } from "@/types/report";
 
 export default function AnalyticsPageContent() {
+  const T = useT();
   const [params, setParams] = useState<ReportQueryParams>({
     period: "thisMonth",
   });
@@ -35,7 +37,7 @@ export default function AnalyticsPageContent() {
   const { data: inventoryValue } = useInventoryValue();
 
   if (salesError) {
-    return <ErrorPage title="Failed to load analytics" message="Could not fetch analytics data." />;
+    return <ErrorPage title={T("analytics.errorTitle", "Failed to load analytics")} message={T("analytics.errorMessage", "Could not fetch analytics data.")} />;
   }
 
   return (
@@ -43,9 +45,9 @@ export default function AnalyticsPageContent() {
       <div className="flex items-center gap-3">
         <LineChart className="h-8 w-8 text-purple-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{T("analytics.title", "Analytics")}</h1>
           <p className="text-sm text-gray-500">
-            Visual analytics and trends for your store performance.
+            {T("analytics.description", "Visual analytics and trends for your store performance.")}
           </p>
         </div>
       </div>
@@ -78,7 +80,7 @@ export default function AnalyticsPageContent() {
           {monthlySales && monthlySales.length > 0 && (
             <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
               <div className="border-b border-gray-200 px-6 py-4">
-                <h3 className="text-lg font-semibold text-gray-900">Monthly Sales</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{T("analytics.monthlySales", "Monthly Sales")}</h3>
               </div>
               <div className="p-6">
                 <div className="flex items-end gap-1" style={{ height: "200px" }}>

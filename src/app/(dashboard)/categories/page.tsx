@@ -6,11 +6,13 @@ import { CategoryTable, CategoryTableSkeleton } from "@/features/categories/comp
 import { CategoryForm } from "@/features/categories/components/CategoryForm";
 import { CategoryModal } from "@/features/categories/components/CategoryModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { Plus, FolderTree } from "lucide-react";
 import type { CreateCategoryInput, UpdateCategoryInput } from "@/types/category";
 import toast from "react-hot-toast";
 
 export default function CategoriesPage() {
+  const T = useT();
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -42,7 +44,7 @@ export default function CategoriesPage() {
   );
 
   if (error) {
-    return <ErrorPage title="Failed to load categories" message="Could not fetch categories." />;
+    return <ErrorPage title={T("categories.errorTitle", "Failed to load categories")} message={T("categories.errorMessage", "Could not fetch categories.")} />;
   }
 
   const categories = data?.items || [];
@@ -54,9 +56,9 @@ export default function CategoriesPage() {
         <div className="flex items-center gap-3">
           <FolderTree className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("categories.title")}</h1>
             <p className="text-sm text-gray-500">
-              Organize your products into categories.
+              {T("categories.subtitle")}
             </p>
           </div>
         </div>
@@ -65,7 +67,7 @@ export default function CategoriesPage() {
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
-          Add Category
+          {T("categories.add")}
         </button>
       </div>
 
@@ -82,7 +84,7 @@ export default function CategoriesPage() {
       )}
 
       <CategoryModal
-        title="Create Category"
+        title={T("categories.create", "Create Category")}
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
       >

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { useT } from "@/lib/i18n/use-t";
 import { RotateCcw, Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Return } from "@/types/return";
 
@@ -41,14 +42,14 @@ function getReturnTypeBadge(type: string) {
   }
 }
 
-function getReturnTypeLabel(type: string) {
+function getReturnTypeLabel(type: string, T: (k: string, f?: string) => string) {
   switch (type) {
     case "refund":
-      return "Refund";
+      return T("returns.refundShort", "Refund");
     case "same_exchange":
-      return "Same Exch.";
+      return T("returns.sameExchShort", "Same Exch.");
     case "different_exchange":
-      return "Diff. Exch.";
+      return T("returns.diffExchShort", "Diff. Exch.");
     default:
       return type;
   }
@@ -61,11 +62,12 @@ export function ReturnTable({
   totalPages,
   onPageChange,
 }: ReturnTableProps) {
+  const T = useT();
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <RotateCcw className="h-12 w-12 text-gray-400" />
-        <p className="text-sm text-gray-600">No returns found</p>
+        <p className="text-sm text-gray-600">{T("returns.noReturns", "No returns found")}</p>
       </div>
     );
   }
@@ -76,15 +78,15 @@ export function ReturnTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Invoice</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Type</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Items</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Refund</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Reason</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.invoice")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.customer")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.type")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.items")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("returns.refund")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.reason")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -108,7 +110,7 @@ export function ReturnTable({
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getReturnTypeBadge(item.returnType)}`}
                   >
-                    {getReturnTypeLabel(item.returnType)}
+                    {getReturnTypeLabel(item.returnType, T)}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-gray-700">{item.items.length}</td>
@@ -155,7 +157,7 @@ export function ReturnTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -180,20 +182,21 @@ export function ReturnTable({
 }
 
 export function ReturnTableSkeleton() {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-white">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Invoice</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Items</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Refund</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Reason</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.invoice")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.customer")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.items")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("returns.refund")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.reason")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>

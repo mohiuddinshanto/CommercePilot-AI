@@ -8,6 +8,7 @@ import {
 } from "@/features/inventory/hooks/useInventory";
 import { InventoryForm } from "@/features/inventory/components/InventoryForm";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { ArrowLeft, Package } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -18,6 +19,7 @@ export default function InventoryEditPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: inventory, isLoading, error } = useInventory(id);
@@ -47,8 +49,8 @@ export default function InventoryEditPage({
   if (error || !inventory) {
     return (
       <ErrorPage
-        title="Inventory not found"
-        message="Could not load inventory details."
+        title={T("inventory.notFound", "Inventory not found")}
+        message={T("inventory.notFoundMessage", "Could not load inventory details.")}
       />
     );
   }
@@ -66,7 +68,7 @@ export default function InventoryEditPage({
         <div className="flex items-center gap-3">
           <Package className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Edit Inventory</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("inventory.edit")}</h1>
             <p className="text-sm text-gray-500 font-mono">{inventory._id}</p>
           </div>
         </div>

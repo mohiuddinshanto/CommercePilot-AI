@@ -8,12 +8,14 @@ import { SendToCourierModal } from "@/features/shipments/components/SendToCourie
 import { ShipmentSection } from "@/features/shipments/components/ShipmentTimeline";
 import { InvoicePreview } from "@/features/sales/components/InvoicePreview";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
 import { Receipt, ArrowLeft, Trash2, Truck } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function SaleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: sale, isLoading, error } = useSale(id);
@@ -33,7 +35,7 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
   }, [deleteSale, id, router]);
 
   if (error) {
-    return <ErrorPage title="Failed to load sale" message="Could not fetch sale details." />;
+    return <ErrorPage title={T("sales.errorTitle", "Failed to load sale")} message={T("sales.errorDetailMessage", "Could not fetch sale details.")} />;
   }
 
   if (isLoading || !sale) {
@@ -87,9 +89,9 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
           </Link>
           <Receipt className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Sale {sale.invoiceNumber}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("sales.saleWithNumber", "Sale {invoice}").replace("{invoice}", sale.invoiceNumber)}</h1>
             <p className="text-sm text-gray-500">
-              Created {formatDateTime(sale.createdAt)}
+              {T("sales.created", "Created")} {formatDateTime(sale.createdAt)}
             </p>
           </div>
         </div>
@@ -99,14 +101,14 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
             className="flex items-center gap-2 rounded-lg border border-blue-300 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
           >
             <Truck className="h-4 w-4" />
-            Send to Courier
+            {T("shipment.sendToCourier")}
           </button>
           <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
             <Trash2 className="h-4 w-4" />
-            Delete
+            {T("common.delete")}
           </button>
         </div>
       </div>
@@ -118,10 +120,10 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
 
         <div className="space-y-6">
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Status</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.status")}</h2>
             <dl className="space-y-3">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Sale Status</dt>
+                <dt className="text-sm text-gray-500">{T("sales.saleStatus")}</dt>
                 <dd>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getSaleStatusBadge(sale.status)}`}
@@ -131,7 +133,7 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Payment Status</dt>
+                <dt className="text-sm text-gray-500">{T("sales.paymentStatus")}</dt>
                 <dd>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getPaymentStatusBadge(sale.paymentStatus)}`}
@@ -141,14 +143,14 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Payment Method</dt>
+                <dt className="text-sm text-gray-500">{T("sales.paymentMethod")}</dt>
                 <dd className="text-sm text-gray-900 capitalize">
                   {sale.paymentMethod.replace("_", " ")}
                 </dd>
               </div>
               {sale.paymentNote && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-500">Payment Note</dt>
+                  <dt className="text-sm text-gray-500">{T("sales.paymentNote")}</dt>
                   <dd className="text-sm text-gray-900 text-right max-w-[180px] truncate">{sale.paymentNote}</dd>
                 </div>
               )}
@@ -156,19 +158,19 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("sales.paymentSummary", "Payment Summary")}</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Grand Total</dt>
+                <dt className="text-sm text-gray-500">{T("sales.grandTotal")}</dt>
                 <dd className="text-sm font-semibold text-gray-900">{formatCurrency(sale.grandTotal)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Paid Amount</dt>
+                <dt className="text-sm text-gray-500">{T("sales.paidAmount")}</dt>
                 <dd className="text-sm text-green-600">{formatCurrency(sale.paidAmount)}</dd>
               </div>
               {sale.dueAmount > 0 && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-500">Due Amount</dt>
+                  <dt className="text-sm text-gray-500">{T("sales.dueAmount")}</dt>
                   <dd className="text-sm text-red-600">{formatCurrency(sale.dueAmount)}</dd>
                 </div>
               )}
@@ -176,27 +178,27 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipments</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("shipment.title")}</h2>
             <ShipmentSection shipments={shipments} />
             {shipments.length === 0 && (
-              <p className="text-sm text-gray-500">No shipments created yet.</p>
+              <p className="text-sm text-gray-500">{T("shipment.noShipments")}</p>
             )}
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.metadata", "Metadata")}</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Created</dt>
+                <dt className="text-sm text-gray-500">{T("common.created", "Created")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(sale.createdAt)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Updated</dt>
+                <dt className="text-sm text-gray-500">{T("common.updated", "Updated")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(sale.updatedAt)}</dd>
               </div>
               {sale.invoiceNumber && (
                 <div className="flex items-center justify-between">
-                  <dt className="text-sm text-gray-500">Invoice #</dt>
+                  <dt className="text-sm text-gray-500">{T("common.invoice")}</dt>
                   <dd className="text-sm text-gray-900 font-mono">{sale.invoiceNumber}</dd>
                 </div>
               )}

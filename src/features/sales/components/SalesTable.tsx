@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { useT } from "@/lib/i18n/use-t";
 import { Receipt, Eye, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Sale } from "@/types/sale";
 
@@ -50,11 +51,12 @@ export function SalesTable({
   totalPages,
   onPageChange,
 }: SalesTableProps) {
+  const T = useT();
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <Receipt className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No sales found</p>
+        <p className="text-sm text-gray-500">{T("sales.noSales", "No sales found")}</p>
       </div>
     );
   }
@@ -65,16 +67,16 @@ export function SalesTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Invoice</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Items</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Total</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Paid</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Due</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Payment</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.invoice")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.customer")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.items")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.total")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.paid")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.due")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.paymentMethod")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -151,7 +153,7 @@ export function SalesTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button
@@ -176,22 +178,23 @@ export function SalesTable({
 }
 
 export function SalesTableSkeleton() {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-white">
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Invoice</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Customer</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Items</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Total</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Paid</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Due</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Payment</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.invoice")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.customer")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.items")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.total")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.paid")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.due")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("sales.paymentMethod")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>

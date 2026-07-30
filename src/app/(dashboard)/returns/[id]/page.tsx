@@ -6,6 +6,7 @@ import { useReturn, useDeleteReturn, useUpdateReturn } from "@/features/returns/
 import { ReturnItems } from "@/features/returns/components/ReturnItems";
 import { RefundSummary } from "@/features/returns/components/RefundSummary";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { RotateCcw, ArrowLeft, Trash2, RefreshCw, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
@@ -30,6 +31,7 @@ function getReturnTypeBadge(type: string) {
 }
 
 export default function ReturnDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const T = useT();
   const { id } = use(params);
   const router = useRouter();
   const { data: returnDoc, isLoading, error } = useReturn(id);
@@ -57,7 +59,7 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
   }, [updateReturn, id]);
 
   if (error) {
-    return <ErrorPage title="Failed to load return" message="Could not fetch return details." />;
+    return <ErrorPage title={T("returns.errorTitle", "Failed to load return")} message={T("returns.errorDetailMessage", "Could not fetch return details.")} />;
   }
 
   if (isLoading || !returnDoc) {
@@ -96,9 +98,9 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
           </Link>
           <RotateCcw className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Return {returnDoc.invoiceNumber}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("returns.returnWithNumber", "Return {invoice}").replace("{invoice}", returnDoc.invoiceNumber)}</h1>
             <p className="text-sm text-gray-500">
-              Created {formatDateTime(returnDoc.createdAt)}
+              {T("returns.created", "Created")} {formatDateTime(returnDoc.createdAt)}
             </p>
           </div>
         </div>
@@ -145,7 +147,7 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
             <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 mb-4">
                 <RefreshCw className="h-5 w-5 text-orange-600" />
-                Exchange Items
+                {T("returns.exchangeItems")}
               </h2>
               <div className="space-y-2">
                 {returnDoc.exchangeItems.map((item, i) => (
@@ -162,12 +164,12 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
                 ))}
               </div>
               <div className="mt-3 flex justify-between text-sm border-t border-orange-200 pt-2">
-                <span className="font-medium text-gray-700">Exchange Total</span>
+                <span className="font-medium text-gray-700">{T("returns.exchangeTotal", "Exchange Total")}</span>
                 <span className="font-semibold text-orange-700">{formatCurrency(returnDoc.exchangeTotal || 0)}</span>
               </div>
               {returnDoc.adjustmentAmount !== undefined && (
                 <div className="flex justify-between text-sm mt-1">
-                  <span className="font-medium text-gray-700">Adjustment</span>
+                  <span className="font-medium text-gray-700">{T("returns.adjustment", "Adjustment")}</span>
                   <span className={`font-semibold ${returnDoc.adjustmentAmount >= 0 ? "text-blue-600" : "text-red-600"}`}>
                     {returnDoc.adjustmentAmount >= 0
                       ? `Customer pays ${formatCurrency(returnDoc.adjustmentAmount)}`
@@ -183,10 +185,10 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
           <RefundSummary returnDoc={returnDoc} />
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Status</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.status")}</h2>
             <dl className="space-y-3">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Return Type</dt>
+                <dt className="text-sm text-gray-500">{T("returns.type")}</dt>
                 <dd>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getReturnTypeBadge(returnDoc.returnType)}`}
@@ -196,7 +198,7 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Return Status</dt>
+                <dt className="text-sm text-gray-500">{T("returns.returnStatus", "Return Status")}</dt>
                 <dd>
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getReturnStatusBadge(returnDoc.status)}`}
@@ -206,30 +208,30 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
                 </dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Customer</dt>
+                <dt className="text-sm text-gray-500">{T("sales.customer")}</dt>
                 <dd className="text-sm text-gray-900 text-right">{returnDoc.customerName}{returnDoc.customerPhone ? <span className="block text-xs text-gray-400">{returnDoc.customerPhone}</span> : null}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Invoice #</dt>
+                <dt className="text-sm text-gray-500">{T("common.invoice")}</dt>
                 <dd className="text-sm text-gray-900 font-mono">{returnDoc.invoiceNumber}</dd>
               </div>
             </dl>
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("common.metadata", "Metadata")}</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Created</dt>
+                <dt className="text-sm text-gray-500">{T("common.created", "Created")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(returnDoc.createdAt)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-500">Updated</dt>
+                <dt className="text-sm text-gray-500">{T("common.updated", "Updated")}</dt>
                 <dd className="text-sm text-gray-900">{formatDateTime(returnDoc.updatedAt)}</dd>
               </div>
               {returnDoc.notes && (
                 <div>
-                  <dt className="text-sm text-gray-500">Notes</dt>
+                  <dt className="text-sm text-gray-500">{T("common.notes")}</dt>
                   <dd className="text-sm text-gray-900 mt-1">{returnDoc.notes}</dd>
                 </div>
               )}

@@ -6,11 +6,13 @@ import { InventoryTable, InventoryTableSkeleton } from "@/features/inventory/com
 import { InventoryForm } from "@/features/inventory/components/InventoryForm";
 import { InventoryModal } from "@/features/inventory/components/InventoryModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { Plus, Package } from "lucide-react";
 import type { CreateInventoryInput, UpdateInventoryInput } from "@/types/inventory";
 import toast from "react-hot-toast";
 
 export default function InventoryPage() {
+  const T = useT();
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -42,7 +44,7 @@ export default function InventoryPage() {
   );
 
   if (error) {
-    return <ErrorPage title="Failed to load inventory" message="Could not fetch inventory records." />;
+    return <ErrorPage title={T("inventory.errorTitle", "Failed to load inventory")} message={T("inventory.errorMessage", "Could not fetch inventory records.")} />;
   }
 
   const items = data?.items || [];
@@ -54,9 +56,9 @@ export default function InventoryPage() {
         <div className="flex items-center gap-3">
           <Package className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Inventory</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("inventory.title")}</h1>
             <p className="text-sm text-gray-500">
-              Manage stock levels for your products.
+              {T("inventory.subtitle")}
             </p>
           </div>
         </div>
@@ -65,7 +67,7 @@ export default function InventoryPage() {
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
-          Add Inventory
+          {T("inventory.add")}
         </button>
       </div>
 
@@ -82,7 +84,7 @@ export default function InventoryPage() {
       )}
 
       <InventoryModal
-        title="Create Inventory"
+        title={T("inventory.create", "Create Inventory")}
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
       >

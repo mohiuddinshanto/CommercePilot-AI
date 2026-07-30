@@ -8,6 +8,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { formatCurrency, formatNumber } from "@/lib/utils";
+import { useT } from "@/lib/i18n/use-t";
 import type { DashboardSummary } from "@/types/dashboard";
 
 interface StatCardProps {
@@ -34,40 +35,41 @@ function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
 }
 
 export function DashboardCards({ data }: { data: DashboardSummary }) {
+  const T = useT();
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <StatCard
-        title="Today's Sales"
+        title={T("dashboard.todaySales")}
         value={formatCurrency(data.todaySales)}
         icon={DollarSign}
         color="bg-green-500"
       />
       <StatCard
-        title="Monthly Sales"
+        title={T("dashboard.monthlySales")}
         value={formatCurrency(data.monthlySales)}
         icon={TrendingUp}
         color="bg-blue-500"
       />
       <StatCard
-        title="Total Products"
+        title={T("dashboard.totalProducts")}
         value={formatNumber(data.totalProducts)}
         icon={Package}
         color="bg-purple-500"
       />
       <StatCard
-        title="Low Stock Alert"
+        title={T("dashboard.lowStock")}
         value={formatNumber(data.lowStockCount)}
         icon={AlertTriangle}
         color="bg-yellow-500"
       />
       <StatCard
-        title="Dead Stock"
+        title={T("dashboard.deadStock")}
         value={formatNumber(data.deadStockCount)}
         icon={AlertTriangle}
         color="bg-red-500"
       />
       <StatCard
-        title="Total Customers"
+        title={T("dashboard.totalCustomers")}
         value={formatNumber(data.totalCustomers)}
         icon={Users}
         color="bg-indigo-500"

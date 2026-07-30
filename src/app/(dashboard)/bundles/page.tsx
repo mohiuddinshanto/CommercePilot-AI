@@ -6,11 +6,13 @@ import { BundleTable, BundleTableSkeleton } from "@/features/bundles/components/
 import { BundleForm } from "@/features/bundles/components/BundleForm";
 import { BundleModal } from "@/features/bundles/components/BundleModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
+import { useT } from "@/lib/i18n/use-t";
 import { Plus, Package } from "lucide-react";
 import type { CreateBundleInput, UpdateBundleInput } from "@/types/bundle";
 import toast from "react-hot-toast";
 
 export default function BundlesPage() {
+  const T = useT();
   const [page, setPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
@@ -42,7 +44,7 @@ export default function BundlesPage() {
   );
 
   if (error) {
-    return <ErrorPage title="Failed to load bundles" message="Could not fetch bundles." />;
+    return <ErrorPage title={T("bundles.errorTitle", "Failed to load bundles")} message={T("bundles.errorMessage", "Could not fetch bundles.")} />;
   }
 
   const items = data?.items || [];
@@ -54,9 +56,9 @@ export default function BundlesPage() {
         <div className="flex items-center gap-3">
           <Package className="h-8 w-8 text-blue-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Bundles</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{T("bundles.title", "Bundles")}</h1>
             <p className="text-sm text-gray-500">
-              Create product bundles with special pricing.
+              {T("bundles.subtitle", "Create product bundles with special pricing.")}
             </p>
           </div>
         </div>
@@ -65,7 +67,7 @@ export default function BundlesPage() {
           className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
-          Create Bundle
+          {T("bundles.create", "Create Bundle")}
         </button>
       </div>
 
@@ -82,7 +84,7 @@ export default function BundlesPage() {
       )}
 
       <BundleModal
-        title="Create Bundle"
+        title={T("bundles.create", "Create Bundle")}
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
       >

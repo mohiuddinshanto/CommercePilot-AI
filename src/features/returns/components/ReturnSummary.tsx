@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { DollarSign, RotateCcw, CheckCircle, Clock } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { ReturnsSummary } from "@/types/return";
@@ -9,30 +10,31 @@ interface ReturnSummaryProps {
 }
 
 export function ReturnSummaryCard({ summary }: ReturnSummaryProps) {
+  const T = useT();
   const cards = [
     {
-      label: "Total Returns",
+      label: T("returns.summaryTotalReturns", "Total Returns"),
       value: summary.totalReturns,
       icon: RotateCcw,
       color: "text-blue-600",
       bg: "bg-blue-50",
     },
     {
-      label: "Total Refund",
+      label: T("returns.summaryTotalRefund", "Total Refund"),
       value: formatCurrency(summary.totalRefundAmount),
       icon: DollarSign,
       color: "text-red-600",
       bg: "bg-red-50",
     },
     {
-      label: "Pending",
+      label: T("common.pending"),
       value: summary.pendingReturns,
       icon: Clock,
       color: "text-yellow-600",
       bg: "bg-yellow-50",
     },
     {
-      label: "Completed",
+      label: T("common.completed"),
       value: summary.completedReturns,
       icon: CheckCircle,
       color: "text-green-600",
