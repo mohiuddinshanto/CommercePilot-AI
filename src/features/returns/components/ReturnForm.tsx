@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Plus, Minus, Trash2, Search, X } from "lucide-react";
+import { Plus, Minus, Trash2, Search, X, Package } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { CreateReturnInput } from "@/types/return";
 import type { Sale } from "@/types/sale";
@@ -21,8 +21,10 @@ interface ReturnFormProps {
   onSubmit: (data: CreateReturnInput) => void;
   onCancel: () => void;
   isLoading?: boolean;
-  onSearchInvoice: (invoiceNumber: string) => void;
-  sale: Sale | null;
+  onSearchSales: (query: string) => void;
+  sales: Sale[];
+  selectedSale: Sale | null;
+  onSelectSale: (sale: Sale | null) => void;
   isSearching: boolean;
 }
 
@@ -30,27 +32,41 @@ export function ReturnForm({
   onSubmit,
   onCancel,
   isLoading,
-  onSearchInvoice,
-  sale,
+  onSearchSales,
+  sales,
+  selectedSale,
+  onSelectSale,
   isSearching,
 }: ReturnFormProps) {
-  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [items, setItems] = useState<ReturnItemData[]>([]);
   const [reason, setReason] = useState("");
   const [notes, setNotes] = useState("");
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        // don't close on outside click
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     clearTimeout(searchTimer.current);
-    if (!invoiceNumber.trim()) {
-      onSearchInvoice("");
+    if (!searchQuery.trim()) {
+      onSelectSale(null);
+      onSearchSales("");
       return;
     }
     searchTimer.current = setTimeout(() => {
-      onSearchInvoice(invoiceNumber.trim());
-    }, 500);
+      onSearchSales(searchQuery.trim());
+    }, 400);
     return () => clearTimeout(searchTimer.current);
-  }, [invoiceNumber, onSearchInvoice]);
+  }, [searchQuery, onSearchSales, onSelectSale]);
 
   const addItem = (item: ReturnItemData) => {
     const existing = items.find(
@@ -94,10 +110,10 @@ export function ReturnForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!sale || items.length === 0 || !reason) return;
+    if (!selectedSale || items.length === 0 || !reason) return;
 
     onSubmit({
-      saleId: sale._id,
+      saleId: selectedSale._id,
       items: items.map((item) => ({
         productId: item.productId,
         bundleId: item.bundleId,
@@ -112,39 +128,88 @@ export function ReturnForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Invoice Number *</label>
+      <div ref={dropdownRef}>
+        <label className="block text-sm font-medium text-gray-700">Search Sale *</label>
         <div className="relative mt-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
           <input
             type="text"
-            value={invoiceNumber}
-            onChange={(e) => setInvoiceNumber(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (selectedSale) onSelectSale(null);
+            }}
             className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Type invoice number to search..."
+            placeholder="Search by invoice, customer name, or phone..."
           />
-          {invoiceNumber && (
+          {searchQuery && (
             <button
               type="button"
-              onClick={() => { setInvoiceNumber(""); setItems([]); }}
+              onClick={() => { setSearchQuery(""); setItems([]); onSelectSale(null); }}
               className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
             >
               <X className="h-4 w-4" />
             </button>
           )}
         </div>
-        {isSearching && (
-          <p className="mt-1 text-xs text-blue-600">Searching invoice...</p>
+
+        {/* Search results dropdown */}
+        {searchQuery && !selectedSale && (
+          <div className="mt-2 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white shadow-md">
+            {isSearching ? (
+              <div className="flex items-center justify-center py-6 text-sm text-gray-500">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent mr-2" />
+                Searching...
+              </div>
+            ) : sales.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-6 text-center text-sm text-gray-500">
+                <Package className="h-7 w-7 mb-1 text-gray-400" />
+                No sales found
+              </div>
+            ) : (
+              sales.map((s) => (
+                <button
+                  key={s._id}
+                  type="button"
+                  onClick={() => { onSelectSale(s); setSearchQuery(`${s.invoiceNumber} - ${s.customerName}`); }}
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0"
+                >
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-blue-100">
+                    <Package className="h-4 w-4 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="truncate text-sm font-medium text-gray-900">{s.invoiceNumber}</p>
+                    <p className="text-xs text-gray-500">
+                      {s.customerName}{s.customerPhone ? ` - ${s.customerPhone}` : ""}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-sm font-semibold text-gray-700">
+                    {formatCurrency(s.grandTotal)}
+                  </span>
+                </button>
+              ))
+            )}
+          </div>
         )}
       </div>
 
-      {sale && (
+      {/* Selected sale banner with items */}
+      {selectedSale && (
         <div className="rounded-lg border border-green-200 bg-green-50 p-3">
-          <p className="text-sm font-medium text-green-800">
-            Sale found: {sale.invoiceNumber} - {sale.customerName}{sale.customerPhone ? ` (${sale.customerPhone})` : ""} ({sale.items.length} items, Total: {formatCurrency(sale.grandTotal)})
-          </p>
-          <div className="mt-2 space-y-1">
-            {sale.items.map((item, index) => (
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-sm font-medium text-green-800">
+              Sale: {selectedSale.invoiceNumber} - {selectedSale.customerName}{selectedSale.customerPhone ? ` (${selectedSale.customerPhone})` : ""} ({selectedSale.items.length} items, Total: {formatCurrency(selectedSale.grandTotal)})
+            </p>
+            <button
+              type="button"
+              onClick={() => { setSearchQuery(""); setItems([]); onSelectSale(null); }}
+              className="text-xs text-blue-600 hover:underline"
+            >
+              Change
+            </button>
+          </div>
+          <div className="mt-1 space-y-1">
+            {selectedSale.items.map((item, index) => (
               <button
                 key={index}
                 type="button"

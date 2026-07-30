@@ -7,22 +7,29 @@ import { ReturnSummaryCard } from "@/features/returns/components/ReturnSummary";
 import { ReturnForm } from "@/features/returns/components/ReturnForm";
 import { ReturnModal } from "@/features/returns/components/ReturnModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
-import { useSaleByInvoice } from "@/features/sales/hooks/useSales";
+import { useSaleList } from "@/features/sales/hooks/useSales";
 import { Plus, RotateCcw, Search } from "lucide-react";
 import type { CreateReturnInput } from "@/types/return";
+import type { Sale } from "@/types/sale";
 import toast from "react-hot-toast";
 
 export default function ReturnsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [invoiceSearch, setInvoiceSearch] = useState("");
+  const [saleSearchQuery, setSaleSearchQuery] = useState("");
+  const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
 
   const { data, isLoading, error } = useReturnList({ page, limit: 10 });
   const { data: summary } = useReturnsSummary();
+  const { data: salesData, isLoading: isSearching } = useSaleList({
+    search: saleSearchQuery || undefined,
+    limit: 10,
+  });
   const createReturn = useCreateReturn();
   const deleteReturn = useDeleteReturn();
-  const { data: saleData, isLoading: isSearching } = useSaleByInvoice(invoiceSearch);
+
+  const sales = salesData?.items || [];
 
   const filteredItems = useMemo(() => {
     if (!data?.items) return [];
@@ -42,7 +49,8 @@ export default function ReturnsPage() {
     try {
       await createReturn.mutateAsync(input);
       setShowCreateModal(false);
-      setInvoiceSearch("");
+      setSaleSearchQuery("");
+      setSelectedSale(null);
       toast.success("Return created successfully.");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create return.");
@@ -59,8 +67,12 @@ export default function ReturnsPage() {
     }
   };
 
-  const handleSearchInvoice = (invoice: string) => {
-    setInvoiceSearch(invoice);
+  const handleSearchSales = (query: string) => {
+    setSaleSearchQuery(query);
+  };
+
+  const handleSelectSale = (sale: Sale | null) => {
+    setSelectedSale(sale);
   };
 
   if (error) {
@@ -120,18 +132,22 @@ export default function ReturnsPage() {
         isOpen={showCreateModal}
         onClose={() => {
           setShowCreateModal(false);
-          setInvoiceSearch("");
+          setSaleSearchQuery("");
+          setSelectedSale(null);
         }}
       >
         <ReturnForm
           onSubmit={handleCreate}
           onCancel={() => {
             setShowCreateModal(false);
-            setInvoiceSearch("");
+            setSaleSearchQuery("");
+            setSelectedSale(null);
           }}
           isLoading={createReturn.isPending}
-          onSearchInvoice={handleSearchInvoice}
-          sale={saleData || null}
+          onSearchSales={handleSearchSales}
+          sales={sales}
+          selectedSale={selectedSale}
+          onSelectSale={handleSelectSale}
           isSearching={isSearching}
         />
       </ReturnModal>
