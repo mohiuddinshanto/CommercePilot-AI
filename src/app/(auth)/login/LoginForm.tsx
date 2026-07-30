@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { flushSync } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +10,7 @@ import { signInAction, signInWithGoogleAction } from "@/actions/auth.actions";
 import { useAuth } from "@/providers/auth-provider";
 import type { Session } from "@/types/user";
 export default function LoginForm() {
+  const T = useT();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +54,7 @@ export default function LoginForm() {
         router.push("/dashboard");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
+      setError(err instanceof Error ? err.message : T("auth.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -62,9 +64,9 @@ export default function LoginForm() {
     <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
       <div className="mb-8 flex flex-col items-center">
         <Store className="mb-3 h-10 w-10 text-blue-600" />
-        <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{T("auth.welcomeBack")}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Sign in to CommercePilot AI
+          {T("auth.signInSubtitle")}
         </p>
       </div>
 
@@ -77,7 +79,7 @@ export default function LoginForm() {
         }}
         className="mb-5 w-full rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-100"
       >
-        Use demo credentials
+        {T("auth.demoCredentials")}
       </button>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -92,7 +94,7 @@ export default function LoginForm() {
             htmlFor="email"
             className="block text-sm font-medium text-gray-700"
           >
-            Email
+            {T("auth.email")}
           </label>
           <input
             id="email"
@@ -101,7 +103,7 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="you@example.com"
+            placeholder={T("auth.emailPlaceholder")}
           />
         </div>
 
@@ -110,7 +112,7 @@ export default function LoginForm() {
             htmlFor="password"
             className="block text-sm font-medium text-gray-700"
           >
-            Password
+            {T("auth.password")}
           </label>
           <input
             id="password"
@@ -119,7 +121,7 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="••••••••"
+            placeholder={T("auth.passwordPlaceholder")}
           />
         </div>
 
@@ -128,7 +130,7 @@ export default function LoginForm() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Signing in..." : "Sign In"}
+          {loading ? T("auth.signingIn") : T("auth.signIn")}
         </button>
       </form>
 
@@ -139,7 +141,7 @@ export default function LoginForm() {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-3 text-gray-400">or</span>
+              <span className="bg-white px-3 text-gray-400">{T("auth.or")}</span>
             </div>
           </div>
 
@@ -154,15 +156,15 @@ export default function LoginForm() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            {T("auth.continueWithGoogle")}
           </button>
         </>
       )}
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Don&apos;t have an account?{" "}
+        {T("auth.noAccount")}{" "}
         <Link href="/register" className="font-medium text-blue-600 hover:text-blue-700">
-          Sign up
+          {T("auth.signUp")}
         </Link>
       </p>
     </div>

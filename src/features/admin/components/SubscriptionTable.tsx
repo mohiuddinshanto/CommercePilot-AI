@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatDate, formatCurrency } from "@/lib/utils";
 import { Settings } from "lucide-react";
 import type { AdminSubscription } from "../types/admin";
@@ -26,10 +27,11 @@ function getStatusBadge(status: string) {
 }
 
 export function SubscriptionTable({ items, onUpdate }: SubscriptionTableProps) {
+  const T = useT();
   if (!items || items.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-        <p className="text-sm text-gray-500">No subscriptions found.</p>
+        <p className="text-sm text-gray-500">{T("admin.searchSubscriptions")}</p>
       </div>
     );
   }
@@ -40,25 +42,25 @@ export function SubscriptionTable({ items, onUpdate }: SubscriptionTableProps) {
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Store
+              {T("admin.storeName")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Plan
+              {T("admin.plan")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Status
+              {T("admin.status")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Billing
+              {T("admin.billingCycle")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Price
+              {T("admin.price")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Expires
+              {T("admin.expires")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Actions
+              {T("admin.actions")}
             </th>
           </tr>
         </thead>
@@ -67,7 +69,7 @@ export function SubscriptionTable({ items, onUpdate }: SubscriptionTableProps) {
             <tr key={sub._id} className="hover:bg-gray-50">
               <td className="whitespace-nowrap px-6 py-4">
                 <p className="text-sm font-medium text-gray-900">
-                  {sub.storeName || "Unknown Store"}
+                  {sub.storeName || T("admin.unknownStore")}
                 </p>
                 <p className="text-xs text-gray-500">{sub.storeId}</p>
               </td>
@@ -89,16 +91,16 @@ export function SubscriptionTable({ items, onUpdate }: SubscriptionTableProps) {
                 {sub.billingCycle}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
-                {sub.price === 0 ? "Free" : formatCurrency(sub.price)}
+                {sub.price === 0 ? T("admin.free") : formatCurrency(sub.price)}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                {sub.expiresAt ? formatDate(sub.expiresAt) : "N/A"}
+                {sub.expiresAt ? formatDate(sub.expiresAt) : T("admin.na")}
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 <button
                   onClick={() => onUpdate(sub)}
                   className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                  title="Update Subscription"
+                  title={T("admin.updateSubscription")}
                 >
                   <Settings className="h-4 w-4" />
                 </button>

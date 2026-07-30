@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import { useAdminUsers, useUpdateUserStatus } from "@/features/admin/hooks/useAdmin";
 import { UserTable } from "@/features/admin/components/UserTable";
@@ -12,6 +13,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 export default function AdminUsersPage() {
+  const T = useT();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -39,39 +41,39 @@ export default function AdminUsersPage() {
   if (user?.role !== "super_admin") return null;
 
   if (error) {
-    return <ErrorPage title="Failed to load users" message="Could not fetch users." />;
+    return <ErrorPage title={T("error.title")} message={T("error.message")} />;
   }
 
   const items = data?.items || [];
   const totalPages = data?.totalPages || 1;
 
   const handleApprove = async (id: string) => {
-    if (!confirm("Approve this user?")) return;
+    if (!confirm(T("confirm.approveUser"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "approved" } });
-      toast.success("User approved.");
+      toast.success(T("admin.userApproved"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to approve user.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
   const handleReject = async (id: string) => {
-    if (!confirm("Reject this user?")) return;
+    if (!confirm(T("confirm.rejectUser"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "rejected" } });
-      toast.success("User rejected.");
+      toast.success(T("admin.userRejected"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to reject user.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
   const handleSuspend = async (id: string) => {
-    if (!confirm("Suspend this user?")) return;
+    if (!confirm(T("confirm.suspendUser"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "suspended" } });
-      toast.success("User suspended.");
+      toast.success(T("admin.userSuspended"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to suspend user.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
@@ -80,15 +82,15 @@ export default function AdminUsersPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-sm text-gray-500">Manage all users on the platform.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{T("admin.userManagement")}</h1>
+          <p className="text-sm text-gray-500">{T("admin.userManagementSubtitle")}</p>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="text"
-          placeholder="Search users..."
+          placeholder={T("admin.searchUsers")}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -104,11 +106,11 @@ export default function AdminUsersPage() {
           }}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-          <option value="suspended">Suspended</option>
+          <option value="">{T("admin.allStatus")}</option>
+          <option value="pending">{T("admin.pending")}</option>
+          <option value="approved">{T("admin.approved")}</option>
+          <option value="rejected">{T("admin.rejected")}</option>
+          <option value="suspended">{T("admin.suspended")}</option>
         </select>
         <select
           value={roleFilter}
@@ -118,9 +120,9 @@ export default function AdminUsersPage() {
           }}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
-          <option value="">All Roles</option>
-          <option value="owner">Owner</option>
-          <option value="staff">Staff</option>
+          <option value="">{T("admin.allRoles")}</option>
+          <option value="owner">{T("admin.owner")}</option>
+          <option value="staff">{T("admin.staff")}</option>
         </select>
       </div>
 
@@ -134,7 +136,7 @@ export default function AdminUsersPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf").replace("{page}", String(page)).replace("{totalPages}", String(totalPages))}
           </p>
           <div className="flex gap-2">
             <button

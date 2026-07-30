@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency } from "@/lib/utils";
 import { Tag, Percent, ShoppingCart } from "lucide-react";
 
@@ -16,14 +17,15 @@ export function BundlePriceSummary({
   discountAmount,
   discountPercentage,
 }: BundlePriceSummaryProps) {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-3">
-      <h4 className="text-sm font-medium text-gray-700">Price Summary</h4>
+      <h4 className="text-sm font-medium text-gray-700">{T("bundles.priceSummary")}</h4>
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <ShoppingCart className="h-4 w-4" />
-          Original Price
+          {T("bundles.originalPrice")}
         </div>
         <span className="text-sm text-gray-600">{formatCurrency(originalPrice)}</span>
       </div>
@@ -31,7 +33,7 @@ export function BundlePriceSummary({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Tag className="h-4 w-4" />
-          Bundle Price
+          {T("bundles.bundlePrice")}
         </div>
         <span className="text-sm font-medium text-gray-900">{formatCurrency(bundlePrice)}</span>
       </div>
@@ -40,7 +42,7 @@ export function BundlePriceSummary({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-green-600">
             <Percent className="h-4 w-4" />
-            You Save
+            {T("bundles.youSave")}
           </div>
           <span className="text-sm font-medium text-green-600">
             {formatCurrency(discountAmount)} ({discountPercentage.toFixed(1)}%)

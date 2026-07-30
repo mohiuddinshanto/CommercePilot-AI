@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import { useAdminActivityLogs } from "@/features/admin/hooks/useAdmin";
 import { ActivityLogTable } from "@/features/admin/components/ActivityLogTable";
@@ -24,6 +25,7 @@ const ACTION_OPTIONS = [
 ];
 
 export default function AdminActivityPage() {
+  const T = useT();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -45,7 +47,7 @@ export default function AdminActivityPage() {
   if (user?.role !== "super_admin") return null;
 
   if (error) {
-    return <ErrorPage title="Failed to load activity logs" message="Could not fetch activity logs." />;
+    return <ErrorPage title={T("error.title")} message={T("error.message")} />;
   }
 
   const items = data?.items || [];
@@ -56,8 +58,8 @@ export default function AdminActivityPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Activity Logs</h1>
-          <p className="text-sm text-gray-500">Platform-wide activity history.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{T("admin.activityLogs")}</h1>
+          <p className="text-sm text-gray-500">{T("admin.activityLogsSubtitle")}</p>
         </div>
       </div>
 
@@ -83,7 +85,7 @@ export default function AdminActivityPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf").replace("{page}", String(page)).replace("{totalPages}", String(totalPages))}
           </p>
           <div className="flex gap-2">
             <button

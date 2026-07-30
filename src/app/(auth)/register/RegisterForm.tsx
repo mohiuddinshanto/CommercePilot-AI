@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { flushSync } from "react-dom";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { useAuth } from "@/providers/auth-provider";
 import type { Session } from "@/types/user";
 
 export default function RegisterForm() {
+  const T = useT();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,7 +59,7 @@ export default function RegisterForm() {
         router.push("/onboarding");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(err instanceof Error ? err.message : T("auth.registrationFailed"));
     } finally {
       setLoading(false);
     }
@@ -67,9 +69,9 @@ export default function RegisterForm() {
     <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
       <div className="mb-8 flex flex-col items-center">
         <Store className="mb-3 h-10 w-10 text-blue-600" />
-        <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{T("auth.createAccount")}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          Start your CommercePilot AI journey
+          {T("auth.registerSubtitle")}
         </p>
       </div>
 
@@ -85,7 +87,7 @@ export default function RegisterForm() {
             htmlFor="name"
             className="block text-sm font-medium text-gray-700"
           >
-            Name
+            {T("auth.name")}
           </label>
           <input
             id="name"
@@ -94,7 +96,7 @@ export default function RegisterForm() {
             onChange={(e) => setName(e.target.value)}
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="John Doe"
+            placeholder={T("auth.namePlaceholder")}
           />
         </div>
 
@@ -103,7 +105,7 @@ export default function RegisterForm() {
             htmlFor="email"
             className="block text-sm font-medium text-gray-700"
           >
-            Email
+            {T("auth.email")}
           </label>
           <input
             id="email"
@@ -112,7 +114,7 @@ export default function RegisterForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="you@example.com"
+            placeholder={T("auth.emailPlaceholder")}
           />
         </div>
 
@@ -121,7 +123,7 @@ export default function RegisterForm() {
             htmlFor="password"
             className="block text-sm font-medium text-gray-700"
           >
-            Password
+            {T("auth.password")}
           </label>
           <input
             id="password"
@@ -130,13 +132,13 @@ export default function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="••••••••"
+            placeholder={T("auth.passwordPlaceholder")}
           />
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select Subscription Plan
+            {T("auth.selectPlan")}
           </label>
           <div className="grid grid-cols-3 gap-2">
             <button
@@ -148,8 +150,8 @@ export default function RegisterForm() {
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="text-xs font-semibold text-gray-900">Starter</div>
-              <div className="mt-1 text-sm font-bold text-blue-600">৳0<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+              <div className="text-xs font-semibold text-gray-900">{T("subs.free")}</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳0<span className="text-[10px] text-gray-500 font-normal">{T("subs.perMonth")}</span></div>
             </button>
 
             <button
@@ -161,8 +163,8 @@ export default function RegisterForm() {
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="text-xs font-semibold text-gray-900">Professional</div>
-              <div className="mt-1 text-sm font-bold text-blue-600">৳800<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+              <div className="text-xs font-semibold text-gray-900">{T("subs.upgrade")}</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳800<span className="text-[10px] text-gray-500 font-normal">{T("subs.perMonth")}</span></div>
             </button>
 
             <button
@@ -174,8 +176,8 @@ export default function RegisterForm() {
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="text-xs font-semibold text-gray-900">Business</div>
-              <div className="mt-1 text-sm font-bold text-blue-600">৳1500<span className="text-[10px] text-gray-500 font-normal">/mo</span></div>
+              <div className="text-xs font-semibold text-gray-900">{T("admin.business")}</div>
+              <div className="mt-1 text-sm font-bold text-blue-600">৳1500<span className="text-[10px] text-gray-500 font-normal">{T("subs.perMonth")}</span></div>
             </button>
           </div>
         </div>
@@ -185,7 +187,7 @@ export default function RegisterForm() {
           disabled={loading}
           className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Creating account..." : "Create Account"}
+          {loading ? T("auth.creatingAccount") : T("auth.createAccount")}
         </button>
       </form>
 
@@ -196,7 +198,7 @@ export default function RegisterForm() {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-3 text-gray-400">or</span>
+              <span className="bg-white px-3 text-gray-400">{T("auth.or")}</span>
             </div>
           </div>
 
@@ -211,15 +213,15 @@ export default function RegisterForm() {
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
               <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
             </svg>
-            Continue with Google
+            {T("auth.continueWithGoogle")}
           </button>
         </>
       )}
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Already have an account?{" "}
+        {T("auth.alreadyHaveAccount")}{" "}
         <Link href="/login" className="font-medium text-blue-600 hover:text-blue-700">
-          Sign in
+          {T("auth.signInLink")}
         </Link>
       </p>
     </div>

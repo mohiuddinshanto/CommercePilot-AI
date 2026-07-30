@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { STAFF_ROLES } from "@/constants/roles";
 import { PermissionMatrix } from "./PermissionMatrix";
 import type { InviteStaffInput } from "@/types/staff";
@@ -12,6 +13,7 @@ interface InviteStaffFormProps {
 }
 
 export function InviteStaffForm({ onSubmit, onCancel, isLoading }: InviteStaffFormProps) {
+  const T = useT();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<string>(STAFF_ROLES.CASHIER);
@@ -28,31 +30,31 @@ export function InviteStaffForm({ onSubmit, onCancel, isLoading }: InviteStaffFo
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.invite.name")}</label>
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Enter full name"
+          placeholder={T("staff.invite.namePlaceholder")}
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.invite.email")}</label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Enter email address"
+          placeholder={T("staff.invite.emailPlaceholder")}
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.invite.role")}</label>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -77,14 +79,14 @@ export function InviteStaffForm({ onSubmit, onCancel, isLoading }: InviteStaffFo
           onClick={onCancel}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          {T("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={isLoading || !name.trim() || !email.trim() || permissions.length === 0}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {isLoading ? "Sending Invitation..." : "Send Invitation"}
+          {isLoading ? T("staff.invite.sending") : T("staff.invite.send")}
         </button>
       </div>
     </form>

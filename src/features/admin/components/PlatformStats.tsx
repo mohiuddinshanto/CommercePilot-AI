@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency, formatNumber } from "@/lib/utils";
 import {
   Store,
@@ -45,32 +46,33 @@ const StatCard = ({
 );
 
 export function PlatformStats({ data }: PlatformStatsProps) {
+  const T = useT();
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total Stores"
+          label={T("admin.totalStores")}
           value={formatNumber(data.totalStores)}
           icon={Store}
           color="bg-blue-600"
-          subtitle={`${data.pendingStores} pending, ${data.activeStores} active`}
+          subtitle={`${data.pendingStores} ${T("admin.pending")}, ${data.activeStores} ${T("admin.active")}`}
         />
         <StatCard
-          label="Total Users"
+          label={T("admin.totalUsers")}
           value={formatNumber(data.totalUsers)}
           icon={Users}
           color="bg-green-600"
-          subtitle={`${data.totalStaff} staff members`}
+          subtitle={`${data.totalStaff} ${T("admin.staffMembers")}`}
         />
         <StatCard
-          label="Total Revenue"
+          label={T("admin.totalRevenue")}
           value={formatCurrency(data.totalRevenue)}
           icon={DollarSign}
           color="bg-purple-600"
-          subtitle={`${formatCurrency(data.monthlyRevenue)} this month`}
+          subtitle={`${formatCurrency(data.monthlyRevenue)} ${T("admin.monthlyRevenue")}`}
         />
         <StatCard
-          label="Total Sales"
+          label={T("admin.totalSales")}
           value={formatNumber(data.totalSales)}
           icon={ShoppingCart}
           color="bg-orange-600"
@@ -79,25 +81,25 @@ export function PlatformStats({ data }: PlatformStatsProps) {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Products"
+          label={T("admin.products")}
           value={formatNumber(data.totalProducts)}
           icon={Package}
           color="bg-teal-600"
         />
         <StatCard
-          label="Subscriptions"
+          label={T("admin.subscriptions")}
           value={formatNumber(data.totalSubscriptions)}
           icon={TrendingUp}
           color="bg-indigo-600"
         />
         <StatCard
-          label="AI Conversations"
+          label={T("admin.aiConversations")}
           value={formatNumber(data.totalAiConversations)}
           icon={Sparkles}
           color="bg-pink-600"
         />
         <StatCard
-          label="Pending Stores"
+          label={T("admin.pendingStores")}
           value={formatNumber(data.pendingStores)}
           icon={AlertTriangle}
           color={data.pendingStores > 0 ? "bg-red-600" : "bg-gray-400"}
@@ -106,22 +108,22 @@ export function PlatformStats({ data }: PlatformStatsProps) {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <div className="rounded-lg border border-gray-200 bg-white p-5">
-          <h3 className="mb-3 text-sm font-medium text-gray-500">Plan Breakdown</h3>
+          <h3 className="mb-3 text-sm font-medium text-gray-500">{T("admin.planBreakdown")}</h3>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Starter</span>
+              <span className="text-sm text-gray-700">{T("admin.starter")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {data.planBreakdown.starter}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Professional</span>
+              <span className="text-sm text-gray-700">{T("admin.professional")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {data.planBreakdown.pro}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Business</span>
+              <span className="text-sm text-gray-700">{T("admin.business")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {data.planBreakdown.business}
               </span>
@@ -130,22 +132,22 @@ export function PlatformStats({ data }: PlatformStatsProps) {
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-5">
-          <h3 className="mb-3 text-sm font-medium text-gray-500">Store Status</h3>
+          <h3 className="mb-3 text-sm font-medium text-gray-500">{T("admin.storeStatus")}</h3>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Active</span>
+              <span className="text-sm text-gray-700">{T("admin.active")}</span>
               <span className="text-sm font-medium text-green-600">
                 {data.activeStores}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Pending</span>
+              <span className="text-sm text-gray-700">{T("admin.pending")}</span>
               <span className="text-sm font-medium text-yellow-600">
                 {data.pendingStores}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Suspended</span>
+              <span className="text-sm text-gray-700">{T("admin.suspended")}</span>
               <span className="text-sm font-medium text-red-600">
                 {data.suspendedStores}
               </span>
@@ -154,22 +156,22 @@ export function PlatformStats({ data }: PlatformStatsProps) {
         </div>
 
         <div className="rounded-lg border border-gray-200 bg-white p-5">
-          <h3 className="mb-3 text-sm font-medium text-gray-500">Quick Stats</h3>
+          <h3 className="mb-3 text-sm font-medium text-gray-500">{T("admin.quickStats")}</h3>
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Products Listed</span>
+              <span className="text-sm text-gray-700">{T("admin.productsListed")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {formatNumber(data.totalProducts)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Staff Members</span>
+              <span className="text-sm text-gray-700">{T("admin.staffMembers")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {formatNumber(data.totalStaff)}
               </span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-700">Monthly Revenue</span>
+              <span className="text-sm text-gray-700">{T("admin.monthlyRevenue")}</span>
               <span className="text-sm font-medium text-gray-900">
                 {formatCurrency(data.monthlyRevenue)}
               </span>

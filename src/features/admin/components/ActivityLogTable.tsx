@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import type { ActivityLogItem } from "../types/admin";
 
@@ -21,10 +22,11 @@ function getActionBadge(action: string) {
 }
 
 export function ActivityLogTable({ items }: ActivityLogTableProps) {
+  const T = useT();
   if (!items || items.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-        <p className="text-sm text-gray-500">No activity logs found.</p>
+        <p className="text-sm text-gray-500">{T("common.noData")}</p>
       </div>
     );
   }
@@ -35,7 +37,7 @@ export function ActivityLogTable({ items }: ActivityLogTableProps) {
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              User
+              {T("admin.user")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
               Action
@@ -44,10 +46,10 @@ export function ActivityLogTable({ items }: ActivityLogTableProps) {
               Module
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Description
+              {T("common.description")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Date
+              {T("common.date")}
             </th>
           </tr>
         </thead>
@@ -56,7 +58,7 @@ export function ActivityLogTable({ items }: ActivityLogTableProps) {
             <tr key={log._id} className="hover:bg-gray-50">
               <td className="whitespace-nowrap px-6 py-4">
                 <p className="text-sm font-medium text-gray-900">
-                  {log.userName || "System"}
+                  {log.userName || T("admin.system")}
                 </p>
                 <p className="text-xs text-gray-500">{log.userId}</p>
               </td>

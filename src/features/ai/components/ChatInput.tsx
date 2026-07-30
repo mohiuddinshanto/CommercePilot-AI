@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { Send, Loader2 } from "lucide-react";
 
 interface ChatInputProps {
@@ -10,6 +11,7 @@ interface ChatInputProps {
 }
 
 export function ChatInput({ onSend, isLoading, disabled }: ChatInputProps) {
+  const T = useT();
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -44,7 +46,7 @@ export function ChatInput({ onSend, isLoading, disabled }: ChatInputProps) {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about your store data..."
+          placeholder={T("ai.placeholder")}
           rows={1}
           disabled={disabled}
           className="flex-1 resize-none border-0 bg-transparent text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 disabled:opacity-50"
@@ -62,7 +64,7 @@ export function ChatInput({ onSend, isLoading, disabled }: ChatInputProps) {
         </button>
       </div>
       <p className="mt-2 text-xs text-gray-400">
-        Press Enter to send, Shift+Enter for new line. AI can make mistakes — verify important data.
+        {T("ai.helpText")}
       </p>
     </div>
   );

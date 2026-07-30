@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatDate } from "@/lib/utils";
 import { Shield, UserCheck, UserX, Ban } from "lucide-react";
 import type { AdminUser } from "../types/admin";
@@ -39,10 +40,11 @@ function getRoleBadge(role: string) {
 }
 
 export function UserTable({ items, onApprove, onReject, onSuspend }: UserTableProps) {
+  const T = useT();
   if (!items || items.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-        <p className="text-sm text-gray-500">No users found.</p>
+        <p className="text-sm text-gray-500">{T("admin.searchUsers")}</p>
       </div>
     );
   }
@@ -53,25 +55,25 @@ export function UserTable({ items, onApprove, onReject, onSuspend }: UserTablePr
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              User
+              {T("admin.user")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Role
+              {T("admin.allRoles")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Store
+              {T("admin.storeName")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Status
+              {T("admin.status")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Last Login
+              {T("admin.lastLogin")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Joined
+              {T("admin.joined")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Actions
+              {T("admin.actions")}
             </th>
           </tr>
         </thead>
@@ -100,7 +102,7 @@ export function UserTable({ items, onApprove, onReject, onSuspend }: UserTablePr
                 </span>
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-700">
-                {user.storeName || "N/A"}
+                {user.storeName || T("admin.na")}
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 <span
@@ -112,7 +114,7 @@ export function UserTable({ items, onApprove, onReject, onSuspend }: UserTablePr
                 </span>
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                {user.lastLogin ? formatDate(user.lastLogin) : "Never"}
+                {user.lastLogin ? formatDate(user.lastLogin) : T("admin.never")}
               </td>
               <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                 {formatDate(user.createdAt)}
@@ -124,14 +126,14 @@ export function UserTable({ items, onApprove, onReject, onSuspend }: UserTablePr
                       <button
                         onClick={() => onApprove(user._id)}
                         className="rounded p-1 text-green-400 hover:bg-green-50 hover:text-green-600"
-                        title="Approve"
+                        title={T("admin.approve")}
                       >
                         <UserCheck className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => onReject(user._id)}
                         className="rounded p-1 text-red-400 hover:bg-red-50 hover:text-red-600"
-                        title="Reject"
+                        title={T("admin.reject")}
                       >
                         <UserX className="h-4 w-4" />
                       </button>
@@ -141,7 +143,7 @@ export function UserTable({ items, onApprove, onReject, onSuspend }: UserTablePr
                     <button
                       onClick={() => onSuspend(user._id)}
                       className="rounded p-1 text-yellow-400 hover:bg-yellow-50 hover:text-yellow-600"
-                      title="Suspend"
+                      title={T("admin.suspend")}
                     >
                       <Ban className="h-4 w-4" />
                     </button>

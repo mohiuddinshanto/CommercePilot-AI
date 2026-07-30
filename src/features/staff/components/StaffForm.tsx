@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { STAFF_ROLES } from "@/constants/roles";
 import { PermissionMatrix } from "./PermissionMatrix";
 import type { StaffMember, UpdateStaffInput } from "@/types/staff";
@@ -13,6 +14,7 @@ interface StaffFormProps {
 }
 
 export function StaffForm({ staff, onSubmit, onCancel, isLoading }: StaffFormProps) {
+  const T = useT();
   const [role, setRole] = useState<string>(staff.role);
   const [permissions, setPermissions] = useState<string[]>(staff.permissions);
 
@@ -27,7 +29,7 @@ export function StaffForm({ staff, onSubmit, onCancel, isLoading }: StaffFormPro
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.form.name")}</label>
         <input
           type="text"
           value={staff.name}
@@ -37,7 +39,7 @@ export function StaffForm({ staff, onSubmit, onCancel, isLoading }: StaffFormPro
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.form.email")}</label>
         <input
           type="email"
           value={staff.email}
@@ -47,7 +49,7 @@ export function StaffForm({ staff, onSubmit, onCancel, isLoading }: StaffFormPro
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">{T("staff.form.role")}</label>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -72,14 +74,14 @@ export function StaffForm({ staff, onSubmit, onCancel, isLoading }: StaffFormPro
           onClick={onCancel}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          {T("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={isLoading || permissions.length === 0}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {isLoading ? "Saving..." : "Save Changes"}
+          {isLoading ? T("common.saving", "Saving...") : T("common.save")}
         </button>
       </div>
     </form>

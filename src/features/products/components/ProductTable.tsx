@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency } from "@/lib/utils";
 import { Package, Eye, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Product } from "@/types/product";
@@ -37,11 +38,12 @@ export function ProductTable({
   onPageChange,
   viewHref,
 }: ProductTableProps) {
+  const T = useT();
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <Package className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No products found</p>
+        <p className="text-sm text-gray-500">{T("products.noProducts")}</p>
       </div>
     );
   }
@@ -52,12 +54,12 @@ export function ProductTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Product</th>
-              <th className="px-4 py-3 font-medium text-gray-600">SKU</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Price</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Stock</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("products.tableTitle")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("products.sku")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("products.price")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("products.stock")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -137,7 +139,7 @@ export function ProductTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button

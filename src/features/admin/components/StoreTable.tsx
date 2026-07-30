@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatDate } from "@/lib/utils";
 import { Eye, CheckCircle, XCircle, Ban } from "lucide-react";
 import type { AdminStore } from "../types/admin";
@@ -35,10 +36,11 @@ export function StoreTable({
   onReject,
   onSuspend,
 }: StoreTableProps) {
+  const T = useT();
   if (!items || items.length === 0) {
     return (
       <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-        <p className="text-sm text-gray-500">No stores found.</p>
+        <p className="text-sm text-gray-500">{T("admin.searchStores")}</p>
       </div>
     );
   }
@@ -49,28 +51,28 @@ export function StoreTable({
         <thead className="bg-gray-50">
           <tr>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Store
+              {T("admin.storeName")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Owner
+              {T("admin.owner")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Plan
+              {T("admin.plan")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Status
+              {T("admin.status")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Products
+              {T("admin.products")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Staff
+              {T("admin.staff")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Created
+              {T("admin.created")}
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              Actions
+              {T("admin.actions")}
             </th>
           </tr>
         </thead>
@@ -85,7 +87,7 @@ export function StoreTable({
               </td>
               <td className="whitespace-nowrap px-6 py-4">
                 <div>
-                  <p className="text-sm text-gray-900">{store.ownerName || "N/A"}</p>
+                  <p className="text-sm text-gray-900">{store.ownerName || T("admin.na")}</p>
                   <p className="text-xs text-gray-500">{store.ownerEmail || ""}</p>
                 </div>
               </td>
@@ -117,7 +119,7 @@ export function StoreTable({
                   <button
                     onClick={() => onView(store)}
                     className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                    title="View Details"
+                    title={T("admin.viewDetails")}
                   >
                     <Eye className="h-4 w-4" />
                   </button>
@@ -126,14 +128,14 @@ export function StoreTable({
                       <button
                         onClick={() => onApprove(store._id)}
                         className="rounded p-1 text-green-400 hover:bg-green-50 hover:text-green-600"
-                        title="Approve"
+                        title={T("admin.approve")}
                       >
                         <CheckCircle className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => onReject(store._id)}
                         className="rounded p-1 text-red-400 hover:bg-red-50 hover:text-red-600"
-                        title="Reject"
+                        title={T("admin.reject")}
                       >
                         <XCircle className="h-4 w-4" />
                       </button>
@@ -143,7 +145,7 @@ export function StoreTable({
                     <button
                       onClick={() => onSuspend(store._id)}
                       className="rounded p-1 text-yellow-400 hover:bg-yellow-50 hover:text-yellow-600"
-                      title="Suspend"
+                      title={T("admin.suspend")}
                     >
                       <Ban className="h-4 w-4" />
                     </button>

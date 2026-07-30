@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import {
@@ -16,12 +17,12 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 const ADMIN_NAV_ITEMS = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/stores", label: "Stores", icon: Store },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/subscriptions", label: "Subscriptions", icon: CreditCard },
-  { href: "/admin/system", label: "System", icon: Server },
-  { href: "/admin/activity", label: "Activity", icon: Activity },
+  { href: "/admin/dashboard", labelKey: "admin.dashboard", icon: LayoutDashboard },
+  { href: "/admin/stores", labelKey: "admin.stores", icon: Store },
+  { href: "/admin/users", labelKey: "admin.users", icon: Users },
+  { href: "/admin/subscriptions", labelKey: "admin.subscriptions", icon: CreditCard },
+  { href: "/admin/system", labelKey: "admin.system", icon: Server },
+  { href: "/admin/activity", labelKey: "admin.activity", icon: Activity },
 ];
 
 export default function AdminLayout({
@@ -29,6 +30,7 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const T = useT();
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -56,7 +58,7 @@ export default function AdminLayout({
             <div className="mb-4 flex items-center gap-2 px-3">
               <Shield className="h-5 w-5 text-blue-600" />
               <span className="text-sm font-semibold text-gray-900">
-                Admin Panel
+                {T("admin.title")}
               </span>
             </div>
             {ADMIN_NAV_ITEMS.map((item) => {
@@ -74,7 +76,7 @@ export default function AdminLayout({
                   }`}
                 >
                   <item.icon className="h-4 w-4" />
-                  {item.label}
+                  {T(item.labelKey)}
                 </Link>
               );
             })}

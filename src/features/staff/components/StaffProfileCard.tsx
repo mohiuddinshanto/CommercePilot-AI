@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import type { StaffMember } from "@/types/staff";
 import { RoleBadge } from "./RoleBadge";
 
@@ -21,26 +22,27 @@ function getStatusBadge(status: string) {
 }
 
 export function StaffProfileCard({ staff }: StaffProfileCardProps) {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile</h2>
+      <h2 className="text-lg font-semibold text-gray-900 mb-4">{T("staff.profile")}</h2>
       <dl className="space-y-3">
         <div className="flex items-center justify-between">
-          <dt className="text-sm text-gray-500">Name</dt>
+          <dt className="text-sm text-gray-500">{T("staff.form.name")}</dt>
           <dd className="text-sm font-medium text-gray-900">{staff.name}</dd>
         </div>
         <div className="flex items-center justify-between">
-          <dt className="text-sm text-gray-500">Email</dt>
+          <dt className="text-sm text-gray-500">{T("staff.form.email")}</dt>
           <dd className="text-sm text-gray-900">{staff.email}</dd>
         </div>
         <div className="flex items-center justify-between">
-          <dt className="text-sm text-gray-500">Role</dt>
+          <dt className="text-sm text-gray-500">{T("staff.role")}</dt>
           <dd>
             <RoleBadge role={staff.role} />
           </dd>
         </div>
         <div className="flex items-center justify-between">
-          <dt className="text-sm text-gray-500">Status</dt>
+          <dt className="text-sm text-gray-500">{T("common.status")}</dt>
           <dd>
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getStatusBadge(staff.status)}`}

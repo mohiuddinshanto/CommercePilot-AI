@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { Package, Eye, Pencil, Trash2, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Inventory } from "@/types/inventory";
@@ -14,12 +15,6 @@ interface InventoryTableProps {
   onPageChange: (page: number) => void;
 }
 
-function getStockStatus(item: Inventory) {
-  if (item.currentStock === 0) return { label: "Out of Stock", className: "bg-red-100 text-red-800" };
-  if (item.currentStock <= item.lowStockLimit) return { label: "Low Stock", className: "bg-yellow-100 text-yellow-800" };
-  return { label: "In Stock", className: "bg-green-100 text-green-800" };
-}
-
 export function InventoryTable({
   items,
   onDelete,
@@ -27,11 +22,19 @@ export function InventoryTable({
   totalPages,
   onPageChange,
 }: InventoryTableProps) {
+  const T = useT();
+
+  function getStockStatus(item: Inventory) {
+    if (item.currentStock === 0) return { label: T("inventory.outOfStock"), className: "bg-red-100 text-red-800" };
+    if (item.currentStock <= item.lowStockLimit) return { label: T("inventory.lowStock"), className: "bg-yellow-100 text-yellow-800" };
+    return { label: T("inventory.inStock"), className: "bg-green-100 text-green-800" };
+  }
+
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <Package className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No inventory records found</p>
+        <p className="text-sm text-gray-500">{T("inventory.noInventory")}</p>
       </div>
     );
   }
@@ -42,14 +45,14 @@ export function InventoryTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Product</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Current Stock</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Available</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Low Stock Limit</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Cost Price</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Last Restocked</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("products.tableTitle")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.currentStock")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.available")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.lowStockLimit")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.costPrice")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.lastRestocked")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -142,7 +145,7 @@ export function InventoryTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button

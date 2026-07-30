@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import type { BundleProduct } from "@/types/bundle";
 import { Plus, Trash2 } from "lucide-react";
 
@@ -14,6 +15,7 @@ export function BundleProductSelector({
   onChange,
   disabled,
 }: BundleProductSelectorProps) {
+  const T = useT();
   const addProduct = () => {
     onChange([...products, { productId: "", quantity: 1 }]);
   };
@@ -32,7 +34,7 @@ export function BundleProductSelector({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="block text-sm font-medium text-gray-700">
-          Products <span className="text-red-500">*</span>
+          {T("bundles.products")} <span className="text-red-500">*</span>
         </label>
         <button
           type="button"
@@ -41,12 +43,12 @@ export function BundleProductSelector({
           className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
         >
           <Plus className="h-4 w-4" />
-          Add Product
+          {T("bundles.addProduct")}
         </button>
       </div>
 
       {products.length === 0 && (
-        <p className="text-sm text-gray-500 italic">No products added yet.</p>
+        <p className="text-sm text-gray-500 italic">{T("bundles.noProductsAdded")}</p>
       )}
 
       {products.map((item, index) => (
@@ -56,7 +58,7 @@ export function BundleProductSelector({
             value={item.productId}
             onChange={(e) => updateProduct(index, "productId", e.target.value)}
             disabled={disabled}
-            placeholder="Product ID"
+            placeholder={T("bundles.productId")}
             className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
           <input

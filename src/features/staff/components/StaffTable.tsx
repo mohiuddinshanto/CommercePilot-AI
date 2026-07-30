@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { Users, Eye, Trash2, ChevronLeft, ChevronRight, Shield, ShieldOff } from "lucide-react";
 import type { StaffMember } from "@/types/staff";
@@ -52,11 +53,12 @@ export function StaffTable({
   totalPages,
   onPageChange,
 }: StaffTableProps) {
+  const T = useT();
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <Users className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No staff members found</p>
+        <p className="text-sm text-gray-500">{T("staff.noStaff")}</p>
       </div>
     );
   }
@@ -67,13 +69,13 @@ export function StaffTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Name</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Email</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Role</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Permissions</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Joined</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("staff.form.name")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("staff.form.email")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("staff.role")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("staff.permissions")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("staff.joined")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -122,7 +124,7 @@ export function StaffTable({
                 <td className="px-4 py-3 text-gray-600">
                   {item.status === "pending" ? (
                     <span className="text-yellow-600 text-xs">
-                      Expires {formatDateTime(item.invitationExpiresAt)}
+                      {T("staff.expires").replace("{date}", formatDateTime(item.invitationExpiresAt))}
                     </span>
                   ) : (
                     formatDateTime(item.createdAt)
@@ -173,7 +175,7 @@ export function StaffTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button

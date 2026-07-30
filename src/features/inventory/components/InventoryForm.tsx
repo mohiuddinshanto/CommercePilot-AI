@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { Search, Package, ChevronDown, X } from "lucide-react";
 import { useProducts } from "@/features/products/hooks/useProducts";
 import type { Inventory, CreateInventoryInput, UpdateInventoryInput } from "@/types/inventory";
@@ -14,6 +15,7 @@ interface InventoryFormProps {
 }
 
 export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: InventoryFormProps) {
+  const T = useT();
   const [productId, setProductId] = useState(inventory?.productId || "");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -84,7 +86,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
       {!inventory && (
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Select Product <span className="text-red-500">*</span>
+            {T("inventory.form.selectProduct")}
           </label>
           <div ref={dropdownRef} className="relative mt-1">
             <div
@@ -104,7 +106,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                   if (!e.target.value) handleClearProduct();
                 }}
                 onFocus={() => setIsDropdownOpen(true)}
-                placeholder="Search product by name..."
+                placeholder={T("inventory.form.searchProduct")}
                 className="flex-1 bg-transparent outline-none placeholder-gray-400"
               />
               {selectedProduct ? (
@@ -126,8 +128,8 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                 {products.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-8 text-center text-sm text-gray-400">
                     <Package className="h-8 w-8 mb-2 text-gray-300" />
-                    <p>No products found</p>
-                    <p className="text-xs mt-1">Try a different search term</p>
+                    <p>{T("inventory.form.noProducts")}</p>
+                    <p className="text-xs mt-1">{T("inventory.form.tryDifferent")}</p>
                   </div>
                 ) : (
                   products.map((product) => (
@@ -153,7 +155,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="truncate text-sm font-medium text-gray-900">{product.name}</p>
-                        <p className="text-xs text-gray-500">SKU: {product.sku}</p>
+                        <p className="text-xs text-gray-500">{T("products.sku")}: {product.sku}</p>
                       </div>
                       <span className="shrink-0 text-xs font-semibold text-blue-600">
                         ৳{product.sellingPrice?.toLocaleString()}
@@ -173,7 +175,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
                 <p className="text-sm font-medium text-blue-900 truncate">{selectedProduct.name}</p>
                 <p className="text-xs text-blue-600">SKU: {selectedProduct.sku}</p>
               </div>
-              <span className="text-xs text-green-600 font-medium">✓ Selected</span>
+              <span className="text-xs text-green-600 font-medium">{T("common.selected", "✓ Selected")}</span>
             </div>
           )}
 
@@ -193,7 +195,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Current Stock <span className="text-red-500">*</span>
+            {T("inventory.form.currentStock")}
           </label>
           <input
             type="number"
@@ -207,7 +209,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Low Stock Alert Limit</label>
+          <label className="block text-sm font-medium text-gray-700">{T("inventory.form.lowStockAlert")}</label>
           <input
             type="number"
             value={lowStockLimit}
@@ -221,7 +223,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
 
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Cost Price <span className="text-red-500">*</span>
+          {T("inventory.form.costPrice")}
         </label>
         <div className="relative mt-1">
           <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
@@ -240,7 +242,7 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
         </div>
         {selectedProduct && (
           <p className="mt-1 text-xs text-gray-400">
-            Product cost price: ৳{selectedProduct.costPrice?.toLocaleString()} (you can change it)
+            {T("inventory.productCostPrice", "Product cost price")}: ৳{selectedProduct.costPrice?.toLocaleString()} ({T("common.change", "change")})
           </p>
         )}
       </div>
@@ -251,14 +253,14 @@ export function InventoryForm({ inventory, onSubmit, onCancel, isLoading }: Inve
           onClick={onCancel}
           className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          Cancel
+          {T("common.cancel")}
         </button>
         <button
           type="submit"
           disabled={isLoading || (!inventory && !productId)}
           className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {isLoading ? "Saving..." : inventory ? "Update Inventory" : "Create Inventory"}
+          {isLoading ? T("common.saving", "Saving...") : inventory ? T("inventory.edit") : T("inventory.add")}
         </button>
       </div>
     </form>

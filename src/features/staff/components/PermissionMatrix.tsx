@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { STAFF_PERMISSIONS } from "@/constants/permissions";
 
 interface PermissionMatrixProps {
@@ -25,6 +26,7 @@ export function PermissionMatrix({
   onChange,
   disabled = false,
 }: PermissionMatrixProps) {
+  const T = useT();
   const allPermissions = Object.values(STAFF_PERMISSIONS);
 
   const togglePermission = (permission: string) => {
@@ -50,7 +52,7 @@ export function PermissionMatrix({
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <label className="block text-sm font-medium text-gray-700">
-          Permissions
+          {T("staff.permissionsMatrix")}
         </label>
         <div className="flex gap-2">
           <button
@@ -59,7 +61,7 @@ export function PermissionMatrix({
             disabled={disabled}
             className="text-xs text-blue-600 hover:text-blue-800 disabled:opacity-50"
           >
-            Select All
+            {T("staff.selectAll")}
           </button>
           <span className="text-gray-300">|</span>
           <button
@@ -68,7 +70,7 @@ export function PermissionMatrix({
             disabled={disabled}
             className="text-xs text-gray-500 hover:text-gray-700 disabled:opacity-50"
           >
-            Clear All
+            {T("staff.clearAll")}
           </button>
         </div>
       </div>
@@ -94,7 +96,7 @@ export function PermissionMatrix({
         ))}
       </div>
       {selectedPermissions.length === 0 && (
-        <p className="text-xs text-red-500">At least one permission is required.</p>
+        <p className="text-xs text-red-500">{T("staff.permissionRequired")}</p>
       )}
     </div>
   );

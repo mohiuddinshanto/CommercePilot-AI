@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useRouter } from "next/navigation";
 import { sendChatMessageStream } from "../api/ai.api";
 import { ChatMessage } from "./ChatMessage";
@@ -16,6 +17,7 @@ interface AIChatProps {
 }
 
 export function AIChat({ conversationId: initialConvId, initialMessages = [], model }: AIChatProps) {
+  const T = useT();
   const [messages, setMessages] = useState<AIMessage[]>(initialMessages);
   const [conversationId, setConversationId] = useState<string | undefined>(initialConvId);
   const [selectedModel, setSelectedModel] = useState(model || "llama-3.1-8b-instant");
@@ -45,9 +47,9 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
             onChange={(e) => setSelectedModel(e.target.value)}
             className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 focus:border-blue-500 focus:outline-none"
           >
-            <option value="llama-3.1-8b-instant">Llama 3.1 8B (Fast)</option>
-            <option value="llama-3.1-70b-versatile">Llama 3.1 70B (Versatile)</option>
-            <option value="llama3-70b-8192">Llama 3 70B</option>
+            <option value="llama-3.1-8b-instant">{T("ai.model.fast")}</option>
+            <option value="llama-3.1-70b-versatile">{T("ai.model.versatile")}</option>
+            <option value="llama3-70b-8192">{T("ai.model.powerful")}</option>
           </select>
         </div>
         {conversationId && (
@@ -55,7 +57,7 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
             onClick={() => router.push("/ai")}
             className="text-sm text-gray-500 hover:text-gray-900"
           >
-            New Chat
+            {T("ai.newChat")}
           </button>
         )}
       </div>
@@ -76,7 +78,7 @@ export function AIChat({ conversationId: initialConvId, initialMessages = [], mo
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
                 </div>
                 <div className="rounded-2xl bg-gray-100 px-4 py-3 text-sm text-gray-500">
-                  Thinking...
+                  {T("ai.thinking")}
                 </div>
               </div>
             )}

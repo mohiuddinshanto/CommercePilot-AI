@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import {
   useAdminStores,
@@ -17,6 +18,7 @@ import toast from "react-hot-toast";
 import type { AdminStore } from "@/features/admin/types/admin";
 
 export default function AdminStoresPage() {
+  const T = useT();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -46,39 +48,39 @@ export default function AdminStoresPage() {
   if (user?.role !== "super_admin") return null;
 
   if (error) {
-    return <ErrorPage title="Failed to load stores" message="Could not fetch stores." />;
+    return <ErrorPage title={T("error.title")} message={T("error.message")} />;
   }
 
   const items = data?.items || [];
   const totalPages = data?.totalPages || 1;
 
   const handleApprove = async (id: string) => {
-    if (!confirm("Approve this store?")) return;
+    if (!confirm(T("confirm.approveStore"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "approved" } });
-      toast.success("Store approved.");
+      toast.success(T("admin.storeApproved"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to approve store.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
   const handleReject = async (id: string) => {
-    if (!confirm("Reject this store?")) return;
+    if (!confirm(T("confirm.rejectStore"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "rejected" } });
-      toast.success("Store rejected.");
+      toast.success(T("admin.storeRejected"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to reject store.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
   const handleSuspend = async (id: string) => {
-    if (!confirm("Suspend this store?")) return;
+    if (!confirm(T("confirm.suspendStore"))) return;
     try {
       await updateStatus.mutateAsync({ id, input: { status: "suspended" } });
-      toast.success("Store suspended.");
+      toast.success(T("admin.storeSuspended"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to suspend store.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
@@ -87,15 +89,15 @@ export default function AdminStoresPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Store Management</h1>
-          <p className="text-sm text-gray-500">Manage all stores on the platform.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{T("admin.storeManagement")}</h1>
+          <p className="text-sm text-gray-500">{T("admin.storeManagementSubtitle")}</p>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <input
           type="text"
-          placeholder="Search stores..."
+          placeholder={T("admin.searchStores")}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -111,11 +113,11 @@ export default function AdminStoresPage() {
           }}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
-          <option value="">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-          <option value="suspended">Suspended</option>
+          <option value="">{T("admin.allStatus")}</option>
+          <option value="pending">{T("admin.pending")}</option>
+          <option value="approved">{T("admin.approved")}</option>
+          <option value="rejected">{T("admin.rejected")}</option>
+          <option value="suspended">{T("admin.suspended")}</option>
         </select>
         <select
           value={planFilter}
@@ -125,10 +127,10 @@ export default function AdminStoresPage() {
           }}
           className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
-          <option value="">All Plans</option>
-          <option value="starter">Starter</option>
-          <option value="pro">Professional</option>
-          <option value="business">Business</option>
+          <option value="">{T("admin.allPlans")}</option>
+          <option value="starter">{T("admin.starter")}</option>
+          <option value="pro">{T("admin.professional")}</option>
+          <option value="business">{T("admin.business")}</option>
         </select>
       </div>
 
@@ -146,7 +148,7 @@ export default function AdminStoresPage() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf").replace("{page}", String(page)).replace("{totalPages}", String(totalPages))}
           </p>
           <div className="flex gap-2">
             <button

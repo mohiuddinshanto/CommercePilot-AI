@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
 import { post } from "@/core/api-client";
@@ -8,6 +9,7 @@ import { Store, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function OnboardingPage() {
+  const T = useT();
   const { user, isAuthenticated, isLoading, refresh } = useAuth();
   const router = useRouter();
 
@@ -43,7 +45,7 @@ export default function OnboardingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!storeName.trim() || !storeSlug.trim()) {
-      toast.error("Please enter a valid store name.");
+      toast.error(T("onboarding.validStoreName"));
       return;
     }
 
@@ -60,9 +62,9 @@ export default function OnboardingPage() {
 
       setCreatedStoreId(res.storeId);
       await refresh();
-      toast.success("Store created successfully!");
+      toast.success(T("onboarding.storeCreatedSuccess"));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to create store.");
+      toast.error(err instanceof Error ? err.message : T("onboarding.createStoreFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -83,21 +85,21 @@ export default function OnboardingPage() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/20 text-green-400">
             <CheckCircle2 className="h-10 w-10" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Store Created Successfully!</h1>
+          <h1 className="text-2xl font-bold text-white">{T("onboarding.successTitle")}</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Your store <strong className="text-white">"{storeName || "Workspace"}"</strong> is now registered.
+            {T("onboarding.successDesc").replace("{storeName}", storeName || "Workspace")}
           </p>
           <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-left">
-            <p className="text-xs font-semibold uppercase tracking-wider text-yellow-400">Approval Required</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-yellow-400">{T("onboarding.approvalRequired")}</p>
             <p className="mt-1 text-xs text-yellow-200/90">
-              Super Admin approval is pending for new stores. Once approved by the administrator, your dashboard will be fully active!
+              {T("onboarding.approvalDesc")}
             </p>
           </div>
           <button
             onClick={() => router.push("/dashboard")}
             className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-semibold text-white hover:bg-blue-500"
           >
-            Go to Dashboard <ArrowRight className="h-4 w-4" />
+            {T("onboarding.goToDashboard")} <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -112,43 +114,43 @@ export default function OnboardingPage() {
             <Store className="h-6 w-6" />
           </div>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-3 py-1 text-xs font-semibold text-blue-300">
-            <Sparkles className="h-3.5 w-3.5" /> Workspace Onboarding
+            <Sparkles className="h-3.5 w-3.5" /> {T("onboarding.workspaceOnboarding")}
           </p>
 
-          <h1 className="mt-3 text-2xl font-bold text-white">Create Your Store</h1>
+          <h1 className="mt-3 text-2xl font-bold text-white">{T("onboarding.createStoreTitle")}</h1>
           <p className="mt-1 text-sm text-slate-400">
-            Welcome, {user?.name || "Operator"}! Set up your store workspace to start.
+            {T("onboarding.welcomeDesc").replace("{name}", user?.name || "Operator")}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300">Store Name *</label>
+            <label className="block text-sm font-medium text-slate-300">{T("onboarding.storeName")} *</label>
             <input
               type="text"
               value={storeName}
               onChange={handleNameChange}
               required
-              placeholder="e.g. Acme Fashion Store"
+              placeholder={T("onboarding.storeNamePlaceholder")}
               className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300">Store Slug / Identifier *</label>
+            <label className="block text-sm font-medium text-slate-300">{T("onboarding.storeSlug")} *</label>
             <input
               type="text"
               value={storeSlug}
               onChange={(e) => setStoreSlug(e.target.value.toLowerCase())}
               required
-              placeholder="acme-fashion-store"
+              placeholder={T("onboarding.storeSlugPlaceholder")}
               className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300">Currency</label>
+              <label className="block text-sm font-medium text-slate-300">{T("onboarding.currency")}</label>
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
@@ -162,7 +164,7 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300">Timezone</label>
+              <label className="block text-sm font-medium text-slate-300">{T("onboarding.timezone")}</label>
               <select
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
@@ -176,23 +178,23 @@ export default function OnboardingPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300">Phone Number (Optional)</label>
+            <label className="block text-sm font-medium text-slate-300">{T("onboarding.phone")}</label>
             <input
               type="text"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+8801700000000"
+              placeholder={T("onboarding.phonePlaceholder")}
               className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300">Store Address (Optional)</label>
+            <label className="block text-sm font-medium text-slate-300">{T("onboarding.storeAddress")}</label>
             <input
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Dhaka, Bangladesh"
+              placeholder={T("onboarding.addressPlaceholder")}
               className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
           </div>
@@ -202,7 +204,7 @@ export default function OnboardingPage() {
             disabled={submitting}
             className="mt-6 w-full rounded-xl bg-blue-600 py-3 font-semibold text-white shadow-lg transition hover:bg-blue-500 disabled:opacity-50"
           >
-            {submitting ? "Creating store workspace..." : "Create Store & Proceed"}
+            {submitting ? T("onboarding.creating") : T("onboarding.createStoreProceed")}
           </button>
         </form>
       </div>

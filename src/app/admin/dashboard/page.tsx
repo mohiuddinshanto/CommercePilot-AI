@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import { useAdminDashboard } from "@/features/admin/hooks/useAdmin";
 import { PlatformStats } from "@/features/admin/components/PlatformStats";
@@ -11,6 +12,7 @@ import { useEffect } from "react";
 import { formatDate } from "@/lib/utils";
 
 export default function AdminDashboardPage() {
+  const T = useT();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { data, isLoading, error } = useAdminDashboard();
@@ -25,7 +27,7 @@ export default function AdminDashboardPage() {
   if (user?.role !== "super_admin") return null;
 
   if (error) {
-    return <ErrorPage title="Failed to load dashboard" message="Could not fetch platform data." />;
+    return <ErrorPage title={T("error.title")} message={T("error.message")} />;
   }
 
   return (
@@ -33,8 +35,8 @@ export default function AdminDashboardPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">Platform overview and statistics.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{T("admin.dashboard")}</h1>
+          <p className="text-sm text-gray-500">{T("admin.subtitle")}</p>
         </div>
       </div>
 
@@ -42,7 +44,7 @@ export default function AdminDashboardPage() {
 
       {data?.recentActivity && data.recentActivity.length > 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-6">
-          <h3 className="mb-4 text-lg font-semibold text-gray-900">Recent Activity</h3>
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">{T("dashboard.recentActivity")}</h3>
           <div className="space-y-3">
             {data.recentActivity.map((log) => (
               <div

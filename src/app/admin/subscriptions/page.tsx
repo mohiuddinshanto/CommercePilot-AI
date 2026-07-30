@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useAuth } from "@/providers/auth-provider";
 import {
   useAdminSubscriptions,
@@ -20,6 +21,7 @@ import toast from "react-hot-toast";
 import type { AdminSubscription } from "@/features/admin/types/admin";
 
 export default function AdminSubscriptionsPage() {
+  const T = useT();
   const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [page, setPage] = useState(1);
@@ -53,7 +55,7 @@ export default function AdminSubscriptionsPage() {
   if (user?.role !== "super_admin") return null;
 
   if (error) {
-    return <ErrorPage title="Failed to load subscriptions" message="Could not fetch subscriptions." />;
+    return <ErrorPage title={T("error.title")} message={T("error.message")} />;
   }
 
   const items = data?.items || [];
@@ -62,15 +64,15 @@ export default function AdminSubscriptionsPage() {
 
   const handleApproveRequest = (id: string) => {
     approvePlanRequest.mutate(id, {
-      onSuccess: () => toast.success("Plan change request approved successfully."),
-      onError: (err) => toast.error(err instanceof Error ? err.message : "Failed to approve request."),
+      onSuccess: () => toast.success(T("admin.subscriptionUpdated")),
+      onError: (err) => toast.error(err instanceof Error ? err.message : T("error.message")),
     });
   };
 
   const handleRejectRequest = (id: string) => {
     rejectPlanRequest.mutate(id, {
-      onSuccess: () => toast.success("Plan change request rejected."),
-      onError: (err) => toast.error(err instanceof Error ? err.message : "Failed to reject request."),
+      onSuccess: () => toast.success(T("admin.subscriptionUpdated")),
+      onError: (err) => toast.error(err instanceof Error ? err.message : T("error.message")),
     });
   };
 
@@ -78,11 +80,11 @@ export default function AdminSubscriptionsPage() {
     if (!selectedSub) return;
     try {
       await updateSubscription.mutateAsync({ id: selectedSub._id, input: updates });
-      toast.success("Subscription updated.");
+      toast.success(T("admin.subscriptionUpdated"));
       setShowModal(false);
       setSelectedSub(null);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to update subscription.");
+      toast.error(err instanceof Error ? err.message : T("error.message"));
     }
   };
 
@@ -91,8 +93,8 @@ export default function AdminSubscriptionsPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-blue-600" />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subscription Management</h1>
-          <p className="text-sm text-gray-500">Manage all subscriptions and plan change requests.</p>
+          <h1 className="text-2xl font-bold text-gray-900">{T("admin.subscriptionManagement")}</h1>
+          <p className="text-sm text-gray-500">{T("admin.subscriptionManagementSubtitle")}</p>
         </div>
       </div>
 
@@ -100,18 +102,18 @@ export default function AdminSubscriptionsPage() {
         <div className="rounded-xl border border-amber-200 bg-white p-6 shadow-sm">
           <div className="mb-4 flex items-center gap-2 text-amber-900">
             <Clock className="h-5 w-5 text-amber-600" />
-            <h2 className="text-lg font-bold">Pending Plan Change Requests ({pendingRequests.length})</h2>
+            <h2 className="text-lg font-bold">{T("admin.pending")} {T("admin.subscriptions")} ({pendingRequests.length})</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-600">
               <thead className="border-b bg-gray-50 text-xs font-semibold uppercase text-gray-500">
                 <tr>
-                  <th className="px-4 py-3">Store Name</th>
-                  <th className="px-4 py-3">User</th>
-                  <th className="px-4 py-3">Current Plan</th>
-                  <th className="px-4 py-3">Requested Plan</th>
-                  <th className="px-4 py-3">Requested At</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3">{T("admin.storeName")}</th>
+                  <th className="px-4 py-3">{T("admin.user")}</th>
+                  <th className="px-4 py-3">{T("admin.currentPlan")}</th>
+                  <th className="px-4 py-3">{T("admin.requestedPlan")}</th>
+                  <th className="px-4 py-3">{T("admin.requestedAt")}</th>
+                  <th className="px-4 py-3 text-right">{T("admin.actions")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
@@ -142,14 +144,14 @@ export default function AdminSubscriptionsPage() {
                           disabled={approvePlanRequest.isPending}
                           className="flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
                         >
-                          <Check className="h-3.5 w-3.5" /> Approve
+                          <Check className="h-3.5 w-3.5" /> {T("admin.approve")}
                         </button>
                         <button
                           onClick={() => handleRejectRequest(req._id)}
                           disabled={rejectPlanRequest.isPending}
                           className="flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-100 disabled:opacity-50"
                         >
-                          <X className="h-3.5 w-3.5" /> Reject
+                          <X className="h-3.5 w-3.5" /> {T("admin.reject")}
                         </button>
                       </div>
                     </td>
@@ -162,11 +164,11 @@ export default function AdminSubscriptionsPage() {
       )}
 
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-gray-900">All Store Subscriptions</h2>
+        <h2 className="text-lg font-bold text-gray-900">{T("admin.subscriptionManagement")}</h2>
         <div className="flex flex-wrap items-center gap-3">
           <input
             type="text"
-            placeholder="Search subscriptions..."
+            placeholder={T("admin.searchSubscriptions")}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -182,11 +184,11 @@ export default function AdminSubscriptionsPage() {
             }}
             className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="">All Status</option>
-            <option value="active">Active</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="expired">Expired</option>
-            <option value="trialing">Trial</option>
+            <option value="">{T("admin.allStatus")}</option>
+            <option value="active">{T("admin.active")}</option>
+            <option value="cancelled">{T("admin.cancelled")}</option>
+            <option value="expired">{T("admin.expired")}</option>
+            <option value="trialing">{T("admin.trial")}</option>
           </select>
           <select
             value={planFilter}
@@ -196,10 +198,10 @@ export default function AdminSubscriptionsPage() {
             }}
             className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
-            <option value="">All Plans</option>
-            <option value="starter">Starter</option>
-            <option value="pro">Professional</option>
-            <option value="business">Business</option>
+            <option value="">{T("admin.allPlans")}</option>
+            <option value="starter">{T("admin.starter")}</option>
+            <option value="pro">{T("admin.professional")}</option>
+            <option value="business">{T("admin.business")}</option>
           </select>
         </div>
 
@@ -214,7 +216,7 @@ export default function AdminSubscriptionsPage() {
         {totalPages > 1 && (
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500">
-              Page {page} of {totalPages}
+              {T("common.pageOf").replace("{page}", String(page)).replace("{totalPages}", String(totalPages))}
             </p>
             <div className="flex gap-2">
               <button

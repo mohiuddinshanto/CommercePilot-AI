@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatNumber } from "@/lib/utils";
 import { Database, Server, HardDrive, Clock } from "lucide-react";
 import type { SystemStats } from "../types/admin";
@@ -9,6 +10,7 @@ interface SystemHealthProps {
 }
 
 export function SystemHealth({ data }: SystemHealthProps) {
+  const T = useT();
   if (!data) return null;
   const uptimeHours = Math.floor(data.uptime / 3600);
   const uptimeMinutes = Math.floor((data.uptime % 3600) / 60);
@@ -22,7 +24,7 @@ export function SystemHealth({ data }: SystemHealthProps) {
               <Database className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Collections</p>
+              <p className="text-sm text-gray-500">{T("admin.collections")}</p>
               <p className="text-xl font-bold text-gray-900">{data.totalCollections}</p>
             </div>
           </div>
@@ -34,7 +36,7 @@ export function SystemHealth({ data }: SystemHealthProps) {
               <HardDrive className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total Documents</p>
+              <p className="text-sm text-gray-500">{T("admin.totalDocuments")}</p>
               <p className="text-xl font-bold text-gray-900">
                 {formatNumber(data.totalDocuments)}
               </p>
@@ -48,7 +50,7 @@ export function SystemHealth({ data }: SystemHealthProps) {
               <Server className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">DB Size</p>
+              <p className="text-sm text-gray-500">{T("admin.dbSize")}</p>
               <p className="text-xl font-bold text-gray-900">{data.dbSize}</p>
             </div>
           </div>
@@ -60,7 +62,7 @@ export function SystemHealth({ data }: SystemHealthProps) {
               <Clock className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Uptime</p>
+              <p className="text-sm text-gray-500">{T("admin.uptime")}</p>
               <p className="text-xl font-bold text-gray-900">
                 {uptimeHours}h {uptimeMinutes}m
               </p>
@@ -70,21 +72,21 @@ export function SystemHealth({ data }: SystemHealthProps) {
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">System Information</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">{T("admin.systemInfo")}</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <p className="text-sm text-gray-500">Node Version</p>
+            <p className="text-sm text-gray-500">{T("admin.nodeVersion")}</p>
             <p className="text-sm font-medium text-gray-900">{data.nodeVersion}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Platform</p>
+            <p className="text-sm text-gray-500">{T("admin.platform")}</p>
             <p className="text-sm font-medium text-gray-900">{data.platform}</p>
           </div>
         </div>
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold text-gray-900">Collection Statistics</h3>
+        <h3 className="mb-4 text-lg font-semibold text-gray-900">{T("admin.collectionStats")}</h3>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {Object.entries(data.collections)
             .sort(([, a], [, b]) => b - a)

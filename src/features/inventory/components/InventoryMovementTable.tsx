@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { ArrowDownCircle, ArrowUpCircle, Settings } from "lucide-react";
 import type { InventoryMovement } from "@/types/inventory";
@@ -21,23 +22,25 @@ function getMovementIcon(type: string) {
   }
 }
 
-function getMovementLabel(type: string) {
-  switch (type) {
-    case "stock_in":
-      return <span className="text-green-700">Stock In</span>;
-    case "stock_out":
-      return <span className="text-red-700">Stock Out</span>;
-    case "adjustment":
-      return <span className="text-blue-700">Adjustment</span>;
-    default:
-      return <span>{type}</span>;
-  }
-}
-
 export function InventoryMovementTable({ movements }: InventoryMovementTableProps) {
+  const T = useT();
+
+  function getMovementLabel(type: string) {
+    switch (type) {
+      case "stock_in":
+        return <span className="text-green-700">{T("inventory.stockIn")}</span>;
+      case "stock_out":
+        return <span className="text-red-700">{T("inventory.stockOut")}</span>;
+      case "adjustment":
+        return <span className="text-blue-700">{T("inventory.adjust")}</span>;
+      default:
+        return <span>{type}</span>;
+    }
+  }
+
   if (movements.length === 0) {
     return (
-      <p className="py-8 text-center text-sm text-gray-500">No movement history found.</p>
+      <p className="py-8 text-center text-sm text-gray-500">{T("inventory.noMovements")}</p>
     );
   }
 
@@ -46,13 +49,13 @@ export function InventoryMovementTable({ movements }: InventoryMovementTableProp
       <table className="w-full text-left text-sm">
         <thead>
           <tr className="border-b border-gray-200 bg-gray-50">
-            <th className="px-4 py-3 font-medium text-gray-600">Type</th>
-            <th className="px-4 py-3 font-medium text-gray-600">Quantity</th>
-            <th className="px-4 py-3 font-medium text-gray-600">Previous</th>
-            <th className="px-4 py-3 font-medium text-gray-600">New</th>
-            <th className="px-4 py-3 font-medium text-gray-600">Reference</th>
-            <th className="px-4 py-3 font-medium text-gray-600">Notes</th>
-            <th className="px-4 py-3 font-medium text-gray-600">Date</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.type")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.quantity")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.previous")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.new")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.reference")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("inventory.notes")}</th>
+            <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
           </tr>
         </thead>
         <tbody>

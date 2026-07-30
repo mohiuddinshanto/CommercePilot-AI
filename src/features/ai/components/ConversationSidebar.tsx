@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { useRouter } from "next/navigation";
 import { MessageSquare, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useConversations, useDeleteConversation } from "../hooks/useAi";
 import { formatDate } from "@/lib/utils";
 
 export function ConversationSidebar() {
+  const T = useT();
   const [page, setPage] = useState(1);
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
@@ -19,7 +21,7 @@ export function ConversationSidebar() {
 
   const handleDelete = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (confirm("Delete this conversation?")) {
+    if (confirm(T("ai.deleteConfirm"))) {
       deleteMutation.mutate(id, {
         onSuccess: () => {
           if (window.location.pathname.includes(id)) {
@@ -52,7 +54,7 @@ export function ConversationSidebar() {
   return (
     <div className="flex h-full w-72 flex-col border-r border-gray-200 bg-gray-50">
       <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
-        <h3 className="text-sm font-semibold text-gray-900">Conversations</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{T("ai.conversations")}</h3>
         <button
           onClick={() => setCollapsed(true)}
           className="rounded-lg p-1 text-gray-400 hover:bg-gray-200"
@@ -66,7 +68,7 @@ export function ConversationSidebar() {
         className="mx-3 mt-3 flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
       >
         <Plus className="h-4 w-4" />
-        New Chat
+        {T("ai.newChat")}
       </button>
 
       <div className="flex-1 overflow-y-auto px-2 py-2">
@@ -77,7 +79,7 @@ export function ConversationSidebar() {
             ))}
           </div>
         ) : conversations.length === 0 ? (
-          <p className="px-2 py-8 text-center text-sm text-gray-400">No conversations yet</p>
+          <p className="px-2 py-8 text-center text-sm text-gray-400">{T("ai.noConversations")}</p>
         ) : (
           conversations.map((conv) => (
             <button
@@ -108,7 +110,7 @@ export function ConversationSidebar() {
             disabled={page <= 1}
             className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-50"
           >
-            Prev
+            {T("ai.prev")}
           </button>
           <span className="text-xs text-gray-400">
             {page}/{totalPages} ({total})
@@ -118,7 +120,7 @@ export function ConversationSidebar() {
             disabled={page >= totalPages}
             className="text-xs text-gray-500 hover:text-gray-900 disabled:opacity-50"
           >
-            Next
+            {T("ai.next")}
           </button>
         </div>
       )}

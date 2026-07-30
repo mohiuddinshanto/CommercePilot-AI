@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { Package } from "lucide-react";
@@ -22,6 +23,7 @@ function getStatusColor(status: string) {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const T = useT();
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
@@ -43,19 +45,19 @@ export function ProductCard({ product }: ProductCardProps) {
 
       <div className="mt-4 grid grid-cols-3 gap-2 text-center">
         <div>
-          <p className="text-xs text-gray-400">Cost</p>
+          <p className="text-xs text-gray-400">{T("common.cost", "Cost")}</p>
           <p className="text-sm font-medium text-gray-900">
             {formatCurrency(product.costPrice)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-400">Price</p>
+          <p className="text-xs text-gray-400">{T("products.price")}</p>
           <p className="text-sm font-medium text-gray-900">
             {formatCurrency(product.sellingPrice)}
           </p>
         </div>
         <div>
-          <p className="text-xs text-gray-400">Stock</p>
+          <p className="text-xs text-gray-400">{T("products.stock")}</p>
           <p
             className={`text-sm font-medium ${
               product.stock <= product.lowStockLimit ? "text-red-600" : "text-gray-900"

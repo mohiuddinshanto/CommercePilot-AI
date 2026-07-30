@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useT } from "@/lib/i18n/use-t";
 import { X } from "lucide-react";
 import type { AdminSubscription } from "../types/admin";
 
@@ -19,6 +20,7 @@ export function SubscriptionModal({
   subscription,
   isLoading = false,
 }: SubscriptionModalProps) {
+  const T = useT();
   const [plan, setPlan] = useState(subscription?.plan || "");
   const [status, setStatus] = useState(subscription?.status || "");
   const [billingCycle, setBillingCycle] = useState(subscription?.billingCycle || "");
@@ -47,39 +49,39 @@ export function SubscriptionModal({
           <X className="h-5 w-5" />
         </button>
 
-        <h3 className="text-lg font-semibold text-gray-900">Update Subscription</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{T("admin.updateSubscription")}</h3>
         <p className="mt-1 text-sm text-gray-500">{subscription.storeName || subscription.storeId}</p>
 
         <div className="mt-4 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Plan</label>
+            <label className="block text-sm font-medium text-gray-700">{T("admin.plan")}</label>
             <select
               value={plan}
               onChange={(e) => setPlan(e.target.value)}
               className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-              <option value="starter">Starter</option>
-              <option value="pro">Professional</option>
-              <option value="business">Business</option>
+              <option value="starter">{T("admin.starter")}</option>
+              <option value="pro">{T("admin.professional")}</option>
+              <option value="business">{T("admin.business")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Status</label>
+            <label className="block text-sm font-medium text-gray-700">{T("admin.status")}</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             >
-              <option value="active">Active</option>
-              <option value="cancelled">Cancelled</option>
-              <option value="expired">Expired</option>
-              <option value="trialing">Trial</option>
+              <option value="active">{T("admin.active")}</option>
+              <option value="cancelled">{T("admin.cancelled")}</option>
+              <option value="expired">{T("admin.expired")}</option>
+              <option value="trialing">{T("admin.trial")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Billing Cycle</label>
+            <label className="block text-sm font-medium text-gray-700">{T("admin.billingCycle")}</label>
             <select
               value={billingCycle}
               onChange={(e) => setBillingCycle(e.target.value)}
@@ -97,14 +99,14 @@ export function SubscriptionModal({
             disabled={isLoading}
             className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
           >
-            Cancel
+            {T("common.cancel")}
           </button>
           <button
             onClick={handleUpdate}
             disabled={isLoading}
             className="flex-1 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading ? "Updating..." : "Update"}
+            {isLoading ? T("common.loading") : T("common.update")}
           </button>
         </div>
       </div>

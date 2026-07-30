@@ -1,5 +1,6 @@
 "use client";
 
+import { useT } from "@/lib/i18n/use-t";
 import type { Bundle } from "@/types/bundle";
 import { formatCurrency } from "@/lib/utils";
 import { Package, Tag, ShoppingCart, Percent } from "lucide-react";
@@ -10,6 +11,7 @@ interface BundleCardProps {
 }
 
 export function BundleCard({ bundle, onClick }: BundleCardProps) {
+  const T = useT();
   return (
     <div
       onClick={onClick}
@@ -46,14 +48,14 @@ export function BundleCard({ bundle, onClick }: BundleCardProps) {
         <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
           <ShoppingCart className="h-4 w-4 text-gray-400" />
           <div>
-            <p className="text-xs text-gray-500">Products</p>
+            <p className="text-xs text-gray-500">{T("bundles.products")}</p>
             <p className="text-sm font-medium text-gray-900">{bundle.products.length}</p>
           </div>
         </div>
         <div className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2">
           <Tag className="h-4 w-4 text-gray-400" />
           <div>
-            <p className="text-xs text-gray-500">Bundle Price</p>
+            <p className="text-xs text-gray-500">{T("bundles.bundlePrice")}</p>
             <p className="text-sm font-medium text-gray-900">
               {formatCurrency(bundle.bundlePrice)}
             </p>
@@ -65,11 +67,11 @@ export function BundleCard({ bundle, onClick }: BundleCardProps) {
         <div className="flex items-center gap-2">
           <Percent className="h-4 w-4 text-green-600" />
           <span className="text-sm text-green-700">
-            Save {bundle.discountPercentage.toFixed(1)}%
+            {T("bundles.savePercent").replace("{percentage}", bundle.discountPercentage.toFixed(1))}
           </span>
         </div>
         <span className="text-sm font-medium text-green-700">
-          {formatCurrency(bundle.discountAmount)} off
+          {T("bundles.amountOff").replace("{amount}", formatCurrency(bundle.discountAmount))}
         </span>
       </div>
     </div>

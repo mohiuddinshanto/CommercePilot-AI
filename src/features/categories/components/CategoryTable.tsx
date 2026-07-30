@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useT } from "@/lib/i18n/use-t";
 import { formatDateTime } from "@/lib/utils";
 import { FolderTree, Eye, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Category } from "@/types/category";
@@ -33,11 +34,12 @@ export function CategoryTable({
   totalPages,
   onPageChange,
 }: CategoryTableProps) {
+  const T = useT();
   if (categories.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white py-16">
         <FolderTree className="h-12 w-12 text-gray-300" />
-        <p className="text-sm text-gray-500">No categories found</p>
+        <p className="text-sm text-gray-500">{T("categories.noCategories")}</p>
       </div>
     );
   }
@@ -48,12 +50,12 @@ export function CategoryTable({
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 font-medium text-gray-600">Category</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Slug</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Sort</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Status</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Created</th>
-              <th className="px-4 py-3 font-medium text-gray-600">Actions</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("categories.title")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("categories.slug")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("categories.sort")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.status")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.date")}</th>
+              <th className="px-4 py-3 font-medium text-gray-600">{T("common.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -112,7 +114,7 @@ export function CategoryTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <p className="text-sm text-gray-500">
-            Page {page} of {totalPages}
+            {T("common.pageOf", "Page {page} of {total}").replace("{page}", String(page)).replace("{total}", String(totalPages))}
           </p>
           <div className="flex items-center gap-2">
             <button
