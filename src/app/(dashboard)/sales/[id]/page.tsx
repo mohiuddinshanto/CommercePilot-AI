@@ -1,12 +1,15 @@
 "use client";
 
-import { use, useCallback } from "react";
+import { use, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSale, useDeleteSale } from "@/features/sales/hooks/useSales";
+import { useShipmentsBySale } from "@/features/shipments/hooks/useShipments";
+import { SendToCourierModal } from "@/features/shipments/components/SendToCourierModal";
+import { ShipmentSection } from "@/features/shipments/components/ShipmentTimeline";
 import { InvoicePreview } from "@/features/sales/components/InvoicePreview";
 import { ErrorPage } from "@/components/common/ErrorPage";
 import { formatDateTime, formatCurrency } from "@/lib/utils";
-import { Receipt, ArrowLeft, Trash2 } from "lucide-react";
+import { Receipt, ArrowLeft, Trash2, Truck } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -14,6 +17,8 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
   const { id } = use(params);
   const router = useRouter();
   const { data: sale, isLoading, error } = useSale(id);
+  const { data: shipments = [] } = useShipmentsBySale(id);
+  const [showCourierModal, setShowCourierModal] = useState(false);
   const deleteSale = useDeleteSale();
 
   const handleDelete = useCallback(async () => {
@@ -90,6 +95,13 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setShowCourierModal(true)}
+            className="flex items-center gap-2 rounded-lg border border-blue-300 px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50"
+          >
+            <Truck className="h-4 w-4" />
+            Send to Courier
+          </button>
+          <button
             onClick={handleDelete}
             className="flex items-center gap-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
           >
@@ -164,6 +176,14 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="rounded-xl border border-gray-200 bg-white p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Shipments</h2>
+            <ShipmentSection shipments={shipments} />
+            {shipments.length === 0 && (
+              <p className="text-sm text-gray-500">No shipments created yet.</p>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Metadata</h2>
             <dl className="space-y-2">
               <div className="flex items-center justify-between">
@@ -184,6 +204,15 @@ export default function SaleDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
       </div>
+
+      <SendToCourierModal
+        isOpen={showCourierModal}
+        onClose={() => setShowCourierModal(false)}
+        saleId={id}
+        customerName={sale.customerName}
+        customerPhone={sale.customerPhone || ""}
+        defaultCodAmount={sale.dueAmount}
+      />
     </div>
   );
 }

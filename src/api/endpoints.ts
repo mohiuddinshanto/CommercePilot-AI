@@ -23,6 +23,7 @@
     AI: "/api/v1/ai",
     SUBSCRIPTIONS: "/api/v1/subscriptions",
     ADMIN: "/api/v1/admin",
+    SHIPMENTS: "/api/v1/shipments",
   },
 } as const;
 
