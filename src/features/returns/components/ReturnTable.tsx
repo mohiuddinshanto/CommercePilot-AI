@@ -28,6 +28,32 @@ function getReturnStatusBadge(status: string) {
   }
 }
 
+function getReturnTypeBadge(type: string) {
+  switch (type) {
+    case "refund":
+      return "bg-purple-100 text-purple-700";
+    case "same_exchange":
+      return "bg-cyan-100 text-cyan-700";
+    case "different_exchange":
+      return "bg-orange-100 text-orange-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
+function getReturnTypeLabel(type: string) {
+  switch (type) {
+    case "refund":
+      return "Refund";
+    case "same_exchange":
+      return "Same Exch.";
+    case "different_exchange":
+      return "Diff. Exch.";
+    default:
+      return type;
+  }
+}
+
 export function ReturnTable({
   items,
   onDelete,
@@ -52,6 +78,7 @@ export function ReturnTable({
             <tr className="border-b border-gray-200 bg-gray-50">
               <th className="px-4 py-3 font-medium text-gray-600">Invoice</th>
               <th className="px-4 py-3 font-medium text-gray-600">Customer</th>
+              <th className="px-4 py-3 font-medium text-gray-600">Type</th>
               <th className="px-4 py-3 font-medium text-gray-600">Items</th>
               <th className="px-4 py-3 font-medium text-gray-600">Refund</th>
               <th className="px-4 py-3 font-medium text-gray-600">Reason</th>
@@ -76,6 +103,13 @@ export function ReturnTable({
                   {item.customerPhone && (
                     <p className="text-xs text-gray-500">{item.customerPhone}</p>
                   )}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getReturnTypeBadge(item.returnType)}`}
+                  >
+                    {getReturnTypeLabel(item.returnType)}
+                  </span>
                 </td>
                 <td className="px-4 py-3 text-gray-700">{item.items.length}</td>
                 <td className="px-4 py-3 font-medium text-red-600">

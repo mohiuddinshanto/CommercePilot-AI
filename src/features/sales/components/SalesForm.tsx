@@ -35,7 +35,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
 
   // Product search state
   const [searchQuery, setSearchQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -190,7 +190,16 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                 setIsDropdownOpen(true);
               }}
               onFocus={() => setIsDropdownOpen(true)}
-              placeholder="Search product by name..."
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (products.length > 0) {
+                    addProductToCart(products[0]);
+                    setSearchQuery("");
+                  }
+                }
+              }}
+              placeholder="Search product by name or SKU (live)..."
               className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-8 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             {searchQuery && (
@@ -210,6 +219,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                 type="number"
                 value={minPrice}
                 onChange={(e) => { setMinPrice(e.target.value); setIsDropdownOpen(true); }}
+                onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                 placeholder="Min"
                 min="0"
                 className="w-20 rounded-lg border border-gray-300 bg-white py-2 pl-5 pr-2 text-sm focus:border-blue-500 focus:outline-none"
@@ -222,6 +232,7 @@ export function SalesForm({ onSubmit, onCancel, isLoading }: SalesFormProps) {
                 type="number"
                 value={maxPrice}
                 onChange={(e) => { setMaxPrice(e.target.value); setIsDropdownOpen(true); }}
+                onKeyDown={(e) => { if (e.key === "Enter") e.preventDefault(); }}
                 placeholder="Max"
                 min="0"
                 className="w-20 rounded-lg border border-gray-300 bg-white py-2 pl-5 pr-2 text-sm focus:border-blue-500 focus:outline-none"

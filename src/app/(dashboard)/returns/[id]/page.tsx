@@ -6,10 +6,28 @@ import { useReturn, useDeleteReturn, useUpdateReturn } from "@/features/returns/
 import { ReturnItems } from "@/features/returns/components/ReturnItems";
 import { RefundSummary } from "@/features/returns/components/RefundSummary";
 import { ErrorPage } from "@/components/common/ErrorPage";
-import { formatDateTime } from "@/lib/utils";
-import { RotateCcw, ArrowLeft, Trash2 } from "lucide-react";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { RotateCcw, ArrowLeft, Trash2, RefreshCw, ArrowLeftRight } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+
+function getReturnTypeLabel(type: string) {
+  switch (type) {
+    case "refund": return "Refund";
+    case "same_exchange": return "Same Product Exchange";
+    case "different_exchange": return "Different Product Exchange";
+    default: return type;
+  }
+}
+
+function getReturnTypeBadge(type: string) {
+  switch (type) {
+    case "refund": return "bg-purple-100 text-purple-700";
+    case "same_exchange": return "bg-cyan-100 text-cyan-700";
+    case "different_exchange": return "bg-orange-100 text-orange-700";
+    default: return "bg-gray-100 text-gray-700";
+  }
+}
 
 export default function ReturnDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -122,6 +140,43 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
           <ReturnItems items={returnDoc.items} />
+
+          {returnDoc.returnType === "different_exchange" && returnDoc.exchangeItems && returnDoc.exchangeItems.length > 0 && (
+            <div className="rounded-xl border border-orange-200 bg-orange-50 p-6">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900 mb-4">
+                <RefreshCw className="h-5 w-5 text-orange-600" />
+                Exchange Items
+              </h2>
+              <div className="space-y-2">
+                {returnDoc.exchangeItems.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between rounded-lg border border-orange-200 bg-white px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <ArrowLeftRight className="h-4 w-4 text-orange-500" />
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">{item.name}</p>
+                        <p className="text-xs text-gray-500">{item.sku} × {item.quantity}</p>
+                      </div>
+                    </div>
+                    <span className="text-sm font-medium text-orange-700">{formatCurrency(item.totalPrice)}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 flex justify-between text-sm border-t border-orange-200 pt-2">
+                <span className="font-medium text-gray-700">Exchange Total</span>
+                <span className="font-semibold text-orange-700">{formatCurrency(returnDoc.exchangeTotal || 0)}</span>
+              </div>
+              {returnDoc.adjustmentAmount !== undefined && (
+                <div className="flex justify-between text-sm mt-1">
+                  <span className="font-medium text-gray-700">Adjustment</span>
+                  <span className={`font-semibold ${returnDoc.adjustmentAmount >= 0 ? "text-blue-600" : "text-red-600"}`}>
+                    {returnDoc.adjustmentAmount >= 0
+                      ? `Customer pays ${formatCurrency(returnDoc.adjustmentAmount)}`
+                      : `Refund ${formatCurrency(Math.abs(returnDoc.adjustmentAmount))}`}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
@@ -130,6 +185,16 @@ export default function ReturnDetailPage({ params }: { params: Promise<{ id: str
           <div className="rounded-xl border border-gray-200 bg-white p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Status</h2>
             <dl className="space-y-3">
+              <div className="flex items-center justify-between">
+                <dt className="text-sm text-gray-500">Return Type</dt>
+                <dd>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getReturnTypeBadge(returnDoc.returnType)}`}
+                  >
+                    {getReturnTypeLabel(returnDoc.returnType)}
+                  </span>
+                </dd>
+              </div>
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-500">Return Status</dt>
                 <dd>

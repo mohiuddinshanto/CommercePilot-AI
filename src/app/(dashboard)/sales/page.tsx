@@ -7,15 +7,20 @@ import { SalesSummaryCard } from "@/features/sales/components/SalesSummary";
 import { SalesForm } from "@/features/sales/components/SalesForm";
 import { SalesModal } from "@/features/sales/components/SalesModal";
 import { ErrorPage } from "@/components/common/ErrorPage";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, Search, X } from "lucide-react";
 import type { CreateSaleInput } from "@/types/sale";
 import toast from "react-hot-toast";
 
 export default function SalesPage() {
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const { data, isLoading, error } = useSaleList({ page, limit: 10 });
+  const { data, isLoading, error } = useSaleList({
+    page,
+    limit: 10,
+    search: search ? search.trim() : undefined,
+  });
   const { data: summary } = useSalesSummary();
   const createSale = useCreateSale();
   const deleteSale = useDeleteSale();
@@ -69,6 +74,33 @@ export default function SalesPage() {
       </div>
 
       {summary && <SalesSummaryCard summary={summary} />}
+
+      {/* Live Search Bar */}
+      <div className="relative max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          placeholder="Search sales by invoice, customer name, or phone..."
+          className="w-full rounded-xl border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+        />
+        {search && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearch("");
+              setPage(1);
+            }}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+      </div>
 
       {isLoading ? (
         <SalesTableSkeleton />

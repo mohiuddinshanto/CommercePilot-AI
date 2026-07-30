@@ -6,6 +6,15 @@ export interface ReturnItem {
   refundAmount: number;
 }
 
+export interface ExchangeItem {
+  productId: string;
+  name: string;
+  sku: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+}
+
 export interface Return {
   _id: string;
   storeId: string;
@@ -14,9 +23,13 @@ export interface Return {
   customerId: string | null;
   customerName: string;
   customerPhone?: string | null;
+  returnType: string;
   items: ReturnItem[];
   subtotal: number;
   refundAmount: number;
+  exchangeItems?: ExchangeItem[];
+  exchangeTotal?: number;
+  adjustmentAmount?: number;
   status: string;
   reason: string;
   notes: string;
@@ -31,12 +44,20 @@ export interface Return {
 
 export interface CreateReturnInput {
   saleId: string;
+  returnType: string;
   items: {
     productId?: string;
     bundleId?: string;
     quantity: number;
     unitPrice: number;
     refundAmount?: number;
+  }[];
+  exchangeItems?: {
+    productId: string;
+    name: string;
+    sku: string;
+    quantity: number;
+    unitPrice: number;
   }[];
   reason: string;
   notes?: string;
