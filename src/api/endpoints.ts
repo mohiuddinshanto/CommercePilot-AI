@@ -24,6 +24,7 @@
     SUBSCRIPTIONS: "/api/v1/subscriptions",
     ADMIN: "/api/v1/admin",
     SHIPMENTS: "/api/v1/shipments",
+    INBOX: "/api/v1/inbox",
   },
 } as const;
 

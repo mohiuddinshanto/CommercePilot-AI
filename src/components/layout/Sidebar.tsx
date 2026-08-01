@@ -20,6 +20,7 @@ const navLabelKey: Record<string, string> = {
   Analytics: "nav.analytics",
   "AI Copilot": "nav.aiCopilot",
   "AI Generator": "nav.aiGenerator",
+  Inbox: "nav.inbox",
   Settings: "nav.settings",
   "Admin Panel": "nav.adminPanel",
 };

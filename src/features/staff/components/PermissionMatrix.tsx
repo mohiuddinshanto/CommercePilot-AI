@@ -19,6 +19,7 @@ const PERMISSION_LABELS: Record<string, string> = {
   [STAFF_PERMISSIONS.STAFF]: "Staff",
   [STAFF_PERMISSIONS.SETTINGS]: "Settings",
   [STAFF_PERMISSIONS.AI]: "AI Copilot",
+  [STAFF_PERMISSIONS.INBOX]: "Inbox",
 };
 
 export function PermissionMatrix({

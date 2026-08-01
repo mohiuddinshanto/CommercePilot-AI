@@ -8,6 +8,7 @@ export const STAFF_PERMISSIONS = {
   STAFF: "staff",
   SETTINGS: "settings",
   AI: "ai",
+  INBOX: "inbox",
 } as const;
 
 export type Permission = (typeof STAFF_PERMISSIONS)[keyof typeof STAFF_PERMISSIONS];

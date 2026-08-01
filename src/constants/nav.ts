@@ -12,6 +12,7 @@ import {
   Settings,
   Shield,
   PenTool,
+  MessageSquare,
 } from "lucide-react";
 import { ROLES, type Role } from "./roles";
 
@@ -98,6 +99,13 @@ export const NAV_ITEMS: NavItem[] = [
     href: "/ai/generator",
     icon: PenTool,
     permission: "ai",
+    roles: [ROLES.OWNER, ROLES.STAFF],
+  },
+  {
+    label: "Inbox",
+    href: "/inbox",
+    icon: MessageSquare,
+    permission: "inbox",
     roles: [ROLES.OWNER, ROLES.STAFF],
   },
   {
